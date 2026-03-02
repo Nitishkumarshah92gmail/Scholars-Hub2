@@ -1,5 +1,4 @@
 .env
 .env.local
 backend/uploads
-backend/service-account.json
 *.log

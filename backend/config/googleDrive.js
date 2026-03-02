@@ -22,7 +22,31 @@ let driveClient = null;
 function getDriveClient() {
     if (driveClient) return driveClient;
 
-    // --- Method 1: Service Account via env vars ---
+    // --- Method 1: Service Account via JSON key file (most reliable) ---
+    // Try well-known paths for the service account file
+    const saPath = process.env.GOOGLE_SERVICE_ACCOUNT_PATH || './service-account.json';
+    const resolvedPath = path.resolve(__dirname, '..', saPath);
+    if (fs.existsSync(resolvedPath)) {
+        try {
+            const creds = JSON.parse(fs.readFileSync(resolvedPath, 'utf8'));
+            const auth = new google.auth.JWT(
+                creds.client_email,
+                null,
+                creds.private_key,
+                ['https://www.googleapis.com/auth/drive'],
+            );
+
+            driveClient = google.drive({ version: 'v3', auth });
+            console.log('✅ Google Drive client initialized (Service Account JSON file)');
+            console.log('   Client Email:', creds.client_email);
+            console.log('   Folder ID:', (process.env.GOOGLE_DRIVE_FOLDER_ID || '').trim() || 'not set');
+            return driveClient;
+        } catch (err) {
+            console.warn('⚠️  Failed to parse service account file:', err.message);
+        }
+    }
+
+    // --- Method 2: Service Account via env vars ---
     const clientEmail = (process.env.GOOGLE_DRIVE_CLIENT_EMAIL || '').trim();
     let privateKey = (process.env.GOOGLE_DRIVE_PRIVATE_KEY || '').trim();
 
@@ -40,35 +64,13 @@ function getDriveClient() {
         );
 
         driveClient = google.drive({ version: 'v3', auth });
-        console.log('✅ Google Drive client initialized (Service Account)');
+        console.log('✅ Google Drive client initialized (Service Account env vars)');
         console.log('   Client Email:', clientEmail);
-        console.log('   Folder ID:', process.env.GOOGLE_DRIVE_FOLDER_ID || 'not set');
+        console.log('   Folder ID:', (process.env.GOOGLE_DRIVE_FOLDER_ID || '').trim() || 'not set');
         return driveClient;
     }
 
-    // --- Method 1b: Service Account via JSON key file ---
-    const saPath = process.env.GOOGLE_SERVICE_ACCOUNT_PATH;
-    if (saPath) {
-        const resolvedPath = path.resolve(__dirname, '..', saPath);
-        if (fs.existsSync(resolvedPath)) {
-            const creds = JSON.parse(fs.readFileSync(resolvedPath, 'utf8'));
-            const auth = new google.auth.JWT(
-                creds.client_email,
-                null,
-                creds.private_key,
-                ['https://www.googleapis.com/auth/drive'],
-            );
-
-            driveClient = google.drive({ version: 'v3', auth });
-            console.log('✅ Google Drive client initialized (Service Account JSON file)');
-            console.log('   Folder ID:', process.env.GOOGLE_DRIVE_FOLDER_ID || 'not set');
-            return driveClient;
-        } else {
-            console.warn('⚠️  Service account file not found at:', resolvedPath);
-        }
-    }
-
-    // --- Method 2: OAuth2 refresh token ---
+    // --- Method 3: OAuth2 refresh token ---
     const clientId = process.env.GOOGLE_DRIVE_CLIENT_ID;
     const clientSecret = process.env.GOOGLE_DRIVE_CLIENT_SECRET;
     const refreshToken = process.env.GOOGLE_DRIVE_REFRESH_TOKEN;
@@ -83,14 +85,14 @@ function getDriveClient() {
 
         driveClient = google.drive({ version: 'v3', auth: oauth2Client });
         console.log('✅ Google Drive client initialized (OAuth2)');
-        console.log('   Folder ID:', process.env.GOOGLE_DRIVE_FOLDER_ID || 'not set');
+        console.log('   Folder ID:', (process.env.GOOGLE_DRIVE_FOLDER_ID || '').trim() || 'not set');
         return driveClient;
     }
 
     // --- No credentials found ---
     console.warn('⚠️  Google Drive credentials not found. Tried:');
-    console.warn('   1. Service Account env vars: GOOGLE_DRIVE_CLIENT_EMAIL + GOOGLE_DRIVE_PRIVATE_KEY');
-    console.warn('   2. Service Account file: GOOGLE_SERVICE_ACCOUNT_PATH');
+    console.warn('   1. Service Account file: ' + resolvedPath);
+    console.warn('   2. Service Account env vars: GOOGLE_DRIVE_CLIENT_EMAIL + GOOGLE_DRIVE_PRIVATE_KEY');
     console.warn('   3. OAuth2: GOOGLE_DRIVE_CLIENT_ID + GOOGLE_DRIVE_CLIENT_SECRET + GOOGLE_DRIVE_REFRESH_TOKEN');
     console.warn('   Uploads will fall back to Supabase Storage.');
     return null;

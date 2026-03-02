@@ -22,8 +22,7 @@ let driveClient = null;
 function getDriveClient() {
     if (driveClient) return driveClient;
 
-    // --- Method 1: Service Account via JSON key file (most reliable) ---
-    // Try well-known paths for the service account file
+    // --- Method 1: Service Account via JSON key file (most reliable for local dev) ---
     const saPath = process.env.GOOGLE_SERVICE_ACCOUNT_PATH || './service-account.json';
     const resolvedPath = path.resolve(__dirname, '..', saPath);
     if (fs.existsSync(resolvedPath)) {
@@ -42,6 +41,27 @@ function getDriveClient() {
             return driveClient;
         } catch (err) {
             console.warn('⚠️  Failed to parse service account file:', err.message);
+        }
+    }
+
+    // --- Method 1b: Service Account via base64-encoded JSON env var (best for Vercel) ---
+    const saJson = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
+    if (saJson) {
+        try {
+            const creds = JSON.parse(Buffer.from(saJson, 'base64').toString('utf8'));
+            const auth = new google.auth.JWT({
+                email: creds.client_email,
+                key: creds.private_key,
+                scopes: ['https://www.googleapis.com/auth/drive'],
+            });
+
+            driveClient = google.drive({ version: 'v3', auth });
+            console.log('✅ Google Drive client initialized (Service Account base64 env var)');
+            console.log('   Client Email:', creds.client_email);
+            console.log('   Folder ID:', (process.env.GOOGLE_DRIVE_FOLDER_ID || '').trim() || 'not set');
+            return driveClient;
+        } catch (err) {
+            console.warn('⚠️  Failed to parse GOOGLE_SERVICE_ACCOUNT_JSON:', err.message);
         }
     }
 

@@ -35,7 +35,8 @@ app.get('/api/health', (req, res) => {
 app.get('/api/drive-test', async (req, res) => {
   try {
     const googleDrive = require('./config/googleDrive');
-    // Reset cached client to pick up scope changes
+    // Reset cached client to pick up any changes
+    googleDrive.resetClient();
     const drive = googleDrive.getDriveClient();
     if (!drive) {
       return res.json({
@@ -50,39 +51,18 @@ app.get('/api/drive-test', async (req, res) => {
     }
     const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
 
-    // Step 1: Try to list files
-    const listRes = await drive.files.list({
-      q: `'${folderId}' in parents and trashed=false`,
-      fields: 'files(id, name)',
-      pageSize: 5,
-    });
-
-    // Step 2: Try to WRITE a test file to verify write access
-    const { PassThrough } = require('stream');
-    const testStream = new PassThrough();
-    testStream.end('Google Drive write test - ' + new Date().toISOString());
-
-    const testFile = await drive.files.create({
-      requestBody: {
-        name: '_drive_test_' + Date.now() + '.txt',
-        parents: [folderId],
-      },
-      media: {
-        mimeType: 'text/plain',
-        body: testStream,
-      },
-      fields: 'id, name',
-    });
+    // Try to WRITE a test file directly using uploadFile function
+    const testBuffer = Buffer.from('Google Drive write test - ' + new Date().toISOString());
+    const result = await googleDrive.uploadFile(testBuffer, 'drive-test.txt', 'text/plain', 'test');
 
     // Clean up test file
-    await drive.files.delete({ fileId: testFile.data.id });
+    await googleDrive.deleteFile(result.fileId);
 
     res.json({
       status: 'ok',
       message: 'Google Drive READ + WRITE working!',
       folderId,
-      filesInFolder: listRes.data.files.length,
-      sampleFiles: listRes.data.files.map(f => f.name),
+      testFileUrl: result.fileUrl,
       writeTest: 'PASSED - created and deleted test file',
     });
   } catch (err) {

@@ -6,7 +6,7 @@
     "dev:backend": "cd backend && npm run dev",
     "build": "cd frontend && npm install && npm run build",
     "install:all": "cd frontend && npm install && cd ../backend && npm install",
-    "render-build": "npm install --prefix frontend && npm install --prefix backend && npm run build --prefix frontend",
+    "render-build": "npm install --include=dev --prefix frontend && npm install --prefix backend && npm run build --prefix frontend",
     "start": "node backend/server.js"
   },
   "dependencies": {

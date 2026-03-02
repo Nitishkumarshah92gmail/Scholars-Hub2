@@ -20,7 +20,11 @@ export default function Feed() {
       if (pageNum === 1) {
         setPosts(res.data.posts);
       } else {
-        setPosts((prev) => [...prev, ...res.data.posts]);
+        setPosts((prev) => {
+          const existingIds = new Set(prev.map((p) => p._id));
+          const newPosts = res.data.posts.filter((p) => !existingIds.has(p._id));
+          return [...prev, ...newPosts];
+        });
       }
       setHasMore(res.data.hasMore || res.data.posts.length === 10);
     } catch {

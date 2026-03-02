@@ -187,20 +187,29 @@ router.get('/', auth, async (req, res) => {
     // If not enough posts, fill with trending/recent from other users
     if (posts.length < limit) {
       const remaining = limit - posts.length;
-      const existingIds = posts.map((p) => p.id);
+      const existingIds = new Set(posts.map((p) => String(p.id)));
 
       let trendingQuery = supabase
         .from('posts')
         .select(POST_SELECT)
         .order('created_at', { ascending: false })
-        .limit(remaining + existingIds.length);
+        .limit(remaining + existingIds.size + 5);
 
       const { data: allRecent } = await trendingQuery;
       const trending = (allRecent || [])
-        .filter((p) => !existingIds.includes(p.id))
+        .filter((p) => !existingIds.has(String(p.id)))
         .slice(0, remaining);
       posts = [...posts, ...trending];
     }
+
+    // Final dedup pass to guarantee no duplicates
+    const seenIds = new Set();
+    posts = posts.filter((p) => {
+      const id = String(p.id);
+      if (seenIds.has(id)) return false;
+      seenIds.add(id);
+      return true;
+    });
 
     // Limit comments to 3 per post
     const transformedPosts = posts.map((p) => {

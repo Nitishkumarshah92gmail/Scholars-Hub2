@@ -3,11 +3,23 @@ const multer = require('multer');
 const path = require('path');
 const auth = require('../middleware/auth');
 const supabase = require('../config/supabase');
+const googleDrive = require('../config/googleDrive');
 
 const router = express.Router();
 
 const SUPABASE_BUCKET = 'uploads';
 const supabaseUrl = (process.env.SUPABASE_URL || '').trim();
+
+// File types that go to Google Drive (PDFs and documents)
+const DRIVE_MIMETYPES = [
+    'application/pdf',
+];
+
+// File types that go to Supabase Storage (images, videos)
+const SUPABASE_MIMETYPES = [
+    'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml',
+    'video/mp4', 'video/webm', 'video/quicktime',
+];
 
 // Configure multer (memory storage — files stay in buffer)
 const storage = multer.memoryStorage();
@@ -15,11 +27,7 @@ const upload = multer({
     storage,
     limits: { fileSize: 50 * 1024 * 1024, files: 5 },
     fileFilter: (req, file, cb) => {
-        const allowedTypes = [
-            'application/pdf',
-            'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml',
-            'video/mp4', 'video/webm', 'video/quicktime',
-        ];
+        const allowedTypes = [...DRIVE_MIMETYPES, ...SUPABASE_MIMETYPES];
         if (allowedTypes.includes(file.mimetype)) {
             cb(null, true);
         } else {
@@ -63,7 +71,37 @@ async function uploadToSupabase(buffer, originalName, mimetype, subfolder) {
         fileUrl: publicUrl,
         viewLink: publicUrl,
         downloadLink: publicUrl,
+        storage: 'supabase',
     };
+}
+
+/**
+ * Upload file to Google Drive and return public URL
+ */
+async function uploadToGoogleDrive(buffer, originalName, mimetype, subfolder) {
+    const result = await googleDrive.uploadFile(buffer, originalName, mimetype, subfolder);
+    return {
+        ...result,
+        storage: 'google_drive',
+    };
+}
+
+/**
+ * Smart upload: routes PDFs to Google Drive, images/videos to Supabase
+ */
+async function smartUpload(buffer, originalName, mimetype, subfolder) {
+    // PDFs and documents → Google Drive
+    if (DRIVE_MIMETYPES.includes(mimetype)) {
+        try {
+            return await uploadToGoogleDrive(buffer, originalName, mimetype, subfolder);
+        } catch (err) {
+            console.warn('Google Drive upload failed, falling back to Supabase:', err.message);
+            // Fall back to Supabase if Google Drive is not configured
+            return await uploadToSupabase(buffer, originalName, mimetype, subfolder);
+        }
+    }
+    // Images, videos → Supabase Storage
+    return await uploadToSupabase(buffer, originalName, mimetype, subfolder);
 }
 
 /**
@@ -80,7 +118,7 @@ router.post('/files', auth, upload.array('files', 5), async (req, res) => {
         const results = [];
 
         for (const file of req.files) {
-            const result = await uploadToSupabase(file.buffer, file.originalname, file.mimetype, subfolder);
+            const result = await smartUpload(file.buffer, file.originalname, file.mimetype, subfolder);
             results.push(result);
         }
 
@@ -100,6 +138,7 @@ router.post('/avatar', auth, upload.single('avatar'), async (req, res) => {
             return res.status(400).json({ error: 'No avatar file provided.' });
         }
 
+        // Avatars always go to Supabase (images)
         const result = await uploadToSupabase(req.file.buffer, req.file.originalname, req.file.mimetype, 'avatars');
         res.json(result);
     } catch (err) {
@@ -114,12 +153,19 @@ router.post('/avatar', auth, upload.single('avatar'), async (req, res) => {
 router.delete('/:fileId', auth, async (req, res) => {
     try {
         const fileId = path.basename(req.params.fileId);
-        // Try deleting from each subfolder in Supabase Storage
-        for (const sub of ['posts', 'avatars', 'pdfs', 'images']) {
-            const { error } = await supabase.storage
-                .from(SUPABASE_BUCKET)
-                .remove([`${sub}/${fileId}`]);
-            if (!error) break;
+        const storage = req.query.storage || 'supabase';
+
+        if (storage === 'google_drive') {
+            // Delete from Google Drive
+            await googleDrive.deleteFile(fileId);
+        } else {
+            // Try deleting from each subfolder in Supabase Storage
+            for (const sub of ['posts', 'avatars', 'pdfs', 'images']) {
+                const { error } = await supabase.storage
+                    .from(SUPABASE_BUCKET)
+                    .remove([`${sub}/${fileId}`]);
+                if (!error) break;
+            }
         }
         res.json({ message: 'File deleted successfully.' });
     } catch (err) {

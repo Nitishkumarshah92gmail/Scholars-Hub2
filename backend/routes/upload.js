@@ -7,7 +7,7 @@ const googleDrive = require('../config/googleDrive');
 
 const router = express.Router();
 
-const SUPABASE_BUCKET = 'uploads';
+const SUPABASE_BUCKET = 'studyshare';
 const supabaseUrl = (process.env.SUPABASE_URL || '').trim();
 
 // All file types go to Google Drive (with Supabase as fallback)

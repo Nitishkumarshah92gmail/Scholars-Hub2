@@ -7,26 +7,45 @@ let driveClient = null;
 
 /**
  * Initialize Google Drive client using Service Account credentials.
- * Place your service-account.json file in the backend root directory.
+ * Supports two modes:
+ *   1. Environment variables: GOOGLE_DRIVE_CLIENT_EMAIL + GOOGLE_DRIVE_PRIVATE_KEY (recommended for Render/cloud)
+ *   2. JSON key file: service-account.json (local development)
  */
 function getDriveClient() {
     if (driveClient) return driveClient;
 
-    const keyPath = path.resolve(process.env.GOOGLE_SERVICE_ACCOUNT_PATH || './service-account.json');
+    let auth;
 
-    if (!fs.existsSync(keyPath)) {
-        console.warn('⚠️  Google Drive service account key not found at:', keyPath);
-        console.warn('   File uploads will fail. Please add your service-account.json file.');
-        return null;
+    // Prefer env-var credentials (works on Render / any cloud host)
+    if (process.env.GOOGLE_DRIVE_CLIENT_EMAIL && process.env.GOOGLE_DRIVE_PRIVATE_KEY) {
+        auth = new google.auth.GoogleAuth({
+            credentials: {
+                client_email: process.env.GOOGLE_DRIVE_CLIENT_EMAIL,
+                // Replace literal \n with real newlines (Render stores it escaped)
+                private_key: process.env.GOOGLE_DRIVE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+            },
+            scopes: ['https://www.googleapis.com/auth/drive.file'],
+        });
+        console.log('✅ Google Drive client initialized (env credentials)');
+    } else {
+        // Fall back to JSON key file for local development
+        const keyPath = path.resolve(process.env.GOOGLE_SERVICE_ACCOUNT_PATH || './service-account.json');
+
+        if (!fs.existsSync(keyPath)) {
+            console.warn('⚠️  Google Drive credentials not found.');
+            console.warn('   Set GOOGLE_DRIVE_CLIENT_EMAIL & GOOGLE_DRIVE_PRIVATE_KEY env vars,');
+            console.warn('   or place a service-account.json file at:', keyPath);
+            return null;
+        }
+
+        auth = new google.auth.GoogleAuth({
+            keyFile: keyPath,
+            scopes: ['https://www.googleapis.com/auth/drive.file'],
+        });
+        console.log('✅ Google Drive client initialized (key file)');
     }
 
-    const auth = new google.auth.GoogleAuth({
-        keyFile: keyPath,
-        scopes: ['https://www.googleapis.com/auth/drive.file'],
-    });
-
     driveClient = google.drive({ version: 'v3', auth });
-    console.log('✅ Google Drive client initialized');
     return driveClient;
 }
 

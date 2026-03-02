@@ -6,71 +6,44 @@ const stream = require('stream');
 let driveClient = null;
 
 /**
- * Initialize Google Drive client using Service Account credentials.
- * Supports two modes:
- *   1. Environment variables: GOOGLE_DRIVE_CLIENT_EMAIL + GOOGLE_DRIVE_PRIVATE_KEY (recommended for Render/cloud)
- *   2. JSON key file: service-account.json (local development)
+ * Initialize Google Drive client using OAuth2 credentials.
+ * Uses your personal Google account via OAuth2 refresh token.
+ * 
+ * Required env vars:
+ *   GOOGLE_DRIVE_CLIENT_ID     - OAuth2 client ID
+ *   GOOGLE_DRIVE_CLIENT_SECRET - OAuth2 client secret
+ *   GOOGLE_DRIVE_REFRESH_TOKEN - OAuth2 refresh token (from OAuth Playground)
+ *   GOOGLE_DRIVE_FOLDER_ID     - Target folder ID in your Drive
  */
 function getDriveClient() {
     if (driveClient) return driveClient;
 
-    let auth;
+    const clientId = process.env.GOOGLE_DRIVE_CLIENT_ID;
+    const clientSecret = process.env.GOOGLE_DRIVE_CLIENT_SECRET;
+    const refreshToken = process.env.GOOGLE_DRIVE_REFRESH_TOKEN;
 
-    // Option 1: Base64-encoded service account JSON (most reliable for cloud hosts)
-    if (process.env.GOOGLE_SERVICE_ACCOUNT_BASE64) {
-        try {
-            const json = JSON.parse(Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_BASE64, 'base64').toString('utf8'));
-            auth = new google.auth.GoogleAuth({
-                credentials: {
-                    client_email: json.client_email,
-                    private_key: json.private_key,
-                },
-                scopes: ['https://www.googleapis.com/auth/drive.file'],
-            });
-            console.log('✅ Google Drive client initialized (base64 service account)');
-            console.log('   Client email:', json.client_email);
-            console.log('   Folder ID:', process.env.GOOGLE_DRIVE_FOLDER_ID || 'not set');
-        } catch (e) {
-            console.error('❌ Failed to parse GOOGLE_SERVICE_ACCOUNT_BASE64:', e.message);
-            return null;
-        }
-    }
-    // Option 2: Individual env vars
-    else if (process.env.GOOGLE_DRIVE_CLIENT_EMAIL && process.env.GOOGLE_DRIVE_PRIVATE_KEY) {
-        let privateKey = process.env.GOOGLE_DRIVE_PRIVATE_KEY;
-        // Handle escaped \n from env vars
-        privateKey = privateKey.replace(/\\n/g, '\n');
-        auth = new google.auth.GoogleAuth({
-            credentials: {
-                client_email: process.env.GOOGLE_DRIVE_CLIENT_EMAIL,
-                private_key: privateKey,
-            },
-            scopes: ['https://www.googleapis.com/auth/drive.file'],
-        });
-        console.log('✅ Google Drive client initialized (env credentials)');
-        console.log('   Client email:', process.env.GOOGLE_DRIVE_CLIENT_EMAIL);
-        console.log('   Folder ID:', process.env.GOOGLE_DRIVE_FOLDER_ID || 'not set');
-    }
-    // Option 3: JSON key file (local development)
-    else {
-        const keyPath = path.resolve(process.env.GOOGLE_SERVICE_ACCOUNT_PATH || './service-account.json');
-
-        if (!fs.existsSync(keyPath)) {
-            console.warn('⚠️  Google Drive credentials not found.');
-            console.warn('   Set GOOGLE_SERVICE_ACCOUNT_BASE64 env var (recommended),');
-            console.warn('   or GOOGLE_DRIVE_CLIENT_EMAIL & GOOGLE_DRIVE_PRIVATE_KEY,');
-            console.warn('   or place a service-account.json file at:', keyPath);
-            return null;
-        }
-
-        auth = new google.auth.GoogleAuth({
-            keyFile: keyPath,
-            scopes: ['https://www.googleapis.com/auth/drive.file'],
-        });
-        console.log('✅ Google Drive client initialized (key file)');
+    if (!clientId || !clientSecret || !refreshToken) {
+        console.warn('⚠️  Google Drive OAuth2 credentials not found.');
+        console.warn('   Required env vars: GOOGLE_DRIVE_CLIENT_ID, GOOGLE_DRIVE_CLIENT_SECRET, GOOGLE_DRIVE_REFRESH_TOKEN');
+        console.warn('   Has Client ID:', !!clientId);
+        console.warn('   Has Client Secret:', !!clientSecret);
+        console.warn('   Has Refresh Token:', !!refreshToken);
+        return null;
     }
 
-    driveClient = google.drive({ version: 'v3', auth });
+    const oauth2Client = new google.auth.OAuth2(
+        clientId,
+        clientSecret,
+        'https://developers.google.com/oauthplayground'
+    );
+
+    oauth2Client.setCredentials({
+        refresh_token: refreshToken,
+    });
+
+    driveClient = google.drive({ version: 'v3', auth: oauth2Client });
+    console.log('✅ Google Drive client initialized (OAuth2)');
+    console.log('   Folder ID:', process.env.GOOGLE_DRIVE_FOLDER_ID || 'not set');
     return driveClient;
 }
 

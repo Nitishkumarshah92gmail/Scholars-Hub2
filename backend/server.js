@@ -35,23 +35,21 @@ app.get('/api/health', (req, res) => {
 app.get('/api/drive-test', async (req, res) => {
   try {
     const googleDrive = require('./config/googleDrive');
-    // Reset cached client to pick up any changes
     googleDrive.resetClient();
     const drive = googleDrive.getDriveClient();
     if (!drive) {
       return res.json({
         status: 'error',
-        message: 'Google Drive client not initialized',
-        hasBase64: !!process.env.GOOGLE_SERVICE_ACCOUNT_BASE64,
-        hasClientEmail: !!process.env.GOOGLE_DRIVE_CLIENT_EMAIL,
-        hasPrivateKey: !!process.env.GOOGLE_DRIVE_PRIVATE_KEY,
+        message: 'Google Drive client not initialized - missing OAuth2 credentials',
+        hasClientId: !!process.env.GOOGLE_DRIVE_CLIENT_ID,
+        hasClientSecret: !!process.env.GOOGLE_DRIVE_CLIENT_SECRET,
+        hasRefreshToken: !!process.env.GOOGLE_DRIVE_REFRESH_TOKEN,
         hasFolderId: !!process.env.GOOGLE_DRIVE_FOLDER_ID,
-        base64Length: (process.env.GOOGLE_SERVICE_ACCOUNT_BASE64 || '').length,
       });
     }
     const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
 
-    // Try to WRITE a test file directly using uploadFile function
+    // Try to WRITE a test file using uploadFile function
     const testBuffer = Buffer.from('Google Drive write test - ' + new Date().toISOString());
     const result = await googleDrive.uploadFile(testBuffer, 'drive-test.txt', 'text/plain', 'test');
 

@@ -31,9 +31,10 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Scholars Hub API is running' });
 });
 
-// --- Serve frontend static build in production ---
-if (process.env.NODE_ENV === 'production') {
-  const frontendDist = path.join(__dirname, '..', 'frontend', 'dist');
+// --- Serve frontend static build ---
+const frontendDist = path.join(__dirname, '..', 'frontend', 'dist');
+const fs = require('fs');
+if (fs.existsSync(frontendDist)) {
   app.use(express.static(frontendDist));
 
   // SPA fallback – serve index.html for any non-API route

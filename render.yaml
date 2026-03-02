@@ -3,8 +3,8 @@ services:
     name: studyshare
     runtime: node
     plan: free
-    buildCommand: npm run render:install && npm run render:build
-    startCommand: npm start
+    buildCommand: npm install && npm run render-build
+    startCommand: node backend/server.js
     envVars:
       - key: NODE_ENV
         value: production

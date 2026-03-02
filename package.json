@@ -6,9 +6,8 @@
     "dev:backend": "cd backend && npm run dev",
     "build": "cd frontend && npm install && npm run build",
     "install:all": "cd frontend && npm install && cd ../backend && npm install",
-    "render:install": "npm install && cd frontend && npm install && cd ../backend && npm install",
-    "render:build": "cd frontend && npm run build",
-    "start": "NODE_ENV=production node backend/server.js"
+    "render-build": "npm install --prefix frontend && npm install --prefix backend && npm run build --prefix frontend",
+    "start": "node backend/server.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.98.0",

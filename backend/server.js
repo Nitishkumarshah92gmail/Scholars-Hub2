@@ -34,20 +34,35 @@ app.get('/api/health', (req, res) => {
 // Google Drive env diagnostic
 app.get('/api/drive-env', (req, res) => {
   const pk = process.env.GOOGLE_DRIVE_PRIVATE_KEY || '';
+  const saJson = process.env.GOOGLE_SERVICE_ACCOUNT_JSON || '';
+  let saJsonDecoded = null;
+  if (saJson) {
+    try {
+      saJsonDecoded = JSON.parse(Buffer.from(saJson, 'base64').toString('utf8'));
+    } catch (e) {
+      saJsonDecoded = { error: e.message };
+    }
+  }
+  // Check if service-account.json file exists
+  const saPath = require('path').resolve(__dirname, 'backend', 'service-account.json');
+  const saPath2 = require('path').resolve(__dirname, '..', 'backend', 'service-account.json');
+  const fs = require('fs');
   res.json({
     hasClientEmail: !!process.env.GOOGLE_DRIVE_CLIENT_EMAIL,
     hasPrivateKey: !!pk,
     privateKeyLength: pk.length,
-    privateKeyStart: pk.substring(0, 30),
-    privateKeyHasLiteralNewlines: pk.includes('\\n'),
-    privateKeyHasRealNewlines: pk.includes('\n'),
     hasFolderId: !!process.env.GOOGLE_DRIVE_FOLDER_ID,
-    folderId: process.env.GOOGLE_DRIVE_FOLDER_ID,
-    // Also check OAuth2 vars
-    hasOAuthClientId: !!process.env.GOOGLE_DRIVE_CLIENT_ID,
-    hasOAuthSecret: !!process.env.GOOGLE_DRIVE_CLIENT_SECRET,
-    hasRefreshToken: !!process.env.GOOGLE_DRIVE_REFRESH_TOKEN,
-    hasSAPath: !!process.env.GOOGLE_SERVICE_ACCOUNT_PATH,
+    folderId: (process.env.GOOGLE_DRIVE_FOLDER_ID || '').trim(),
+    hasServiceAccountJson: !!saJson,
+    serviceAccountJsonLength: saJson.length,
+    serviceAccountJsonEmail: saJsonDecoded?.client_email || null,
+    serviceAccountJsonKeyId: saJsonDecoded?.private_key_id || null,
+    serviceAccountJsonError: saJsonDecoded?.error || null,
+    serviceAccountFileExists: fs.existsSync(saPath) || fs.existsSync(saPath2),
+    serviceAccountFilePath: saPath,
+    serviceAccountFilePath2: saPath2,
+    cwd: process.cwd(),
+    dirname: __dirname,
   });
 });
 

@@ -1,118 +1,46 @@
 const { google } = require('googleapis');
-const path = require('path');
-const fs = require('fs');
 const stream = require('stream');
 
 let driveClient = null;
 
 /**
- * Initialize Google Drive client.
- * Supports two auth methods (checked in order):
- *
- * 1. Service Account base64 JSON env var — GOOGLE_SERVICE_ACCOUNT_JSON (best for Vercel/CI)
- * 2. Service Account JSON key file — ./service-account.json (local dev fallback)
- * 3. Service Account env vars — GOOGLE_DRIVE_CLIENT_EMAIL + GOOGLE_DRIVE_PRIVATE_KEY
- * 4. OAuth2 refresh token — GOOGLE_DRIVE_CLIENT_ID + GOOGLE_DRIVE_CLIENT_SECRET + GOOGLE_DRIVE_REFRESH_TOKEN
- *
- * Common:
- *    - GOOGLE_DRIVE_FOLDER_ID  — target folder in Drive
+ * Initialize Google Drive client using OAuth2 credentials.
+ * Uses your personal Google account via OAuth2 refresh token.
+ * 
+ * Required env vars:
+ *   GOOGLE_DRIVE_CLIENT_ID     - OAuth2 client ID
+ *   GOOGLE_DRIVE_CLIENT_SECRET - OAuth2 client secret
+ *   GOOGLE_DRIVE_REFRESH_TOKEN - OAuth2 refresh token (from OAuth Playground)
+ *   GOOGLE_DRIVE_FOLDER_ID     - Target folder ID in your Drive
  */
 function getDriveClient() {
     if (driveClient) return driveClient;
 
-    // --- Method 1: Service Account via base64-encoded JSON env var (HIGHEST PRIORITY — best for Vercel) ---
-    const saJson = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
-    if (saJson) {
-        try {
-            const creds = JSON.parse(Buffer.from(saJson, 'base64').toString('utf8'));
-            const auth = new google.auth.JWT({
-                email: creds.client_email,
-                key: creds.private_key,
-                scopes: ['https://www.googleapis.com/auth/drive'],
-            });
+    const clientId = (process.env.GOOGLE_DRIVE_CLIENT_ID || '').trim();
+    const clientSecret = (process.env.GOOGLE_DRIVE_CLIENT_SECRET || '').trim();
+    const refreshToken = (process.env.GOOGLE_DRIVE_REFRESH_TOKEN || '').trim();
 
-            driveClient = google.drive({ version: 'v3', auth });
-            console.log('✅ Google Drive client initialized (Service Account base64 env var)');
-            console.log('   Client Email:', creds.client_email);
-            console.log('   Key ID:', creds.private_key_id);
-            console.log('   Folder ID:', (process.env.GOOGLE_DRIVE_FOLDER_ID || '').trim() || 'not set');
-            return driveClient;
-        } catch (err) {
-            console.warn('⚠️  Failed to parse GOOGLE_SERVICE_ACCOUNT_JSON:', err.message);
-        }
+    if (!clientId || !clientSecret || !refreshToken) {
+        console.warn('⚠️  Google Drive OAuth2 credentials not found.');
+        console.warn('   Required: GOOGLE_DRIVE_CLIENT_ID, GOOGLE_DRIVE_CLIENT_SECRET, GOOGLE_DRIVE_REFRESH_TOKEN');
+        console.warn('   Has Client ID:', !!clientId);
+        console.warn('   Has Client Secret:', !!clientSecret);
+        console.warn('   Has Refresh Token:', !!refreshToken);
+        console.warn('   Uploads will fall back to Supabase Storage.');
+        return null;
     }
 
-    // --- Method 2: Service Account via JSON key file (local dev fallback) ---
-    const saPath = process.env.GOOGLE_SERVICE_ACCOUNT_PATH || './service-account.json';
-    const resolvedPath = path.resolve(__dirname, '..', saPath);
-    if (fs.existsSync(resolvedPath)) {
-        try {
-            const creds = JSON.parse(fs.readFileSync(resolvedPath, 'utf8'));
-            const auth = new google.auth.JWT({
-                email: creds.client_email,
-                key: creds.private_key,
-                scopes: ['https://www.googleapis.com/auth/drive'],
-            });
+    const oauth2Client = new google.auth.OAuth2(
+        clientId,
+        clientSecret,
+        'https://developers.google.com/oauthplayground'
+    );
+    oauth2Client.setCredentials({ refresh_token: refreshToken });
 
-            driveClient = google.drive({ version: 'v3', auth });
-            console.log('✅ Google Drive client initialized (Service Account JSON file)');
-            console.log('   Client Email:', creds.client_email);
-            console.log('   Folder ID:', (process.env.GOOGLE_DRIVE_FOLDER_ID || '').trim() || 'not set');
-            return driveClient;
-        } catch (err) {
-            console.warn('⚠️  Failed to parse service account file:', err.message);
-        }
-    }
-
-    // --- Method 3: Service Account via env vars ---
-    const clientEmail = (process.env.GOOGLE_DRIVE_CLIENT_EMAIL || '').trim();
-    let privateKey = (process.env.GOOGLE_DRIVE_PRIVATE_KEY || '').trim();
-
-    if (clientEmail && privateKey) {
-        // Vercel may store \n as literal two-char sequences; convert to real newlines
-        if (privateKey.includes('\\n')) {
-            privateKey = privateKey.split('\\n').join('\n');
-        }
-
-        const auth = new google.auth.JWT({
-            email: clientEmail,
-            key: privateKey,
-            scopes: ['https://www.googleapis.com/auth/drive'],
-        });
-
-        driveClient = google.drive({ version: 'v3', auth });
-        console.log('✅ Google Drive client initialized (Service Account env vars)');
-        console.log('   Client Email:', clientEmail);
-        console.log('   Folder ID:', (process.env.GOOGLE_DRIVE_FOLDER_ID || '').trim() || 'not set');
-        return driveClient;
-    }
-
-    // --- Method 3: OAuth2 refresh token ---
-    const clientId = process.env.GOOGLE_DRIVE_CLIENT_ID;
-    const clientSecret = process.env.GOOGLE_DRIVE_CLIENT_SECRET;
-    const refreshToken = process.env.GOOGLE_DRIVE_REFRESH_TOKEN;
-
-    if (clientId && clientSecret && refreshToken) {
-        const oauth2Client = new google.auth.OAuth2(
-            clientId,
-            clientSecret,
-            'https://developers.google.com/oauthplayground'
-        );
-        oauth2Client.setCredentials({ refresh_token: refreshToken });
-
-        driveClient = google.drive({ version: 'v3', auth: oauth2Client });
-        console.log('✅ Google Drive client initialized (OAuth2)');
-        console.log('   Folder ID:', (process.env.GOOGLE_DRIVE_FOLDER_ID || '').trim() || 'not set');
-        return driveClient;
-    }
-
-    // --- No credentials found ---
-    console.warn('⚠️  Google Drive credentials not found. Tried:');
-    console.warn('   1. Service Account file: ' + resolvedPath);
-    console.warn('   2. Service Account env vars: GOOGLE_DRIVE_CLIENT_EMAIL + GOOGLE_DRIVE_PRIVATE_KEY');
-    console.warn('   3. OAuth2: GOOGLE_DRIVE_CLIENT_ID + GOOGLE_DRIVE_CLIENT_SECRET + GOOGLE_DRIVE_REFRESH_TOKEN');
-    console.warn('   Uploads will fall back to Supabase Storage.');
-    return null;
+    driveClient = google.drive({ version: 'v3', auth: oauth2Client });
+    console.log('✅ Google Drive client initialized (OAuth2)');
+    console.log('   Folder ID:', (process.env.GOOGLE_DRIVE_FOLDER_ID || '').trim() || 'not set');
+    return driveClient;
 }
 
 /**

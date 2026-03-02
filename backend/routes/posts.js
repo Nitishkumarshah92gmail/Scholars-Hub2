@@ -559,6 +559,7 @@ router.post('/:id/report', auth, async (req, res) => {
 router.delete('/:id', auth, async (req, res) => {
   try {
     const postId = req.params.id;
+    console.log(`[DELETE] Starting delete for post: ${postId}, requested by user: ${req.user.id}`);
 
     const { data: post, error: fetchErr } = await supabase
       .from('posts')
@@ -567,10 +568,13 @@ router.delete('/:id', auth, async (req, res) => {
       .single();
 
     if (fetchErr || !post) {
-      console.error('Delete - post fetch error:', fetchErr);
+      console.error('[DELETE] Post fetch error:', fetchErr?.message || 'Post not found');
       return res.status(404).json({ error: 'Post not found.' });
     }
+    console.log(`[DELETE] Found post. author_id: ${post.author_id}, file_url: ${post.file_url}, file_urls: ${JSON.stringify(post.file_urls)}`);
+
     if (post.author_id !== req.user.id) {
+      console.error(`[DELETE] Auth mismatch: post.author_id=${post.author_id} !== req.user.id=${req.user.id}`);
       return res.status(403).json({ error: 'Not authorized to delete this post.' });
     }
 
@@ -578,7 +582,8 @@ router.delete('/:id', auth, async (req, res) => {
     const tables = ['comments', 'likes', 'bookmarks', 'notifications', 'reports'];
     for (const table of tables) {
       try {
-        await supabase.from(table).delete().eq('post_id', postId);
+        const { error: relErr } = await supabase.from(table).delete().eq('post_id', postId);
+        if (relErr) console.warn(`[DELETE] Warning deleting from ${table}:`, relErr.message);
       } catch (e) {
         // Table might not exist, skip
       }
@@ -590,14 +595,15 @@ router.delete('/:id', auth, async (req, res) => {
     if (post.file_urls && Array.isArray(post.file_urls)) {
       allUrls.push(...post.file_urls);
     }
+    console.log(`[DELETE] Found ${allUrls.length} file URLs to clean up`);
     for (const url of allUrls) {
       const driveId = extractDriveFileId(url);
       if (driveId) {
         try {
           await googleDrive.deleteFile(driveId);
-          console.log(`Deleted Google Drive file: ${driveId}`);
+          console.log(`[DELETE] Deleted Google Drive file: ${driveId}`);
         } catch (e) {
-          console.error(`Failed to delete Drive file ${driveId}:`, e.message);
+          console.error(`[DELETE] Failed to delete Drive file ${driveId}:`, e.message);
         }
       }
     }
@@ -605,11 +611,11 @@ router.delete('/:id', auth, async (req, res) => {
     // Delete the post itself
     const { error: deleteErr } = await supabase.from('posts').delete().eq('id', postId);
     if (deleteErr) {
-      console.error('Delete - post delete error:', deleteErr);
+      console.error('[DELETE] Post delete error:', deleteErr.message);
       return res.status(500).json({ error: 'Failed to delete post from database.' });
     }
 
-    console.log(`Post ${postId} deleted by user ${req.user.id}`);
+    console.log(`[DELETE] Post ${postId} deleted successfully by user ${req.user.id}`);
     res.json({ message: 'Post deleted.' });
   } catch (error) {
     console.error('Delete error:', error);

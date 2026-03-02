@@ -1,8 +1,27 @@
 const express = require('express');
 const supabase = require('../config/supabase');
+const googleDrive = require('../config/googleDrive');
 const auth = require('../middleware/auth');
 
 const router = express.Router();
+
+/**
+ * Extract Google Drive file ID from a Drive URL.
+ * Handles: https://drive.google.com/uc?export=view&id=FILE_ID
+ *          https://drive.google.com/uc?export=download&id=FILE_ID
+ *          https://drive.google.com/file/d/FILE_ID/view
+ * Returns null if it's not a Google Drive URL.
+ */
+function extractDriveFileId(url) {
+    if (!url || typeof url !== 'string') return null;
+    // Pattern: ?id=FILE_ID
+    const idParam = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    if (idParam) return idParam[1];
+    // Pattern: /file/d/FILE_ID/
+    const filePath = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+    if (filePath) return filePath[1];
+    return null;
+}
 
 const YOUTUBE_API_KEY = (process.env.YOUTUBE_API_KEY || '').trim();
 
@@ -562,6 +581,24 @@ router.delete('/:id', auth, async (req, res) => {
         await supabase.from(table).delete().eq('post_id', postId);
       } catch (e) {
         // Table might not exist, skip
+      }
+    }
+
+    // Delete files from Google Drive (if any)
+    const allUrls = [];
+    if (post.file_url) allUrls.push(post.file_url);
+    if (post.file_urls && Array.isArray(post.file_urls)) {
+      allUrls.push(...post.file_urls);
+    }
+    for (const url of allUrls) {
+      const driveId = extractDriveFileId(url);
+      if (driveId) {
+        try {
+          await googleDrive.deleteFile(driveId);
+          console.log(`Deleted Google Drive file: ${driveId}`);
+        } catch (e) {
+          console.error(`Failed to delete Drive file ${driveId}:`, e.message);
+        }
       }
     }
 

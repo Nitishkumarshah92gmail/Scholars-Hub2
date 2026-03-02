@@ -25,7 +25,7 @@ function getDriveClient() {
                     client_email: json.client_email,
                     private_key: json.private_key,
                 },
-                scopes: ['https://www.googleapis.com/auth/drive.file'],
+                scopes: ['https://www.googleapis.com/auth/drive'],
             });
             console.log('✅ Google Drive client initialized (base64 service account)');
             console.log('   Client email:', json.client_email);
@@ -45,7 +45,7 @@ function getDriveClient() {
                 client_email: process.env.GOOGLE_DRIVE_CLIENT_EMAIL,
                 private_key: privateKey,
             },
-            scopes: ['https://www.googleapis.com/auth/drive.file'],
+            scopes: ['https://www.googleapis.com/auth/drive'],
         });
         console.log('✅ Google Drive client initialized (env credentials)');
         console.log('   Client email:', process.env.GOOGLE_DRIVE_CLIENT_EMAIL);
@@ -65,7 +65,7 @@ function getDriveClient() {
 
         auth = new google.auth.GoogleAuth({
             keyFile: keyPath,
-            scopes: ['https://www.googleapis.com/auth/drive.file'],
+            scopes: ['https://www.googleapis.com/auth/drive'],
         });
         console.log('✅ Google Drive client initialized (key file)');
     }
@@ -222,4 +222,5 @@ module.exports = {
     getDriveClient,
     uploadFile,
     deleteFile,
+    resetClient: () => { driveClient = null; },
 };

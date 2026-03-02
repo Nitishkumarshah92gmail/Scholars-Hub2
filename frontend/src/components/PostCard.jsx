@@ -18,6 +18,37 @@ import {
   HiTrash,
 } from 'react-icons/hi';
 
+/**
+ * Convert Google Drive URLs to lh3 format for reliable <img> embedding.
+ */
+function toDriveImageUrl(url) {
+  if (!url || typeof url !== 'string') return url;
+  const patterns = [
+    /[?&]id=([a-zA-Z0-9_-]+)/,
+    /\/file\/d\/([a-zA-Z0-9_-]+)/,
+    /\/d\/([a-zA-Z0-9_-]+)/,
+  ];
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match) return `https://lh3.googleusercontent.com/d/${match[1]}=s1600`;
+  }
+  return url;
+}
+
+function toDriveDownloadUrl(url) {
+  if (!url || typeof url !== 'string') return url;
+  const patterns = [
+    /[?&]id=([a-zA-Z0-9_-]+)/,
+    /\/file\/d\/([a-zA-Z0-9_-]+)/,
+    /\/d\/([a-zA-Z0-9_-]+)/,
+  ];
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match) return `https://drive.google.com/uc?export=download&id=${match[1]}`;
+  }
+  return url;
+}
+
 export default memo(function PostCard({ post, onUpdate }) {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -113,7 +144,7 @@ export default memo(function PostCard({ post, onUpdate }) {
               </div>
             </div>
             <a
-              href={post.fileUrl}
+              href={toDriveDownloadUrl(post.fileUrl)}
               target="_blank"
               rel="noopener noreferrer"
               className="btn-primary flex items-center gap-2 text-sm"
@@ -129,12 +160,39 @@ export default memo(function PostCard({ post, onUpdate }) {
             {(post.fileUrls?.length > 0 ? post.fileUrls : [post.fileUrl]).map((url, i) => (
               <img
                 key={i}
-                src={url}
+                src={toDriveImageUrl(url)}
                 alt={`${post.title} - ${i + 1}`}
                 className="w-full object-cover max-h-[585px] cursor-pointer"
                 loading="lazy"
+                onError={(e) => {
+                  // Fallback: try the original URL if the converted one fails
+                  if (e.target.src !== url) {
+                    e.target.src = url;
+                  }
+                }}
               />
             ))}
+          </div>
+        );
+      case 'drive_link':
+        return (
+          <div className="bg-ig-bg-2 dark:bg-ig-bg-elevated p-6 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="text-4xl">🔗</span>
+              <div>
+                <p className="font-semibold text-ig-text dark:text-ig-text-light">{post.title}</p>
+                <p className="text-sm text-ig-text-2">Google Drive Link</p>
+              </div>
+            </div>
+            <a
+              href={post.fileUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary flex items-center gap-2 text-sm"
+            >
+              <HiDownload className="w-4 h-4" />
+              Open
+            </a>
           </div>
         );
       case 'youtube_video': {

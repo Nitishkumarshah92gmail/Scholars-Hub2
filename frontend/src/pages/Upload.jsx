@@ -131,13 +131,7 @@ export default function Upload() {
       } else if (type === 'drive_link') {
         fileUrl = normalizeDriveUrl(driveUrl.trim());
         fileUrls = [fileUrl];
-        // Detect the content type from the URL for proper rendering
-        const lowerUrl = driveUrl.toLowerCase();
-        if (lowerUrl.includes('.pdf')) {
-          postType = 'pdf';
-        } else {
-          postType = 'image'; // Default to image for Drive links
-        }
+        postType = 'drive_link'; // Keep as its own type for proper rendering
       }
 
       await createPost({

@@ -166,8 +166,8 @@ async function uploadFile(fileBuffer, fileName, mimeType, subfolder = 'posts') {
         },
     });
 
-    // Return a direct access URL
-    const fileUrl = `https://drive.google.com/uc?export=view&id=${file.data.id}`;
+    // Return a direct access URL - use lh3 for reliable image embedding
+    const fileUrl = `https://lh3.googleusercontent.com/d/${file.data.id}=s1600`;
     return {
         fileId: file.data.id,
         fileName: uniqueName,

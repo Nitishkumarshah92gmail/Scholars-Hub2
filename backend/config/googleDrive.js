@@ -23,12 +23,14 @@ function getDriveClient() {
     if (driveClient) return driveClient;
 
     // --- Method 1: Service Account via env vars ---
-    const clientEmail = process.env.GOOGLE_DRIVE_CLIENT_EMAIL;
-    let privateKey = process.env.GOOGLE_DRIVE_PRIVATE_KEY;
+    const clientEmail = (process.env.GOOGLE_DRIVE_CLIENT_EMAIL || '').trim();
+    let privateKey = (process.env.GOOGLE_DRIVE_PRIVATE_KEY || '').trim();
 
     if (clientEmail && privateKey) {
-        // Vercel stores \n as literal two-char sequences; convert to real newlines
-        privateKey = privateKey.replace(/\\n/g, '\n');
+        // Vercel may store \n as literal two-char sequences; convert to real newlines
+        if (privateKey.includes('\\n')) {
+            privateKey = privateKey.split('\\n').join('\n');
+        }
 
         const auth = new google.auth.JWT(
             clientEmail,
@@ -102,7 +104,7 @@ function getDriveClient() {
 async function getOrCreateFolder(drive, folderName = 'StudyShare Uploads') {
     // Use configured folder ID if available
     if (process.env.GOOGLE_DRIVE_FOLDER_ID) {
-        return process.env.GOOGLE_DRIVE_FOLDER_ID;
+        return process.env.GOOGLE_DRIVE_FOLDER_ID.trim();
     }
 
     // Search for existing folder

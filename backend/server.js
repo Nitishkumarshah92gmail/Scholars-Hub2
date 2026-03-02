@@ -31,6 +31,26 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Scholars Hub API is running' });
 });
 
+// Google Drive env diagnostic
+app.get('/api/drive-env', (req, res) => {
+  const pk = process.env.GOOGLE_DRIVE_PRIVATE_KEY || '';
+  res.json({
+    hasClientEmail: !!process.env.GOOGLE_DRIVE_CLIENT_EMAIL,
+    hasPrivateKey: !!pk,
+    privateKeyLength: pk.length,
+    privateKeyStart: pk.substring(0, 30),
+    privateKeyHasLiteralNewlines: pk.includes('\\n'),
+    privateKeyHasRealNewlines: pk.includes('\n'),
+    hasFolderId: !!process.env.GOOGLE_DRIVE_FOLDER_ID,
+    folderId: process.env.GOOGLE_DRIVE_FOLDER_ID,
+    // Also check OAuth2 vars
+    hasOAuthClientId: !!process.env.GOOGLE_DRIVE_CLIENT_ID,
+    hasOAuthSecret: !!process.env.GOOGLE_DRIVE_CLIENT_SECRET,
+    hasRefreshToken: !!process.env.GOOGLE_DRIVE_REFRESH_TOKEN,
+    hasSAPath: !!process.env.GOOGLE_SERVICE_ACCOUNT_PATH,
+  });
+});
+
 // Google Drive diagnostic endpoint
 app.get('/api/drive-test', async (req, res) => {
   try {

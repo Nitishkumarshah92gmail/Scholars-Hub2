@@ -1,4 +1,6 @@
 .env
 .env.local
+backend/.env
+backend/.env.*
 backend/uploads
 *.log

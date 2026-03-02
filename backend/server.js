@@ -35,6 +35,7 @@ app.get('/api/health', (req, res) => {
 app.get('/api/drive-env', (req, res) => {
   const pk = process.env.GOOGLE_DRIVE_PRIVATE_KEY || '';
   const saJson = process.env.GOOGLE_SERVICE_ACCOUNT_JSON || '';
+  // v3: backend/.env excluded from deployment
   let saJsonDecoded = null;
   if (saJson) {
     try {
@@ -48,6 +49,7 @@ app.get('/api/drive-env', (req, res) => {
   const saPath2 = require('path').resolve(__dirname, '..', 'backend', 'service-account.json');
   const fs = require('fs');
   res.json({
+    version: 'v3',
     hasClientEmail: !!process.env.GOOGLE_DRIVE_CLIENT_EMAIL,
     hasPrivateKey: !!pk,
     privateKeyLength: pk.length,

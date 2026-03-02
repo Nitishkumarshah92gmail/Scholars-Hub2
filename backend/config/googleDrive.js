@@ -9,12 +9,10 @@ let driveClient = null;
  * Initialize Google Drive client.
  * Supports two auth methods (checked in order):
  *
- * 1. Service Account (recommended for server-to-server):
- *    - GOOGLE_DRIVE_CLIENT_EMAIL + GOOGLE_DRIVE_PRIVATE_KEY  (env vars)
- *    - Or GOOGLE_SERVICE_ACCOUNT_PATH pointing to a JSON key file
- *
- * 2. OAuth2 (personal account via refresh token):
- *    - GOOGLE_DRIVE_CLIENT_ID + GOOGLE_DRIVE_CLIENT_SECRET + GOOGLE_DRIVE_REFRESH_TOKEN
+ * 1. Service Account base64 JSON env var — GOOGLE_SERVICE_ACCOUNT_JSON (best for Vercel/CI)
+ * 2. Service Account JSON key file — ./service-account.json (local dev fallback)
+ * 3. Service Account env vars — GOOGLE_DRIVE_CLIENT_EMAIL + GOOGLE_DRIVE_PRIVATE_KEY
+ * 4. OAuth2 refresh token — GOOGLE_DRIVE_CLIENT_ID + GOOGLE_DRIVE_CLIENT_SECRET + GOOGLE_DRIVE_REFRESH_TOKEN
  *
  * Common:
  *    - GOOGLE_DRIVE_FOLDER_ID  — target folder in Drive
@@ -22,7 +20,29 @@ let driveClient = null;
 function getDriveClient() {
     if (driveClient) return driveClient;
 
-    // --- Method 1: Service Account via JSON key file (most reliable for local dev) ---
+    // --- Method 1: Service Account via base64-encoded JSON env var (HIGHEST PRIORITY — best for Vercel) ---
+    const saJson = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
+    if (saJson) {
+        try {
+            const creds = JSON.parse(Buffer.from(saJson, 'base64').toString('utf8'));
+            const auth = new google.auth.JWT({
+                email: creds.client_email,
+                key: creds.private_key,
+                scopes: ['https://www.googleapis.com/auth/drive'],
+            });
+
+            driveClient = google.drive({ version: 'v3', auth });
+            console.log('✅ Google Drive client initialized (Service Account base64 env var)');
+            console.log('   Client Email:', creds.client_email);
+            console.log('   Key ID:', creds.private_key_id);
+            console.log('   Folder ID:', (process.env.GOOGLE_DRIVE_FOLDER_ID || '').trim() || 'not set');
+            return driveClient;
+        } catch (err) {
+            console.warn('⚠️  Failed to parse GOOGLE_SERVICE_ACCOUNT_JSON:', err.message);
+        }
+    }
+
+    // --- Method 2: Service Account via JSON key file (local dev fallback) ---
     const saPath = process.env.GOOGLE_SERVICE_ACCOUNT_PATH || './service-account.json';
     const resolvedPath = path.resolve(__dirname, '..', saPath);
     if (fs.existsSync(resolvedPath)) {
@@ -44,28 +64,7 @@ function getDriveClient() {
         }
     }
 
-    // --- Method 1b: Service Account via base64-encoded JSON env var (best for Vercel) ---
-    const saJson = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
-    if (saJson) {
-        try {
-            const creds = JSON.parse(Buffer.from(saJson, 'base64').toString('utf8'));
-            const auth = new google.auth.JWT({
-                email: creds.client_email,
-                key: creds.private_key,
-                scopes: ['https://www.googleapis.com/auth/drive'],
-            });
-
-            driveClient = google.drive({ version: 'v3', auth });
-            console.log('✅ Google Drive client initialized (Service Account base64 env var)');
-            console.log('   Client Email:', creds.client_email);
-            console.log('   Folder ID:', (process.env.GOOGLE_DRIVE_FOLDER_ID || '').trim() || 'not set');
-            return driveClient;
-        } catch (err) {
-            console.warn('⚠️  Failed to parse GOOGLE_SERVICE_ACCOUNT_JSON:', err.message);
-        }
-    }
-
-    // --- Method 2: Service Account via env vars ---
+    // --- Method 3: Service Account via env vars ---
     const clientEmail = (process.env.GOOGLE_DRIVE_CLIENT_EMAIL || '').trim();
     let privateKey = (process.env.GOOGLE_DRIVE_PRIVATE_KEY || '').trim();
 

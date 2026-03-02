@@ -18,15 +18,22 @@ function getDriveClient() {
 
     // Prefer env-var credentials (works on Render / any cloud host)
     if (process.env.GOOGLE_DRIVE_CLIENT_EMAIL && process.env.GOOGLE_DRIVE_PRIVATE_KEY) {
+        let privateKey = process.env.GOOGLE_DRIVE_PRIVATE_KEY;
+        // Handle both escaped \n and real newlines
+        if (!privateKey.includes('\n') || privateKey.includes('\\n')) {
+            privateKey = privateKey.replace(/\\n/g, '\n');
+        }
         auth = new google.auth.GoogleAuth({
             credentials: {
                 client_email: process.env.GOOGLE_DRIVE_CLIENT_EMAIL,
-                // Replace literal \n with real newlines (Render stores it escaped)
-                private_key: process.env.GOOGLE_DRIVE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+                private_key: privateKey,
             },
             scopes: ['https://www.googleapis.com/auth/drive.file'],
         });
         console.log('✅ Google Drive client initialized (env credentials)');
+        console.log('   Client email:', process.env.GOOGLE_DRIVE_CLIENT_EMAIL);
+        console.log('   Folder ID:', process.env.GOOGLE_DRIVE_FOLDER_ID || 'not set (will auto-create)');
+        console.log('   Private key length:', privateKey.length);
     } else {
         // Fall back to JSON key file for local development
         const keyPath = path.resolve(process.env.GOOGLE_SERVICE_ACCOUNT_PATH || './service-account.json');

@@ -87,9 +87,14 @@ async function uploadToGoogleDrive(buffer, originalName, mimetype, subfolder) {
 async function smartUpload(buffer, originalName, mimetype, subfolder) {
     // Try Google Drive first for ALL file types
     try {
-        return await uploadToGoogleDrive(buffer, originalName, mimetype, subfolder);
+        console.log(`[Upload] Attempting Google Drive upload: ${originalName} (${mimetype})`);
+        const result = await uploadToGoogleDrive(buffer, originalName, mimetype, subfolder);
+        console.log(`[Upload] ✅ Google Drive upload success: ${result.fileId}`);
+        return result;
     } catch (err) {
-        console.warn('Google Drive upload failed, falling back to Supabase:', err.message);
+        console.error('[Upload] ❌ Google Drive upload FAILED:', err.message);
+        console.error('[Upload] Full error:', err.stack);
+        console.warn('[Upload] Falling back to Supabase Storage...');
         // Fall back to Supabase if Google Drive is not configured or fails
         return await uploadToSupabase(buffer, originalName, mimetype, subfolder);
     }

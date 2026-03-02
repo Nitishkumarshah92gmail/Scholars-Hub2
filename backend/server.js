@@ -31,6 +31,17 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Scholars Hub API is running' });
 });
 
+// --- Serve frontend static build in production ---
+if (process.env.NODE_ENV === 'production') {
+  const frontendDist = path.join(__dirname, '..', 'frontend', 'dist');
+  app.use(express.static(frontendDist));
+
+  // SPA fallback – serve index.html for any non-API route
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(frontendDist, 'index.html'));
+  });
+}
+
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

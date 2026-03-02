@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: studyshare
+    runtime: node
+    plan: free
+    buildCommand: npm run render:install && npm run render:build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: VITE_API_URL
+        sync: false
+      - key: VITE_SUPABASE_URL
+        sync: false
+      - key: VITE_SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: GOOGLE_DRIVE_CLIENT_EMAIL
+        sync: false
+      - key: GOOGLE_DRIVE_PRIVATE_KEY
+        sync: false
+      - key: GOOGLE_DRIVE_FOLDER_ID
+        sync: false

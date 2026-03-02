@@ -154,26 +154,40 @@ export default memo(function PostCard({ post, onUpdate }) {
             </a>
           </div>
         );
-      case 'image':
+      case 'image': {
+        const imageUrls = post.fileUrls?.length > 0 ? post.fileUrls : [post.fileUrl];
         return (
-          <div className={`${(post.fileUrls?.length || 0) > 1 ? 'grid grid-cols-2 gap-0.5' : ''}`}>
-            {(post.fileUrls?.length > 0 ? post.fileUrls : [post.fileUrl]).map((url, i) => (
-              <img
-                key={i}
-                src={toDriveImageUrl(url)}
-                alt={`${post.title} - ${i + 1}`}
-                className="w-full object-cover max-h-[585px] cursor-pointer"
-                loading="lazy"
-                onError={(e) => {
-                  // Fallback: try the original URL if the converted one fails
-                  if (e.target.src !== url) {
-                    e.target.src = url;
-                  }
-                }}
-              />
-            ))}
+          <div>
+            <div className={`${imageUrls.length > 1 ? 'grid grid-cols-2 gap-0.5' : ''}`}>
+              {imageUrls.map((url, i) => (
+                <img
+                  key={i}
+                  src={toDriveImageUrl(url)}
+                  alt={`${post.title} - ${i + 1}`}
+                  className="w-full object-cover max-h-[585px] cursor-pointer"
+                  loading="lazy"
+                  onError={(e) => {
+                    if (e.target.src !== url) {
+                      e.target.src = url;
+                    }
+                  }}
+                />
+              ))}
+            </div>
+            <div className="px-4 py-2 flex justify-end">
+              <a
+                href={toDriveDownloadUrl(imageUrls[0])}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 text-xs font-medium text-ig-primary hover:text-ig-primary-dark transition-colors"
+              >
+                <HiDownload className="w-4 h-4" />
+                Download
+              </a>
+            </div>
           </div>
         );
+      }
       case 'drive_link':
         return (
           <div className="bg-ig-bg-2 dark:bg-ig-bg-elevated p-6 flex items-center justify-between">
@@ -204,17 +218,30 @@ export default memo(function PostCard({ post, onUpdate }) {
         }
         if (!videoId) return <div className="p-6 text-center text-ig-text-2">Invalid YouTube URL</div>;
         return (
-          <div className="aspect-video">
-            <iframe
-              src={`https://www.youtube-nocookie.com/embed/${videoId}?rel=0`}
-              title={post.title}
-              className="w-full h-full"
-              frameBorder="0"
-              allowFullScreen
-              loading="lazy"
-              sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            />
+          <div>
+            <div className="aspect-video">
+              <iframe
+                src={`https://www.youtube-nocookie.com/embed/${videoId}?rel=0`}
+                title={post.title}
+                className="w-full h-full"
+                frameBorder="0"
+                allowFullScreen
+                loading="lazy"
+                sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              />
+            </div>
+            <div className="px-4 py-2 flex justify-end">
+              <a
+                href={`https://www.youtube.com/watch?v=${videoId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 text-xs font-medium text-ig-primary hover:text-ig-primary-dark transition-colors"
+              >
+                <HiDownload className="w-4 h-4" />
+                Watch on YouTube
+              </a>
+            </div>
           </div>
         );
       }
@@ -231,9 +258,18 @@ export default memo(function PostCard({ post, onUpdate }) {
             const embedSrc = vidId
               ? `https://www.youtube-nocookie.com/embed/${vidId}?list=${extractedPlId}&rel=0`
               : `https://www.youtube-nocookie.com/embed/videoseries?list=${extractedPlId}&rel=0`;
+            const playlistUrl = `https://www.youtube.com/playlist?list=${extractedPlId}`;
             return (
-              <div className="aspect-video">
-                <iframe src={embedSrc} title={post.title} className="w-full h-full" frameBorder="0" allowFullScreen loading="lazy" sandbox="allow-scripts allow-same-origin allow-presentation allow-popups" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" />
+              <div>
+                <div className="aspect-video">
+                  <iframe src={embedSrc} title={post.title} className="w-full h-full" frameBorder="0" allowFullScreen loading="lazy" sandbox="allow-scripts allow-same-origin allow-presentation allow-popups" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" />
+                </div>
+                <div className="px-4 py-2 flex justify-end">
+                  <a href={playlistUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-xs font-medium text-ig-primary hover:text-ig-primary-dark transition-colors">
+                    <HiDownload className="w-4 h-4" />
+                    Watch on YouTube
+                  </a>
+                </div>
               </div>
             );
           }
@@ -241,18 +277,34 @@ export default memo(function PostCard({ post, onUpdate }) {
         const embedSrc = vidId
           ? `https://www.youtube-nocookie.com/embed/${vidId}?list=${plId}&rel=0`
           : `https://www.youtube-nocookie.com/embed/videoseries?list=${plId}&rel=0`;
+        const playlistYtUrl = plId
+          ? `https://www.youtube.com/playlist?list=${plId}`
+          : (post.fileUrl || '#');
         return (
-          <div className="aspect-video">
-            <iframe
-              src={embedSrc}
-              title={post.title}
-              className="w-full h-full"
-              frameBorder="0"
-              allowFullScreen
-              loading="lazy"
-              sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            />
+          <div>
+            <div className="aspect-video">
+              <iframe
+                src={embedSrc}
+                title={post.title}
+                className="w-full h-full"
+                frameBorder="0"
+                allowFullScreen
+                loading="lazy"
+                sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              />
+            </div>
+            <div className="px-4 py-2 flex justify-end">
+              <a
+                href={playlistYtUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 text-xs font-medium text-ig-primary hover:text-ig-primary-dark transition-colors"
+              >
+                <HiDownload className="w-4 h-4" />
+                Watch on YouTube
+              </a>
+            </div>
           </div>
         );
       }

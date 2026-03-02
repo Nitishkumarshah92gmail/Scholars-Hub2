@@ -10,13 +10,9 @@ const router = express.Router();
 const SUPABASE_BUCKET = 'uploads';
 const supabaseUrl = (process.env.SUPABASE_URL || '').trim();
 
-// File types that go to Google Drive (PDFs and documents)
-const DRIVE_MIMETYPES = [
+// All file types go to Google Drive (with Supabase as fallback)
+const ALL_ALLOWED_MIMETYPES = [
     'application/pdf',
-];
-
-// File types that go to Supabase Storage (images, videos)
-const SUPABASE_MIMETYPES = [
     'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml',
     'video/mp4', 'video/webm', 'video/quicktime',
 ];
@@ -27,8 +23,7 @@ const upload = multer({
     storage,
     limits: { fileSize: 50 * 1024 * 1024, files: 5 },
     fileFilter: (req, file, cb) => {
-        const allowedTypes = [...DRIVE_MIMETYPES, ...SUPABASE_MIMETYPES];
-        if (allowedTypes.includes(file.mimetype)) {
+        if (ALL_ALLOWED_MIMETYPES.includes(file.mimetype)) {
             cb(null, true);
         } else {
             cb(new Error(`File type not allowed: ${file.mimetype}`), false);
@@ -87,21 +82,17 @@ async function uploadToGoogleDrive(buffer, originalName, mimetype, subfolder) {
 }
 
 /**
- * Smart upload: routes PDFs to Google Drive, images/videos to Supabase
+ * Smart upload: all files go to Google Drive, Supabase as fallback
  */
 async function smartUpload(buffer, originalName, mimetype, subfolder) {
-    // PDFs and documents → Google Drive
-    if (DRIVE_MIMETYPES.includes(mimetype)) {
-        try {
-            return await uploadToGoogleDrive(buffer, originalName, mimetype, subfolder);
-        } catch (err) {
-            console.warn('Google Drive upload failed, falling back to Supabase:', err.message);
-            // Fall back to Supabase if Google Drive is not configured
-            return await uploadToSupabase(buffer, originalName, mimetype, subfolder);
-        }
+    // Try Google Drive first for ALL file types
+    try {
+        return await uploadToGoogleDrive(buffer, originalName, mimetype, subfolder);
+    } catch (err) {
+        console.warn('Google Drive upload failed, falling back to Supabase:', err.message);
+        // Fall back to Supabase if Google Drive is not configured or fails
+        return await uploadToSupabase(buffer, originalName, mimetype, subfolder);
     }
-    // Images, videos → Supabase Storage
-    return await uploadToSupabase(buffer, originalName, mimetype, subfolder);
 }
 
 /**
@@ -138,8 +129,8 @@ router.post('/avatar', auth, upload.single('avatar'), async (req, res) => {
             return res.status(400).json({ error: 'No avatar file provided.' });
         }
 
-        // Avatars always go to Supabase (images)
-        const result = await uploadToSupabase(req.file.buffer, req.file.originalname, req.file.mimetype, 'avatars');
+        // Avatars also go to Google Drive (fallback to Supabase)
+        const result = await smartUpload(req.file.buffer, req.file.originalname, req.file.mimetype, 'avatars');
         res.json(result);
     } catch (err) {
         console.error('Avatar upload error:', err);

@@ -6,8 +6,7 @@
     "dev:backend": "cd backend && npm run dev",
     "build": "cd frontend && npm install && npm run build",
     "install:all": "cd frontend && npm install && cd ../backend && npm install",
-    "start": "node backend/server.js",
-    "vercel-build": "cd frontend && npm run build"
+    "start": "node backend/server.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.98.0",

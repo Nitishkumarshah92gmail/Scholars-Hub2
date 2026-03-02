@@ -29,12 +29,11 @@ function getDriveClient() {
     if (fs.existsSync(resolvedPath)) {
         try {
             const creds = JSON.parse(fs.readFileSync(resolvedPath, 'utf8'));
-            const auth = new google.auth.JWT(
-                creds.client_email,
-                null,
-                creds.private_key,
-                ['https://www.googleapis.com/auth/drive'],
-            );
+            const auth = new google.auth.JWT({
+                email: creds.client_email,
+                key: creds.private_key,
+                scopes: ['https://www.googleapis.com/auth/drive'],
+            });
 
             driveClient = google.drive({ version: 'v3', auth });
             console.log('✅ Google Drive client initialized (Service Account JSON file)');
@@ -56,12 +55,11 @@ function getDriveClient() {
             privateKey = privateKey.split('\\n').join('\n');
         }
 
-        const auth = new google.auth.JWT(
-            clientEmail,
-            null,
-            privateKey,
-            ['https://www.googleapis.com/auth/drive'],
-        );
+        const auth = new google.auth.JWT({
+            email: clientEmail,
+            key: privateKey,
+            scopes: ['https://www.googleapis.com/auth/drive'],
+        });
 
         driveClient = google.drive({ version: 'v3', auth });
         console.log('✅ Google Drive client initialized (Service Account env vars)');

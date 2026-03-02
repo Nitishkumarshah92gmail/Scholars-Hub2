@@ -86,34 +86,39 @@ if (fs.existsSync(frontendDist)) {
   });
 }
 
-// Start server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`StudyShare server running on port ${PORT} (Supabase + Google Drive)`);
+// Export for Vercel serverless
+module.exports = app;
 
-  // Test Google Drive on startup
-  try {
-    const googleDrive = require('./config/googleDrive');
-    const drive = googleDrive.getDriveClient();
-    if (drive) {
-      console.log('🚀 Google Drive client ready at startup');
-      // Verify access to target folder
-      const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
-      if (folderId) {
-        drive.files.list({
-          q: `'${folderId}' in parents and trashed=false`,
-          fields: 'files(id, name)',
-          pageSize: 1,
-        }).then(res => {
-          console.log(`✅ Google Drive folder ${folderId} accessible - ${res.data.files.length} file(s) found`);
-        }).catch(err => {
-          console.error('❌ Google Drive folder access FAILED:', err.message);
-        });
+// Start server only when run directly (not imported as a module)
+if (require.main === module) {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`StudyShare server running on port ${PORT} (Supabase + Google Drive)`);
+
+    // Test Google Drive on startup
+    try {
+      const googleDrive = require('./config/googleDrive');
+      const drive = googleDrive.getDriveClient();
+      if (drive) {
+        console.log('🚀 Google Drive client ready at startup');
+        // Verify access to target folder
+        const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
+        if (folderId) {
+          drive.files.list({
+            q: `'${folderId}' in parents and trashed=false`,
+            fields: 'files(id, name)',
+            pageSize: 1,
+          }).then(res => {
+            console.log(`✅ Google Drive folder ${folderId} accessible - ${res.data.files.length} file(s) found`);
+          }).catch(err => {
+            console.error('❌ Google Drive folder access FAILED:', err.message);
+          });
+        }
+      } else {
+        console.warn('⚠️ Google Drive client NOT initialized - uploads will use Supabase only');
       }
-    } else {
-      console.warn('⚠️ Google Drive client NOT initialized - uploads will use Supabase only');
+    } catch (err) {
+      console.error('❌ Google Drive startup check failed:', err.message);
     }
-  } catch (err) {
-    console.error('❌ Google Drive startup check failed:', err.message);
-  }
-});
+  });
+}

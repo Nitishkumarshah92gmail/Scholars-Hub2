@@ -4,42 +4,47 @@ A modern social media platform for students to share study materials including P
 
 ## Tech Stack
 - **Frontend:** React.js + Tailwind CSS (Vite)
-- **Backend:** Node.js + Express.js
-- **Database:** MongoDB with Mongoose
-- **File Storage:** Cloudinary
-- **Auth:** JWT tokens
+- **Backend:** Node.js + Express.js (Vercel Serverless Functions)
+- **Database:** Supabase (PostgreSQL)
+- **File Storage:** Google Drive / Supabase Storage
+- **Auth:** Supabase Auth
 
 ---
 
 ## Prerequisites
 
 1. **Node.js** (v18+): Download from https://nodejs.org/
-2. **MongoDB**: Install locally or use [MongoDB Atlas](https://www.mongodb.com/atlas) (free tier)
-3. **Cloudinary Account**: Sign up at https://cloudinary.com/ (free tier)
+2. **Supabase Project**: Create at https://supabase.com/ (free tier)
+3. **Google Drive API** (optional): For file storage
 
 ---
 
-## Setup Instructions
+## Local Development
 
 ### 1. Clone / Navigate to project
 ```bash
 cd studyshare
 ```
 
-### 2. Backend Setup
+### 2. Install all dependencies
+```bash
+npm run install:all
+```
+
+### 3. Backend Setup
 ```bash
 cd backend
 npm install
 ```
 
-Edit the `.env` file with your credentials:
+Create a `.env` file in `backend/` with your credentials:
 ```env
 PORT=5000
-MONGODB_URI=mongodb://localhost:27017/studyshare    # or your MongoDB Atlas URI
-JWT_SECRET=your_super_secret_key_here
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
+SUPABASE_URL=your_supabase_url
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+GOOGLE_DRIVE_CLIENT_EMAIL=your_client_email
+GOOGLE_DRIVE_PRIVATE_KEY=your_private_key
+GOOGLE_DRIVE_FOLDER_ID=your_folder_id
 ```
 
 Start the backend:
@@ -49,14 +54,54 @@ npm run dev     # development with auto-reload
 npm start       # production
 ```
 
-### 3. Frontend Setup
+### 4. Frontend Setup
 ```bash
 cd frontend
 npm install
+```
+
+Create a `.env` file in `frontend/` with:
+```env
+VITE_API_URL=/api
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+```bash
 npm run dev
 ```
 
 The app will be available at **http://localhost:3000**
+
+---
+
+## Deploy to Vercel
+
+### 1. Push your code to a GitHub repository
+
+### 2. Import the project in [Vercel](https://vercel.com)
+- Select the repository
+- Vercel auto-detects the `vercel.json` config
+- Framework preset: **Other** (the config handles everything)
+
+### 3. Set Environment Variables in Vercel Dashboard
+```
+SUPABASE_URL
+SUPABASE_SERVICE_ROLE_KEY
+VITE_SUPABASE_URL
+VITE_SUPABASE_ANON_KEY
+VITE_API_URL=/api
+GOOGLE_DRIVE_CLIENT_EMAIL
+GOOGLE_DRIVE_PRIVATE_KEY
+GOOGLE_DRIVE_FOLDER_ID
+```
+
+### 4. Deploy
+Vercel will:
+- Install frontend & backend dependencies
+- Build the Vite frontend to `frontend/dist`
+- Serve static frontend files
+- Route `/api/*` requests to the Express serverless function
 
 ---
 

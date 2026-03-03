@@ -1,6 +1,9 @@
 const supabase = require('../config/supabase');
 
 const auth = async (req, res, next) => {
+  if (!supabase) {
+    return res.status(503).json({ error: 'Database not configured.' });
+  }
   try {
     const token = req.header('Authorization')?.replace('Bearer ', '');
     if (!token) {

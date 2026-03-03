@@ -4,6 +4,14 @@ const auth = require('../middleware/auth');
 
 const router = express.Router();
 
+// Guard: if supabase client is not configured, all routes return 503
+router.use((req, res, next) => {
+  if (!supabase) {
+    return res.status(503).json({ error: 'Database not configured. Please set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.' });
+  }
+  next();
+});
+
 // Helper: build user object from auth metadata
 function buildUserFromAuth(user) {
   const meta = user.user_metadata || {};
@@ -55,39 +63,37 @@ router.get('/me', auth, async (req, res) => {
     const userId = req.user.id;
 
     // Try to get full profile from database
-    const { data: profile, error: profileError } = await supabase
+    const { data: profile } = await supabase
       .from('profiles')
       .select('*')
       .eq('id', userId)
       .maybeSingle();
 
     if (profile) {
-      // Get followers (graceful)
-      const { data: followers } = await supabase
-        .from('follows')
-        .select('follower_id, follower:profiles!follower_id(id, name, avatar)')
-        .eq('following_id', userId)
-        .then(r => r)
-        .catch(() => ({ data: [] }));
+      // Run all three queries in parallel for speed
+      const [followersResult, followingResult, bookmarksResult] = await Promise.all([
+        supabase
+          .from('follows')
+          .select('follower_id, follower:profiles!follower_id(id, name, avatar)')
+          .eq('following_id', userId)
+          .then(r => r)
+          .catch(() => ({ data: [] })),
+        supabase
+          .from('follows')
+          .select('following_id, following:profiles!following_id(id, name, avatar)')
+          .eq('follower_id', userId)
+          .then(r => r)
+          .catch(() => ({ data: [] })),
+        supabase
+          .from('bookmarks')
+          .select('post_id')
+          .eq('user_id', userId)
+          .then(r => r)
+          .catch(() => ({ data: [] })),
+      ]);
 
-      // Get following (graceful)
-      const { data: following } = await supabase
-        .from('follows')
-        .select('following_id, following:profiles!following_id(id, name, avatar)')
-        .eq('follower_id', userId)
-        .then(r => r)
-        .catch(() => ({ data: [] }));
-
-      // Get bookmark IDs (graceful)
-      const { data: bookmarks } = await supabase
-        .from('bookmarks')
-        .select('post_id')
-        .eq('user_id', userId)
-        .then(r => r)
-        .catch(() => ({ data: [] }));
-
-      const bookmarkIds = (bookmarks || []).map((b) => b.post_id);
-      return res.json(transformUser(profile, followers || [], following || [], bookmarkIds));
+      const bookmarkIds = (bookmarksResult.data || []).map((b) => b.post_id);
+      return res.json(transformUser(profile, followersResult.data || [], followingResult.data || [], bookmarkIds));
     }
 
     // Fallback: get from Supabase Auth token
@@ -109,8 +115,6 @@ router.get('/me', auth, async (req, res) => {
     res.status(500).json({ error: 'Server error.' });
   }
 });
-
-module.exports = router;
 
 // POST /api/auth/forgot-password — generate a password reset link
 router.post('/forgot-password', async (req, res) => {

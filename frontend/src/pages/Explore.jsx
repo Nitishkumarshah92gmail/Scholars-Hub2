@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { getExplore } from '../api';
 import PostCard from '../components/PostCard';
-import PostSkeleton from '../components/PostSkeleton';
 import { SUBJECTS } from '../utils';
 import { HiSearch } from 'react-icons/hi';
+import { PostSkeleton } from '../components/Skeletons';
 
 export default function Explore() {
   const [posts, setPosts] = useState([]);

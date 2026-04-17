@@ -3,6 +3,7 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { lazy, Suspense } from 'react';
+import { AppShellSkeleton } from './components/Skeletons';
 
 // Lazy load all pages — only Layout is kept eager for shell rendering
 const Layout = lazy(() => import('./components/Layout'));
@@ -21,17 +22,13 @@ const Bookmarks = lazy(() => import('./pages/Bookmarks'));
 const PdfTools = lazy(() => import('./pages/PdfTools'));
 
 function PageSpinner() {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-navy-950">
-      <div className="loading-spinner"></div>
-    </div>
-  );
+  return <AppShellSkeleton />;
 }
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
   if (loading) {
-    return <PageSpinner />;
+    return <AppShellSkeleton />;
   }
   return user ? children : <Navigate to="/landing" />;
 }

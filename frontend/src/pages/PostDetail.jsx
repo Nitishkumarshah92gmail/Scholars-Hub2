@@ -4,6 +4,7 @@ import { getPost, likePost, commentPost, bookmarkPost, reportPost, deletePost } 
 import { useAuth } from '../context/AuthContext';
 import { getSubjectColor, getPostTypeIcon, getPostTypeLabel, timeAgo } from '../utils';
 import toast from 'react-hot-toast';
+import { PostDetailSkeleton } from '../components/Skeletons';
 import {
   HiHeart,
   HiOutlineHeart,
@@ -104,15 +105,7 @@ export default function PostDetail() {
   };
 
   if (loading) {
-    return (
-      <div className="card p-6 animate-pulse">
-        <div className="space-y-4">
-          <div className="h-6 w-3/4 skeleton" />
-          <div className="h-4 w-1/2 skeleton" />
-          <div className="h-64 skeleton rounded-lg" />
-        </div>
-      </div>
-    );
+    return <PostDetailSkeleton />;
   }
 
   if (!post) {

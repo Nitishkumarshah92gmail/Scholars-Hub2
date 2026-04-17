@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getScholars } from '../api';
+import { ScholarsBarSkeleton } from './Skeletons';
 
 export default function ScholarsBar() {
   const [scholars, setScholars] = useState([]);
@@ -17,18 +18,7 @@ export default function ScholarsBar() {
   }, []);
 
   if (loading) {
-    return (
-      <div className="card mb-4 p-4">
-        <div className="flex gap-4 overflow-hidden">
-          {[...Array(6)].map((_, i) => (
-            <div key={i} className="flex flex-col items-center gap-2 animate-pulse">
-              <div className="w-16 h-16 rounded-full bg-gray-200 dark:bg-gray-700" />
-              <div className="w-12 h-3 rounded bg-gray-200 dark:bg-gray-700" />
-            </div>
-          ))}
-        </div>
-      </div>
-    );
+    return <ScholarsBarSkeleton />;
   }
 
   if (scholars.length === 0) return null;

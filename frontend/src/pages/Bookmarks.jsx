@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { getBookmarks } from '../api';
 import PostCard from '../components/PostCard';
-import PostSkeleton from '../components/PostSkeleton';
 import { HiOutlineBookmark } from 'react-icons/hi';
+import { BookmarksSkeleton, PostSkeleton } from '../components/Skeletons';
 
 export default function Bookmarks() {
   const { user } = useAuth();
@@ -30,10 +30,7 @@ export default function Bookmarks() {
 
       <div className="space-y-4">
         {loading ? (
-          <>
-            <PostSkeleton />
-            <PostSkeleton />
-          </>
+          <BookmarksSkeleton />
         ) : posts.length === 0 ? (
           <div className="card p-16 text-center">
             <HiOutlineBookmark className="w-16 h-16 text-ig-text dark:text-ig-text-light mx-auto mb-4 stroke-1" />

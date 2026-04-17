@@ -3,6 +3,7 @@ import { getNotifications, markNotificationsRead } from '../api';
 import { Link } from 'react-router-dom';
 import { timeAgo } from '../utils';
 import { HiHeart, HiChat, HiUserAdd } from 'react-icons/hi';
+import { NotificationsSkeleton } from '../components/Skeletons';
 
 export default function Notifications() {
   const [notifications, setNotifications] = useState([]);
@@ -39,24 +40,7 @@ export default function Notifications() {
   };
 
   if (loading) {
-    return (
-      <div>
-        <h1 className="text-xl font-semibold text-ig-text dark:text-ig-text-light mb-4">
-          Notifications
-        </h1>
-        <div className="space-y-1">
-          {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="flex items-center gap-3 p-3 animate-pulse">
-              <div className="w-11 h-11 rounded-full skeleton" />
-              <div className="flex-1 space-y-1.5">
-                <div className="h-3 w-3/4 skeleton" />
-                <div className="h-2.5 w-16 skeleton" />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
+    return <NotificationsSkeleton />;
   }
 
   return (

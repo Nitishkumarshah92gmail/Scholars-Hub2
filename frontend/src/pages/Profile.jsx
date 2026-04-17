@@ -3,10 +3,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getUser, updateUser, uploadAvatar, getTotalUsers } from '../api';
 import PostCard from '../components/PostCard';
-import PostSkeleton from '../components/PostSkeleton';
 import { SUBJECTS, getSubjectColor } from '../utils';
 import toast from 'react-hot-toast';
 import { HiPencil, HiX, HiCamera, HiUserGroup } from 'react-icons/hi';
+import { ProfileSkeleton } from '../components/Skeletons';
 
 export default function Profile() {
   const { id } = useParams();
@@ -73,19 +73,7 @@ export default function Profile() {
   };
 
   if (loading) {
-    return (
-      <div>
-        <div className="flex items-center gap-8 mb-8 animate-pulse">
-          <div className="w-20 h-20 sm:w-36 sm:h-36 rounded-full skeleton" />
-          <div className="flex-1 space-y-3">
-            <div className="h-5 w-32 skeleton" />
-            <div className="h-4 w-48 skeleton" />
-            <div className="h-4 w-40 skeleton" />
-          </div>
-        </div>
-        <PostSkeleton />
-      </div>
-    );
+    return <ProfileSkeleton />;
   }
 
   if (!profile) {

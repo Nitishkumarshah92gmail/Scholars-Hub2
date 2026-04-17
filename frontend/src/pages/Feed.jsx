@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { getFeed } from '../api';
 import PostCard from '../components/PostCard';
-import PostSkeleton from '../components/PostSkeleton';
 import ScholarsBar from '../components/ScholarsBar';
 import { useAuth } from '../context/AuthContext';
+import { PostSkeleton } from '../components/Skeletons';
 
 export default function Feed() {
   const { user } = useAuth();

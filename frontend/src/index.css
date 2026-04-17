@@ -33,6 +33,32 @@
     @apply animate-pulse bg-gray-200 dark:bg-ig-bg-elevated rounded;
   }
 
+  /* Premium shimmer skeleton — smooth left-to-right sweep */
+  .skeleton-shimmer {
+    @apply rounded bg-gray-200 dark:bg-[#2a3441] relative overflow-hidden;
+    background-size: 200% 100%;
+  }
+  .skeleton-shimmer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.35) 50%,
+      transparent 100%
+    );
+    animation: shimmer-sweep 1.6s ease-in-out infinite;
+  }
+  :is(.dark) .skeleton-shimmer::after {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.07) 50%,
+      transparent 100%
+    );
+  }
+
   .subject-badge {
     @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold;
   }
@@ -89,4 +115,15 @@
 
 .like-animate {
   animation: likePop 0.3s ease-in-out;
+}
+
+@keyframes shimmer-sweep {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes likePop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.3); }
+  100% { transform: scale(1); }
 }

@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 const AuthContext = createContext(null);
 
@@ -48,6 +48,8 @@ export function AuthProvider({ children }) {
           setUser(profile);
           return profile;
         }
+        // Non-ok response (e.g. 503 when backend Supabase isn't configured)
+        console.warn(`Backend /auth/me returned ${res.status}, using session fallback`);
       } catch (fetchErr) {
         clearTimeout(timer);
         console.warn('Backend /auth/me unavailable, using session fallback:', fetchErr.message);
@@ -98,14 +100,39 @@ export function AuthProvider({ children }) {
   }, []);
 
   const loginUser = async (email, password) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    if (!isSupabaseConfigured) {
+      throw new Error(
+        'Supabase is not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables.'
+      );
+    }
+
+    let data, error;
+    try {
+      ({ data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      }));
+    } catch (networkErr) {
+      // Network-level failure (e.g. wrong Supabase URL, no internet)
+      console.error('Login network error:', networkErr);
+      throw new Error(
+        'Unable to connect to authentication server. Please check your internet connection and try again.'
+      );
+    }
+
     if (error) throw error;
     setSession(data.session);
-    const profile = await fetchProfile(data.session.access_token, data.user);
-    return profile;
+
+    // Fetch profile from backend — but don't let this break login
+    try {
+      const profile = await fetchProfile(data.session.access_token, data.user);
+      return profile;
+    } catch (profileErr) {
+      console.warn('Profile fetch failed after login, using session fallback:', profileErr.message);
+      const fallback = buildUserFromSession(data.user);
+      setUser(fallback);
+      return fallback;
+    }
   };
 
   const registerUser = async ({ name, email, password, school, subjects }) => {

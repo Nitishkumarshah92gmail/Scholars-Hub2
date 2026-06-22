@@ -23,12 +23,17 @@ export default function Login() {
       navigate('/dashboard');
     } catch (err) {
       const msg = err.message || 'Login failed.';
-      if (msg.toLowerCase().includes('invalid login')) {
+      const msgLower = msg.toLowerCase();
+      if (msgLower.includes('invalid login')) {
         toast.error('Invalid email or password. Please try again.');
-      } else if (msg.toLowerCase().includes('rate limit')) {
+      } else if (msgLower.includes('rate limit')) {
         toast.error('Too many login attempts. Please wait a few minutes.', { duration: 6000 });
-      } else if (msg.toLowerCase().includes('email not confirmed')) {
+      } else if (msgLower.includes('email not confirmed')) {
         toast.error('Please confirm your email before logging in.');
+      } else if (msgLower.includes('failed to fetch') || msgLower.includes('networkerror') || msgLower.includes('unable to connect')) {
+        toast.error('Unable to connect to server. Please check your internet connection and try again.', { duration: 5000 });
+      } else if (msgLower.includes('not configured')) {
+        toast.error('App configuration error. Please contact the administrator.', { duration: 6000 });
       } else {
         toast.error(msg);
       }

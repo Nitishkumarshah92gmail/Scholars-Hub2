@@ -99,7 +99,7 @@ export default function Layout() {
             className="text-2xl font-heading font-bold text-ig-text dark:text-ig-text-light flex items-center gap-2 cursor-pointer"
             onClick={() => navigate('/dashboard')}
           >
-            <img src={logoImg} alt="Scholars Hub" className="w-9 h-9 rounded-full object-cover" />
+            <img src={logoImg} alt="Scholars Hub" className="w-9 h-9 object-contain" />
             <span>
               Scholars<span className="gradient-text"> Hub</span>
             </span>
@@ -193,7 +193,7 @@ export default function Layout() {
           className="text-xl font-heading font-bold text-ig-text dark:text-ig-text-light flex items-center gap-2 cursor-pointer"
           onClick={() => navigate('/dashboard')}
         >
-          <img src={logoImg} alt="Scholars Hub" className="w-7 h-7 rounded-full object-cover" />
+          <img src={logoImg} alt="Scholars Hub" className="w-7 h-7 object-contain" />
           <span>
             Scholars<span className="gradient-text"> Hub</span>
           </span>

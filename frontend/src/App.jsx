@@ -19,6 +19,7 @@ const Notifications = lazy(() => import('./pages/Notifications'));
 const PostDetail = lazy(() => import('./pages/PostDetail'));
 const Bookmarks = lazy(() => import('./pages/Bookmarks'));
 const PdfTools = lazy(() => import('./pages/PdfTools'));
+const Chat = lazy(() => import('./pages/Chat'));
 
 function PageSpinner() {
   return (
@@ -61,6 +62,7 @@ function AppRoutes() {
           <Route path="post/:id" element={<PostDetail />} />
           <Route path="bookmarks" element={<Bookmarks />} />
           <Route path="pdf-tools" element={<PdfTools />} />
+          <Route path="messages" element={<Chat />} />
         </Route>
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

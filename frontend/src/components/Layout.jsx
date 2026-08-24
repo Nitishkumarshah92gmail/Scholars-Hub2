@@ -26,8 +26,9 @@ import {
   HiOutlineLightBulb,
   HiOutlineAcademicCap,
   HiDotsHorizontal,
-  HiX,
   HiUserGroup,
+  HiChat,
+  HiOutlineChat,
 } from 'react-icons/hi';
 
 export default function Layout() {
@@ -77,6 +78,7 @@ export default function Layout() {
       label: 'Notifications',
       badge: unreadCount,
     },
+    { to: '/dashboard/messages', icon: HiOutlineChat, activeIcon: HiChat, label: 'Messages' },
     { to: `/dashboard/profile/${user?._id}`, icon: HiOutlineUser, activeIcon: HiUser, label: 'Profile' },
   ];
 
@@ -85,8 +87,8 @@ export default function Layout() {
     navItems[0], // Home
     navItems[1], // Search
     navItems[2], // Create
-    navItems[5], // Notifications
-    navItems[6], // Profile
+    navItems[6], // Messages
+    navItems[7], // Profile
   ];
 
   return (
@@ -99,7 +101,7 @@ export default function Layout() {
             className="text-2xl font-heading font-bold text-ig-text dark:text-ig-text-light flex items-center gap-2 cursor-pointer"
             onClick={() => navigate('/dashboard')}
           >
-            <img src={logoImg} alt="Scholars Hub" className="w-9 h-9 object-contain" />
+            <img src={logoImg} alt="Scholars Hub" className="w-9 h-9 rounded-full object-cover" />
             <span>
               Scholars<span className="gradient-text"> Hub</span>
             </span>
@@ -193,7 +195,7 @@ export default function Layout() {
           className="text-xl font-heading font-bold text-ig-text dark:text-ig-text-light flex items-center gap-2 cursor-pointer"
           onClick={() => navigate('/dashboard')}
         >
-          <img src={logoImg} alt="Scholars Hub" className="w-7 h-7 object-contain" />
+          <img src={logoImg} alt="Scholars Hub" className="w-7 h-7 rounded-full object-cover" />
           <span>
             Scholars<span className="gradient-text"> Hub</span>
           </span>

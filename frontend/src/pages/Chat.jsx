@@ -1,0 +1,442 @@
+import { useState, useEffect, useRef } from 'react';
+import { supabase } from '../lib/supabase';
+import { useAuth } from '../context/AuthContext';
+import { motion, AnimatePresence } from 'framer-motion';
+import { format } from 'date-fns';
+import { HiPaperAirplane, HiOutlineChat, HiOutlineSearch, HiArrowLeft } from 'react-icons/hi';
+
+export default function Chat() {
+  const { user } = useAuth();
+  const [conversations, setConversations] = useState([]);
+  const [activeConversation, setActiveConversation] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [loading, setLoading] = useState(true);
+  
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    fetchConversations();
+
+    // Subscribe to new messages
+    const channel = supabase
+      .channel('realtime:messages')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'messages' },
+        (payload) => {
+          const newMsg = payload.new;
+          // If message belongs to active conversation, add to messages list
+          if (activeConversation && newMsg.conversation_id === activeConversation.id) {
+            setMessages((prev) => [...prev, newMsg]);
+            scrollToBottom();
+          }
+          // Also refresh conversations list to update 'latest message' and sorting
+          fetchConversations();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [activeConversation]);
+
+  useEffect(() => {
+    if (activeConversation) {
+      fetchMessages(activeConversation.id);
+    }
+  }, [activeConversation]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const fetchConversations = async () => {
+    if (!user) return;
+    try {
+      const { data: convos, error: convoError } = await supabase
+        .from('conversation_participants')
+        .select(`
+          conversation_id,
+          conversations (id, updated_at),
+          other_participant:conversation_participants!inner(user_id)
+        `)
+        .eq('user_id', user._id);
+
+      if (convoError) throw convoError;
+
+      // Extract unique conversation IDs
+      const convoIds = convos.map(c => c.conversation_id);
+      
+      if (convoIds.length === 0) {
+        setConversations([]);
+        setLoading(false);
+        return;
+      }
+
+      // Fetch details of the *other* participant for each conversation
+      const { data: othersData, error: othersError } = await supabase
+        .from('conversation_participants')
+        .select(`
+          conversation_id,
+          user_id,
+          profiles:user_id (id, name, avatar, school)
+        `)
+        .in('conversation_id', convoIds)
+        .neq('user_id', user._id);
+
+      if (othersError) throw othersError;
+
+      // Fetch the latest message for each conversation
+      const { data: latestMessages, error: msgError } = await supabase
+        .from('messages')
+        .select('conversation_id, content, created_at')
+        .in('conversation_id', convoIds)
+        .order('created_at', { ascending: false });
+
+      if (msgError) throw msgError;
+
+      // Map everything together
+      const formattedConvos = othersData.map(other => {
+        const latestMsg = latestMessages.find(m => m.conversation_id === other.conversation_id);
+        return {
+          id: other.conversation_id,
+          otherUser: other.profiles,
+          latestMessage: latestMsg?.content || 'No messages yet',
+          updatedAt: latestMsg?.created_at || new Date().toISOString()
+        };
+      });
+
+      // Sort by latest activity
+      formattedConvos.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+      
+      setConversations(formattedConvos);
+    } catch (error) {
+      console.error('Error fetching conversations:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchMessages = async (conversationId) => {
+    try {
+      const { data, error } = await supabase
+        .from('messages')
+        .select('*')
+        .eq('conversation_id', conversationId)
+        .order('created_at', { ascending: true });
+
+      if (error) throw error;
+      setMessages(data);
+      
+      // Mark as read (simplified)
+      await supabase
+        .from('messages')
+        .update({ read: true })
+        .eq('conversation_id', conversationId)
+        .neq('sender_id', user._id);
+        
+    } catch (error) {
+      console.error('Error fetching messages:', error);
+    }
+  };
+
+  const handleSearch = async (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    
+    if (query.length < 2) {
+      setSearchResults([]);
+      return;
+    }
+
+    setIsSearching(true);
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('id, name, avatar, school')
+        .ilike('name', `%${query}%`)
+        .neq('id', user._id)
+        .limit(10);
+
+      if (error) throw error;
+      setSearchResults(data);
+    } catch (error) {
+      console.error('Error searching users:', error);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  const startConversation = async (targetUser) => {
+    try {
+      // Check if conversation already exists
+      const existingConvo = conversations.find(c => c.otherUser.id === targetUser.id);
+      
+      if (existingConvo) {
+        setActiveConversation(existingConvo);
+        setSearchQuery('');
+        setSearchResults([]);
+        return;
+      }
+
+      // Create new conversation
+      const { data: newConvo, error: convoError } = await supabase
+        .from('conversations')
+        .insert([{}])
+        .select()
+        .single();
+
+      if (convoError) throw convoError;
+
+      // Add participants
+      const { error: partError } = await supabase
+        .from('conversation_participants')
+        .insert([
+          { conversation_id: newConvo.id, user_id: user._id },
+          { conversation_id: newConvo.id, user_id: targetUser.id }
+        ]);
+
+      if (partError) throw partError;
+
+      const newConvoObj = {
+        id: newConvo.id,
+        otherUser: targetUser,
+        latestMessage: 'Start a conversation!',
+        updatedAt: new Date().toISOString()
+      };
+
+      setConversations([newConvoObj, ...conversations]);
+      setActiveConversation(newConvoObj);
+      setSearchQuery('');
+      setSearchResults([]);
+      
+    } catch (error) {
+      console.error('Error creating conversation:', error);
+    }
+  };
+
+  const sendMessage = async (e) => {
+    e.preventDefault();
+    if (!newMessage.trim() || !activeConversation) return;
+
+    const content = newMessage.trim();
+    setNewMessage(''); // optimistic clear
+
+    try {
+      const { error } = await supabase
+        .from('messages')
+        .insert([{
+          conversation_id: activeConversation.id,
+          sender_id: user._id,
+          content: content
+        }]);
+
+      if (error) throw error;
+      
+      // Update conversation timestamp
+      await supabase
+        .from('conversations')
+        .update({ updated_at: new Date().toISOString() })
+        .eq('id', activeConversation.id);
+        
+    } catch (error) {
+      console.error('Error sending message:', error);
+      setNewMessage(content); // restore on error
+    }
+  };
+
+  return (
+    <div className="h-[calc(100vh-140px)] md:h-[calc(100vh-50px)] flex bg-ig-bg dark:bg-ig-bg-dark rounded-xl border border-ig-separator dark:border-ig-separator-dark overflow-hidden shadow-sm">
+      
+      {/* Sidebar - Conversation List */}
+      <div className={`w-full md:w-80 border-r border-ig-separator dark:border-ig-separator-dark flex flex-col ${activeConversation ? 'hidden md:flex' : 'flex'}`}>
+        <div className="p-4 border-b border-ig-separator dark:border-ig-separator-dark">
+          <h2 className="text-xl font-bold text-ig-text dark:text-ig-text-light mb-4">Messages</h2>
+          
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <HiOutlineSearch className="text-ig-text-2" />
+            </div>
+            <input
+              type="text"
+              className="w-full bg-gray-100 dark:bg-ig-bg-elevated text-ig-text dark:text-ig-text-light border-none rounded-lg pl-10 pr-4 py-2 focus:ring-2 focus:ring-ig-primary transition-shadow"
+              placeholder="Search scholars..."
+              value={searchQuery}
+              onChange={handleSearch}
+            />
+          </div>
+        </div>
+
+        <div className="flex-1 overflow-y-auto">
+          {searchQuery.length >= 2 ? (
+            <div className="p-2 space-y-1">
+              <p className="px-2 text-xs font-semibold text-ig-text-2 uppercase tracking-wider mb-2">Search Results</p>
+              {isSearching ? (
+                <p className="p-4 text-center text-ig-text-2 text-sm">Searching...</p>
+              ) : searchResults.length > 0 ? (
+                searchResults.map(result => (
+                  <button
+                    key={result.id}
+                    onClick={() => startConversation(result)}
+                    className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-ig-bg-elevated transition-colors text-left"
+                  >
+                    <img src={result.avatar || `https://ui-avatars.com/api/?name=${result.name}`} alt={result.name} className="w-10 h-10 rounded-full object-cover" />
+                    <div>
+                      <p className="font-semibold text-sm text-ig-text dark:text-ig-text-light">{result.name}</p>
+                      <p className="text-xs text-ig-text-2 truncate">{result.school}</p>
+                    </div>
+                  </button>
+                ))
+              ) : (
+                <p className="p-4 text-center text-ig-text-2 text-sm">No scholars found</p>
+              )}
+            </div>
+          ) : (
+            <div className="p-2 space-y-1">
+              {loading ? (
+                <div className="flex justify-center p-8">
+                  <div className="w-6 h-6 border-2 border-ig-primary border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              ) : conversations.length > 0 ? (
+                conversations.map(convo => (
+                  <button
+                    key={convo.id}
+                    onClick={() => setActiveConversation(convo)}
+                    className={`w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left ${activeConversation?.id === convo.id ? 'bg-gray-100 dark:bg-ig-bg-elevated' : 'hover:bg-gray-100 dark:hover:bg-ig-bg-elevated'}`}
+                  >
+                    <img src={convo.otherUser.avatar || `https://ui-avatars.com/api/?name=${convo.otherUser.name}`} alt={convo.otherUser.name} className="w-12 h-12 rounded-full object-cover" />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex justify-between items-baseline mb-0.5">
+                        <p className="font-semibold text-sm text-ig-text dark:text-ig-text-light truncate">{convo.otherUser.name}</p>
+                        <span className="text-[10px] text-ig-text-2 whitespace-nowrap ml-2">
+                          {format(new Date(convo.updatedAt), 'MMM d')}
+                        </span>
+                      </div>
+                      <p className="text-xs text-ig-text-2 truncate">{convo.latestMessage}</p>
+                    </div>
+                  </button>
+                ))
+              ) : (
+                <div className="p-8 flex flex-col items-center text-center text-ig-text-2">
+                  <HiOutlineChat className="w-12 h-12 mb-3 opacity-50" />
+                  <p className="text-sm">No conversations yet.</p>
+                  <p className="text-xs mt-1">Search for a scholar above to start chatting!</p>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Main Chat Area */}
+      <div className={`flex-1 flex flex-col bg-white dark:bg-ig-bg-dark ${!activeConversation ? 'hidden md:flex' : 'flex'}`}>
+        {activeConversation ? (
+          <>
+            {/* Chat Header */}
+            <div className="px-4 py-3 border-b border-ig-separator dark:border-ig-separator-dark flex items-center gap-3 bg-white/80 dark:bg-ig-bg-dark/80 backdrop-blur-md sticky top-0 z-10">
+              <button 
+                onClick={() => setActiveConversation(null)}
+                className="md:hidden p-2 -ml-2 rounded-full text-ig-text dark:text-ig-text-light hover:bg-gray-100 dark:hover:bg-ig-bg-elevated"
+              >
+                <HiArrowLeft className="w-5 h-5" />
+              </button>
+              <img 
+                src={activeConversation.otherUser.avatar || `https://ui-avatars.com/api/?name=${activeConversation.otherUser.name}`} 
+                alt={activeConversation.otherUser.name} 
+                className="w-10 h-10 rounded-full object-cover border border-ig-separator/20" 
+              />
+              <div>
+                <h3 className="font-bold text-ig-text dark:text-ig-text-light">{activeConversation.otherUser.name}</h3>
+                <p className="text-xs text-ig-text-2">{activeConversation.otherUser.school}</p>
+              </div>
+            </div>
+
+            {/* Messages Stream */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-[#0a0a0a]">
+              {messages.length === 0 ? (
+                <div className="h-full flex items-center justify-center text-ig-text-2 text-sm">
+                  Say hi to {activeConversation.otherUser.name}! 👋
+                </div>
+              ) : (
+                messages.map((msg, idx) => {
+                  const isMine = msg.sender_id === user._id;
+                  const showTime = idx === 0 || new Date(msg.created_at) - new Date(messages[idx-1].created_at) > 300000;
+                  
+                  return (
+                    <motion.div 
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      key={msg.id} 
+                      className={`flex flex-col ${isMine ? 'items-end' : 'items-start'}`}
+                    >
+                      {showTime && (
+                        <span className="text-[10px] text-ig-text-2 mb-2 mt-4">
+                          {format(new Date(msg.created_at), 'MMM d, h:mm a')}
+                        </span>
+                      )}
+                      <div 
+                        className={`max-w-[75%] px-4 py-2 rounded-2xl text-sm ${
+                          isMine 
+                            ? 'bg-gradient-to-r from-ig-primary to-blue-500 text-white rounded-br-sm shadow-sm' 
+                            : 'bg-white dark:bg-ig-bg-elevated text-ig-text dark:text-ig-text-light border border-ig-separator/50 dark:border-ig-separator-dark/50 rounded-bl-sm shadow-sm'
+                        }`}
+                      >
+                        {msg.content}
+                      </div>
+                    </motion.div>
+                  );
+                })
+              )}
+              <div ref={messagesEndRef} />
+            </div>
+
+            {/* Message Input */}
+            <div className="p-3 bg-white dark:bg-ig-bg-dark border-t border-ig-separator dark:border-ig-separator-dark">
+              <form onSubmit={sendMessage} className="flex items-end gap-2">
+                <div className="flex-1 bg-gray-100 dark:bg-ig-bg-elevated rounded-3xl p-1 flex items-center border border-transparent focus-within:border-ig-primary/30 transition-colors">
+                  <textarea
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    placeholder="Message..."
+                    className="flex-1 bg-transparent border-none focus:ring-0 resize-none max-h-32 min-h-[40px] px-4 py-2 text-sm text-ig-text dark:text-ig-text-light scrollbar-hide"
+                    rows="1"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendMessage(e);
+                      }
+                    }}
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={!newMessage.trim()}
+                  className="p-3 bg-ig-primary hover:bg-blue-600 disabled:opacity-50 disabled:hover:bg-ig-primary rounded-full text-white transition-colors"
+                >
+                  <HiPaperAirplane className="w-5 h-5 rotate-90" />
+                </button>
+              </form>
+            </div>
+          </>
+        ) : (
+          <div className="h-full flex flex-col items-center justify-center text-ig-text-2">
+            <div className="w-24 h-24 rounded-full border-2 border-ig-text-2/20 flex items-center justify-center mb-4">
+              <HiOutlineChat className="w-10 h-10 opacity-50" />
+            </div>
+            <h3 className="text-xl font-bold text-ig-text dark:text-ig-text-light mb-2">Your Messages</h3>
+            <p className="text-sm">Send private messages to other scholars.</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

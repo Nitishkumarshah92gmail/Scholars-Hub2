@@ -135,14 +135,8 @@ export default function Layout() {
 
           {/* External Links */}
           <div className="pt-2 mt-2 border-t border-ig-separator/30 dark:border-ig-separator-dark/30 space-y-0.5">
-            <a href="https://notebooklm.google.com/" target="_blank" rel="noopener noreferrer" className="nav-link w-full">
-              <HiOutlineBookOpen className="w-6 h-6" />
-              <span className="hidden xl:inline">NotebookLM</span>
-            </a>
-            <a href="https://www.atlas.org/core/d0273839-eb53-46ff-ad44-df3cc4dc504a/space" target="_blank" rel="noopener noreferrer" className="nav-link w-full">
-              <HiOutlineLightBulb className="w-6 h-6" />
-              <span className="hidden xl:inline">AI Tool</span>
-            </a>
+
+
             <a href="https://nptel.ac.in/courses" target="_blank" rel="noopener noreferrer" className="nav-link w-full">
               <HiOutlineAcademicCap className="w-6 h-6" />
               <span className="hidden xl:inline">NPTEL Courses</span>
@@ -259,14 +253,8 @@ export default function Layout() {
               <div className="border-t border-ig-separator/30 dark:border-ig-separator-dark/30 my-2" />
 
               {/* External Links */}
-              <a href="https://notebooklm.google.com/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-ig-bg-elevated text-ig-text dark:text-ig-text-light">
-                <HiOutlineBookOpen className="w-5 h-5" />
-                <span>NotebookLM</span>
-              </a>
-              <a href="https://www.atlas.org/core/d0273839-eb53-46ff-ad44-df3cc4dc504a/space" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-ig-bg-elevated text-ig-text dark:text-ig-text-light">
-                <HiOutlineLightBulb className="w-5 h-5" />
-                <span>AI Tool</span>
-              </a>
+
+
               <a href="https://nptel.ac.in/courses" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-ig-bg-elevated text-ig-text dark:text-ig-text-light">
                 <HiOutlineAcademicCap className="w-5 h-5" />
                 <span>NPTEL Courses</span>

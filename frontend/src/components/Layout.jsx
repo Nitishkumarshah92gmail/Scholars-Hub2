@@ -39,6 +39,7 @@ export default function Layout() {
   const { darkMode, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [unreadCount, setUnreadCount] = useState(0);
+  const [unreadMessagesCount, setUnreadMessagesCount] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [totalUsers, setTotalUsers] = useState(0);
 
@@ -66,26 +67,41 @@ export default function Layout() {
   useEffect(() => {
     if (!user) return;
     
+    const fetchUnreadMessagesCount = async () => {
+      const { count } = await supabase
+        .from('messages')
+        .select('*', { count: 'exact', head: true })
+        .eq('read', false)
+        .neq('sender_id', user._id);
+      if (count !== null) setUnreadMessagesCount(count);
+    };
+    
+    fetchUnreadMessagesCount();
+    
     const channel = supabase
       .channel('global-messages')
       .on(
         'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'messages' },
+        { event: '*', schema: 'public', table: 'messages' },
         async (payload) => {
-          const newMsg = payload.new;
-          if (newMsg.sender_id !== user._id) {
-             const { data: sender } = await supabase.from('profiles').select('name, avatar').eq('id', newMsg.sender_id).single();
-             if (sender) {
-                toast((t) => (
-                   <div className="flex items-center gap-3 cursor-pointer" onClick={() => { toast.dismiss(t.id); navigate('/dashboard/messages'); }}>
-                      <img src={sender.avatar || `https://ui-avatars.com/api/?name=${sender.name}`} className="w-10 h-10 rounded-full object-cover" />
-                      <div className="min-w-0">
-                         <p className="font-bold text-sm text-ig-text dark:text-ig-text-light truncate">{sender.name} sent a message</p>
-                         <p className="text-xs text-ig-text-2 truncate max-w-[200px]">{newMsg.content}</p>
-                      </div>
-                   </div>
-                ), { duration: 5000 });
-             }
+          fetchUnreadMessagesCount();
+          
+          if (payload.eventType === 'INSERT') {
+            const newMsg = payload.new;
+            if (newMsg.sender_id !== user._id) {
+               const { data: sender } = await supabase.from('profiles').select('name, avatar').eq('id', newMsg.sender_id).single();
+               if (sender) {
+                  toast((t) => (
+                     <div className="flex items-center gap-3 cursor-pointer" onClick={() => { toast.dismiss(t.id); navigate('/dashboard/messages'); }}>
+                        <img src={sender.avatar || `https://ui-avatars.com/api/?name=${sender.name}`} className="w-10 h-10 rounded-full object-cover" />
+                        <div className="min-w-0">
+                           <p className="font-bold text-sm text-ig-text dark:text-ig-text-light truncate">{sender.name} sent a message</p>
+                           <p className="text-xs text-ig-text-2 truncate max-w-[200px]">{newMsg.content}</p>
+                        </div>
+                     </div>
+                  ), { duration: 5000 });
+               }
+            }
           }
         }
       )
@@ -105,7 +121,7 @@ export default function Layout() {
     { to: '/dashboard/upload', icon: HiOutlinePlusCircle, activeIcon: HiPlusCircle, label: 'Create' },
     { to: '/dashboard/bookmarks', icon: HiOutlineBookmark, activeIcon: HiBookmark, label: 'Saved' },
     { to: '/dashboard/pdf-tools', icon: HiOutlineBookOpen, activeIcon: HiOutlineBookOpen, label: 'PDF Tools' },
-    { to: '/dashboard/messages', icon: HiOutlineChat, activeIcon: HiChat, label: 'Messages' },
+    { to: '/dashboard/messages', icon: HiOutlineChat, activeIcon: HiChat, label: 'Messages', badge: unreadMessagesCount },
     { to: `/dashboard/profile/${user?._id}`, icon: HiOutlineUser, activeIcon: HiUser, label: 'Profile' },
   ];
 

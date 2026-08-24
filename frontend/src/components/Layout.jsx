@@ -5,8 +5,7 @@ import { useState, useEffect, lazy, Suspense } from 'react';
 import { getNotifications, getTotalUsers } from '../api';
 import logoImg from '../assets/logo.png';
 
-// Lazy load ChatBot — it's heavy and only needed when opened
-const ChatBot = lazy(() => import('./ChatBot'));
+
 import {
   HiHome,
   HiOutlineHome,
@@ -316,10 +315,7 @@ export default function Layout() {
         </div>
       </main>
 
-      {/* AI ChatBot — lazy loaded */}
-      <Suspense fallback={null}>
-        <ChatBot />
-      </Suspense>
+
 
       {/* Mobile Bottom Nav — Instagram-style */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-ig-bg dark:bg-ig-bg-dark border-t border-ig-separator dark:border-ig-separator-dark z-30 flex justify-around py-2 px-1 safe-area-pb">

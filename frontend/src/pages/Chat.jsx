@@ -188,12 +188,13 @@ export default function Chat() {
         return;
       }
 
+      // Generate UUID client-side to avoid RLS select restrictions during insert
+      const newConvoId = crypto.randomUUID();
+      
       // Create new conversation
-      const { data: newConvo, error: convoError } = await supabase
+      const { error: convoError } = await supabase
         .from('conversations')
-        .insert([{}])
-        .select()
-        .single();
+        .insert([{ id: newConvoId }]);
 
       if (convoError) throw convoError;
 
@@ -201,14 +202,14 @@ export default function Chat() {
       const { error: partError } = await supabase
         .from('conversation_participants')
         .insert([
-          { conversation_id: newConvo.id, user_id: user._id },
-          { conversation_id: newConvo.id, user_id: targetUser.id }
+          { conversation_id: newConvoId, user_id: user._id },
+          { conversation_id: newConvoId, user_id: targetUser.id }
         ]);
 
       if (partError) throw partError;
 
       const newConvoObj = {
-        id: newConvo.id,
+        id: newConvoId,
         otherUser: targetUser,
         latestMessage: 'Start a conversation!',
         updatedAt: new Date().toISOString()

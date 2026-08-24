@@ -3,6 +3,7 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
+import toast from 'react-hot-toast';
 import { HiPaperAirplane, HiOutlineChat, HiOutlineSearch, HiArrowLeft } from 'react-icons/hi';
 
 export default function Chat() {
@@ -121,6 +122,7 @@ export default function Chat() {
       setConversations(formattedConvos);
     } catch (error) {
       console.error('Error fetching conversations:', error);
+      if (error.message) toast.error('Failed to load chats: ' + error.message);
     } finally {
       setLoading(false);
     }
@@ -171,6 +173,7 @@ export default function Chat() {
       setSearchResults(data);
     } catch (error) {
       console.error('Error searching users:', error);
+      if (error.message) toast.error('Search failed: ' + error.message);
     } finally {
       setIsSearching(false);
     }
@@ -222,6 +225,7 @@ export default function Chat() {
       
     } catch (error) {
       console.error('Error creating conversation:', error);
+      toast.error('Could not start chat: ' + error.message);
     }
   };
 
@@ -251,6 +255,7 @@ export default function Chat() {
         
     } catch (error) {
       console.error('Error sending message:', error);
+      toast.error('Could not send: ' + error.message);
       setNewMessage(content); // restore on error
     }
   };

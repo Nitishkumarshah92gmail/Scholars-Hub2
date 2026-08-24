@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { supabase } from './lib/supabase';
 
-const API = axios.create({ baseURL: import.meta.env.VITE_API_URL || '/api' });
+const API = axios.create({ baseURL: 'https://scholars-hub2.onrender.com/api' });
 
 // Cache the session to avoid calling getSession() on every single API request
 let _cachedSession = null;

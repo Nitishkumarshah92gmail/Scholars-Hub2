@@ -3,6 +3,8 @@ import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { getNotifications, getTotalUsers } from '../api';
+import { supabase } from '../lib/supabase';
+import toast from 'react-hot-toast';
 import logoImg from '../assets/logo.png';
 
 
@@ -60,6 +62,37 @@ export default function Layout() {
     return () => { clearInterval(notifInterval); clearInterval(usersInterval); };
   }, []);
 
+  useEffect(() => {
+    if (!user) return;
+    
+    const channel = supabase
+      .channel('global-messages')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'messages' },
+        async (payload) => {
+          const newMsg = payload.new;
+          if (newMsg.sender_id !== user._id) {
+             const { data: sender } = await supabase.from('profiles').select('name, avatar').eq('id', newMsg.sender_id).single();
+             if (sender) {
+                toast((t) => (
+                   <div className="flex items-center gap-3 cursor-pointer" onClick={() => { toast.dismiss(t.id); navigate('/dashboard/messages'); }}>
+                      <img src={sender.avatar || `https://ui-avatars.com/api/?name=${sender.name}`} className="w-10 h-10 rounded-full object-cover" />
+                      <div className="min-w-0">
+                         <p className="font-bold text-sm text-ig-text dark:text-ig-text-light truncate">{sender.name} sent a message</p>
+                         <p className="text-xs text-ig-text-2 truncate max-w-[200px]">{newMsg.content}</p>
+                      </div>
+                   </div>
+                ), { duration: 5000 });
+             }
+          }
+        }
+      )
+      .subscribe();
+      
+    return () => { supabase.removeChannel(channel); };
+  }, [user, navigate]);
+
   const handleLogout = async () => {
     await logoutUser();
     navigate('/login');
@@ -71,13 +104,6 @@ export default function Layout() {
     { to: '/dashboard/upload', icon: HiOutlinePlusCircle, activeIcon: HiPlusCircle, label: 'Create' },
     { to: '/dashboard/bookmarks', icon: HiOutlineBookmark, activeIcon: HiBookmark, label: 'Saved' },
     { to: '/dashboard/pdf-tools', icon: HiOutlineBookOpen, activeIcon: HiOutlineBookOpen, label: 'PDF Tools' },
-    {
-      to: '/dashboard/notifications',
-      icon: HiOutlineBell,
-      activeIcon: HiBell,
-      label: 'Notifications',
-      badge: unreadCount,
-    },
     { to: '/dashboard/messages', icon: HiOutlineChat, activeIcon: HiChat, label: 'Messages' },
     { to: `/dashboard/profile/${user?._id}`, icon: HiOutlineUser, activeIcon: HiUser, label: 'Profile' },
   ];
@@ -87,8 +113,8 @@ export default function Layout() {
     navItems[0], // Home
     navItems[1], // Search
     navItems[2], // Create
-    navItems[6], // Messages
-    navItems[7], // Profile
+    navItems[5], // Messages
+    navItems[6], // Profile
   ];
 
   return (
@@ -299,7 +325,28 @@ export default function Layout() {
       )}
 
       {/* Main Content */}
-      <main className="flex-1 md:ml-[245px] xl:ml-[335px] pb-16 md:pb-0 pt-14 md:pt-0">
+      <main className="flex-1 md:ml-[245px] xl:ml-[335px] pb-16 md:pb-0 pt-14 md:pt-0 relative">
+        {/* Desktop Top Right Actions */}
+        <div className="hidden md:flex fixed top-4 right-6 z-40 items-center gap-4">
+          <NavLink
+            to="/dashboard/notifications"
+            className={({ isActive }) =>
+              `relative p-2.5 rounded-full transition-colors ${isActive ? 'bg-gray-100 dark:bg-ig-bg-elevated' : 'hover:bg-gray-100 dark:hover:bg-ig-bg-elevated'} text-ig-text dark:text-ig-text-light`
+            }
+          >
+            {({ isActive }) => (
+              <>
+                {isActive ? <HiBell className="w-6 h-6" /> : <HiOutlineBell className="w-6 h-6" />}
+                {unreadCount > 0 && (
+                  <span className="absolute top-1 right-1 bg-ig-badge text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </span>
+                )}
+              </>
+            )}
+          </NavLink>
+        </div>
+
         <div className="max-w-[630px] mx-auto px-4 py-6">
           <Outlet />
         </div>

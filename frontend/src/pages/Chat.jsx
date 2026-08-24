@@ -4,7 +4,8 @@ import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
 import toast from 'react-hot-toast';
-import { HiPaperAirplane, HiOutlineChat, HiOutlineSearch, HiArrowLeft } from 'react-icons/hi';
+import { HiPaperAirplane, HiOutlineChat, HiOutlineSearch, HiArrowLeft, HiPaperClip, HiDocumentText } from 'react-icons/hi';
+import { uploadFiles } from '../api';
 
 export default function Chat() {
   const { user } = useAuth();
@@ -16,8 +17,10 @@ export default function Chat() {
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isUploading, setIsUploading] = useState(false);
   
   const messagesEndRef = useRef(null);
+  const fileInputRef = useRef(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -259,6 +262,90 @@ export default function Chat() {
     }
   };
 
+  const handleFileSelect = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 50 * 1024 * 1024) {
+      toast.error('File size must be less than 50MB');
+      return;
+    }
+
+    setIsUploading(true);
+    
+    // Determine attachment type
+    let attachmentType = 'file';
+    if (file.type.startsWith('image/')) attachmentType = 'image';
+    else if (file.type.startsWith('video/')) attachmentType = 'video';
+    else if (file.type.startsWith('audio/')) attachmentType = 'audio';
+    else if (file.type === 'application/pdf') attachmentType = 'pdf';
+    else {
+      toast.error('Unsupported file type. Only images, videos, audio, and PDFs are allowed.');
+      setIsUploading(false);
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append('files', file);
+      formData.append('subfolder', 'chat');
+      
+      const res = await uploadFiles(formData);
+      const fileUrl = res.data.urls[0].fileUrl;
+      
+      // Send message with attachment
+      const { error } = await supabase
+        .from('messages')
+        .insert([{
+          conversation_id: activeConversation.id,
+          sender_id: user._id,
+          content: 'Sent an attachment: ' + file.name,
+          attachment_url: fileUrl,
+          attachment_type: attachmentType,
+          attachment_name: file.name
+        }]);
+        
+      if (error) throw error;
+      
+      // Update conversation timestamp
+      await supabase
+        .from('conversations')
+        .update({ updated_at: new Date().toISOString() })
+        .eq('id', activeConversation.id);
+        
+    } catch (error) {
+      console.error('Error uploading attachment:', error);
+      toast.error('Failed to upload attachment: ' + (error.message || 'Unknown error'));
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
+  const renderAttachment = (msg) => {
+    if (!msg.attachment_url) return null;
+    
+    switch (msg.attachment_type) {
+      case 'image':
+        return <img src={msg.attachment_url} alt={msg.attachment_name} className="max-w-full rounded-lg mt-2 max-h-64 object-cover cursor-pointer" onClick={() => window.open(msg.attachment_url, '_blank')} />;
+      case 'video':
+        return <video src={msg.attachment_url} controls className="max-w-full rounded-lg mt-2 max-h-64" />;
+      case 'audio':
+        return <audio src={msg.attachment_url} controls className="w-full mt-2 max-w-[200px]" />;
+      case 'pdf':
+        return (
+          <a href={msg.attachment_url} target="_blank" rel="noopener noreferrer" className={`flex items-center gap-2 mt-2 p-2 rounded-lg transition-colors ${msg.sender_id === user._id ? 'bg-white/20 hover:bg-white/30' : 'bg-gray-100 dark:bg-ig-bg-elevated hover:bg-gray-200 dark:hover:bg-ig-bg-elevated/80'}`}>
+            <HiDocumentText className={`w-8 h-8 ${msg.sender_id === user._id ? 'text-white' : 'text-red-500'}`} />
+            <span className="text-sm font-semibold truncate max-w-[150px]">{msg.attachment_name}</span>
+          </a>
+        );
+      default:
+        return (
+          <a href={msg.attachment_url} target="_blank" rel="noopener noreferrer" className="underline mt-2 inline-block text-sm">Download Attachment</a>
+        );
+    }
+  };
+
   return (
     <div className="h-[calc(100vh-140px)] md:h-[calc(100vh-50px)] flex bg-ig-bg dark:bg-ig-bg-dark rounded-xl border border-ig-separator dark:border-ig-separator-dark overflow-hidden shadow-sm">
       
@@ -395,7 +482,10 @@ export default function Chat() {
                             : 'bg-white dark:bg-ig-bg-elevated text-ig-text dark:text-ig-text-light border border-ig-separator/50 dark:border-ig-separator-dark/50 rounded-bl-sm shadow-sm'
                         }`}
                       >
-                        {msg.content}
+                        {(!msg.attachment_url || msg.content !== ('Sent an attachment: ' + msg.attachment_name)) && (
+                          <p className="whitespace-pre-wrap break-words">{msg.content}</p>
+                        )}
+                        {renderAttachment(msg)}
                       </div>
                     </motion.div>
                   );
@@ -407,6 +497,25 @@ export default function Chat() {
             {/* Message Input */}
             <div className="p-3 bg-white dark:bg-ig-bg-dark border-t border-ig-separator dark:border-ig-separator-dark">
               <form onSubmit={sendMessage} className="flex items-end gap-2">
+                <input 
+                  type="file" 
+                  ref={fileInputRef} 
+                  hidden 
+                  accept="image/*,video/*,audio/*,application/pdf"
+                  onChange={handleFileSelect} 
+                />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isUploading}
+                  className="p-3 bg-gray-100 dark:bg-ig-bg-elevated hover:bg-gray-200 dark:hover:bg-ig-separator-dark rounded-full text-ig-text dark:text-ig-text-light transition-colors shrink-0"
+                >
+                  {isUploading ? (
+                    <div className="w-5 h-5 border-2 border-ig-primary border-t-transparent rounded-full animate-spin"></div>
+                  ) : (
+                    <HiPaperClip className="w-5 h-5" />
+                  )}
+                </button>
                 <div className="flex-1 bg-gray-100 dark:bg-ig-bg-elevated rounded-3xl p-1 flex items-center border border-transparent focus-within:border-ig-primary/30 transition-colors">
                   <textarea
                     value={newMessage}

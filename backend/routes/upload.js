@@ -15,6 +15,7 @@ const ALL_ALLOWED_MIMETYPES = [
     'application/pdf',
     'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml',
     'video/mp4', 'video/webm', 'video/quicktime',
+    'audio/mpeg', 'audio/webm', 'audio/wav', 'audio/ogg', 'audio/x-m4a', 'audio/mp4'
 ];
 
 // Configure multer (memory storage — files stay in buffer)
@@ -35,7 +36,7 @@ const upload = multer({
  * Upload file to Supabase Storage and return public URL
  */
 async function uploadToSupabase(buffer, originalName, mimetype, subfolder) {
-    const ALLOWED_SUBFOLDERS = ['posts', 'avatars', 'pdfs', 'images'];
+    const ALLOWED_SUBFOLDERS = ['posts', 'avatars', 'pdfs', 'images', 'chat'];
     if (!ALLOWED_SUBFOLDERS.includes(subfolder)) subfolder = 'posts';
 
     const ext = path.extname(originalName).replace(/[^a-zA-Z0-9.]/g, '');
@@ -109,7 +110,7 @@ router.post('/files', auth, upload.array('files', 5), async (req, res) => {
             return res.status(400).json({ error: 'No files provided.' });
         }
 
-        const ALLOWED_SUBFOLDERS = ['posts', 'avatars', 'pdfs', 'images'];
+        const ALLOWED_SUBFOLDERS = ['posts', 'avatars', 'pdfs', 'images', 'chat'];
         const subfolder = ALLOWED_SUBFOLDERS.includes(req.body.subfolder) ? req.body.subfolder : 'posts';
         const results = [];
 
@@ -156,7 +157,7 @@ router.delete('/:fileId', auth, async (req, res) => {
             await googleDrive.deleteFile(fileId);
         } else {
             // Try deleting from each subfolder in Supabase Storage
-            for (const sub of ['posts', 'avatars', 'pdfs', 'images']) {
+            for (const sub of ['posts', 'avatars', 'pdfs', 'images', 'chat']) {
                 const { error } = await supabase.storage
                     .from(SUPABASE_BUCKET)
                     .remove([`${sub}/${fileId}`]);

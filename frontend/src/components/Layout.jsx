@@ -31,6 +31,7 @@ import {
   HiUserGroup,
   HiChat,
   HiOutlineChat,
+  HiX,
 } from 'react-icons/hi';
 
 export default function Layout() {

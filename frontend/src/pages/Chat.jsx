@@ -67,8 +67,7 @@ export default function Chat() {
         .from('conversation_participants')
         .select(`
           conversation_id,
-          conversations (id, updated_at),
-          other_participant:conversation_participants!inner(user_id)
+          conversations (id, updated_at)
         `)
         .eq('user_id', user._id);
 

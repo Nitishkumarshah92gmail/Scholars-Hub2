@@ -161,14 +161,25 @@ export default function Register() {
           </p>
         </div>
 
-        {/* Log In Card */}
+        {/* Login Link Card */}
         <div className="card p-5 text-center">
-          <p className="text-sm text-ig-text dark:text-ig-text-light">
-            Have an account?{' '}
+          <p className="text-sm text-ig-text dark:text-ig-text-light mb-3">
+            Already have an account?{' '}
             <Link to="/login" className="text-ig-primary font-semibold hover:text-ig-primary-hover">
               Log in
             </Link>
           </p>
+        </div>
+
+        {/* Get the App Card */}
+        <div className="text-center pt-2">
+          <p className="text-sm text-ig-text dark:text-ig-text-light mb-3">Get the App.</p>
+          <div className="flex justify-center gap-2">
+            <a href="/scholars-hub.apk" download className="bg-white dark:bg-ig-bg-elevated hover:bg-gray-50 dark:hover:bg-ig-separator-dark transition-colors px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-semibold shadow-sm border border-ig-separator dark:border-ig-separator-dark text-ig-text dark:text-ig-text-light">
+              <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 24 24"><path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993.0004.5511-.4482.9997-.9993.9997m-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993 0 .5511-.4482.9997-.9993.9997m11.4045-6.02l1.9973-3.4592a.416.416 0 0 0-.1521-.5676.416.416 0 0 0-.5676.1521l-2.0222 3.503c-1.4259-.652-2.9997-1.0182-4.6627-1.0182-1.6631 0-3.2369.3662-4.6627 1.0182l-2.0222-3.503a.416.416 0 0 0-.5676-.1521.416.416 0 0 0-.1521.5676l1.9973 3.4592C2.695 11.2335.2536 14.6191.0772 18.5912h23.8456c-.1764-3.9721-2.6178-7.3577-6.046-9.2698"/></svg>
+              Download for Android
+            </a>
+          </div>
         </div>
       </div>
     </div>

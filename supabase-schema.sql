@@ -193,3 +193,109 @@ CREATE POLICY "Allow authenticated deletes" ON storage.objects
 
 CREATE POLICY "Allow authenticated updates" ON storage.objects
   FOR UPDATE TO authenticated USING (bucket_id = 'studyshare') WITH CHECK (bucket_id = 'studyshare');
+
+-- ============================================================
+-- 3. CHAT SYSTEM
+-- ============================================================
+
+-- Conversations
+CREATE TABLE IF NOT EXISTS conversations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Conversation Participants
+CREATE TABLE IF NOT EXISTS conversation_participants (
+  conversation_id UUID REFERENCES conversations(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+  joined_at TIMESTAMPTZ DEFAULT NOW(),
+  PRIMARY KEY (conversation_id, user_id)
+);
+
+-- Messages
+CREATE TABLE IF NOT EXISTS messages (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  conversation_id UUID REFERENCES conversations(id) ON DELETE CASCADE,
+  sender_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+  content TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  read BOOLEAN DEFAULT false
+);
+
+-- Turn on Realtime for messages and conversations so the frontend receives instant updates
+ALTER PUBLICATION supabase_realtime ADD TABLE messages;
+ALTER PUBLICATION supabase_realtime ADD TABLE conversations;
+ALTER PUBLICATION supabase_realtime ADD TABLE conversation_participants;
+
+-- RLS (Row Level Security)
+ALTER TABLE conversations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE conversation_participants ENABLE ROW LEVEL SECURITY;
+ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
+
+-- Allow users to view their conversations
+CREATE POLICY "Users can view their conversations"
+ON conversations FOR SELECT
+USING (
+  EXISTS (
+    SELECT 1 FROM conversation_participants
+    WHERE conversation_participants.conversation_id = conversations.id
+    AND conversation_participants.user_id = auth.uid()
+  )
+);
+
+-- Allow users to view conversation participants for their conversations
+CREATE POLICY "Users can view participants"
+ON conversation_participants FOR SELECT
+USING (
+  EXISTS (
+    SELECT 1 FROM conversation_participants cp
+    WHERE cp.conversation_id = conversation_participants.conversation_id
+    AND cp.user_id = auth.uid()
+  )
+);
+
+-- Allow users to create conversation participants
+CREATE POLICY "Users can create participants"
+ON conversation_participants FOR INSERT
+WITH CHECK (true);
+
+-- Allow users to create conversations
+CREATE POLICY "Users can create conversations"
+ON conversations FOR INSERT
+WITH CHECK (true);
+
+-- Allow users to view messages in their conversations
+CREATE POLICY "Users can view messages"
+ON messages FOR SELECT
+USING (
+  EXISTS (
+    SELECT 1 FROM conversation_participants
+    WHERE conversation_participants.conversation_id = messages.conversation_id
+    AND conversation_participants.user_id = auth.uid()
+  )
+);
+
+-- Allow users to insert messages to their conversations
+CREATE POLICY "Users can insert messages"
+ON messages FOR INSERT
+WITH CHECK (
+  EXISTS (
+    SELECT 1 FROM conversation_participants
+    WHERE conversation_participants.conversation_id = messages.conversation_id
+    AND conversation_participants.user_id = auth.uid()
+  )
+  AND sender_id = auth.uid()
+);
+
+-- Allow users to update messages in their conversations (for marking as read)
+CREATE POLICY "Users can update messages"
+ON messages FOR UPDATE
+USING (
+  EXISTS (
+    SELECT 1 FROM conversation_participants
+    WHERE conversation_participants.conversation_id = messages.conversation_id
+    AND conversation_participants.user_id = auth.uid()
+  )
+);
+

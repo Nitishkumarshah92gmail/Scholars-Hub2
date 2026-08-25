@@ -33,6 +33,7 @@ import {
   HiChat,
   HiOutlineChat,
   HiX,
+  HiDownload,
 } from 'react-icons/hi';
 
 export default function Layout() {
@@ -236,6 +237,10 @@ export default function Layout() {
 
         {/* Bottom section — always visible */}
         <div className="px-3 py-2 space-y-0.5 border-t border-ig-separator/30 dark:border-ig-separator-dark/30">
+          <a href="/scholars-hub.apk" download className="nav-link w-full text-ig-primary hover:text-ig-primary">
+            <HiDownload className="w-6 h-6" />
+            <span className="hidden xl:inline font-bold">Get the App</span>
+          </a>
           <button onClick={toggleTheme} className="nav-link w-full">
             {darkMode ? <HiSun className="w-6 h-6" /> : <HiMoon className="w-6 h-6" />}
             <span className="hidden xl:inline">{darkMode ? 'Light Mode' : 'Dark Mode'}</span>
@@ -351,6 +356,12 @@ export default function Layout() {
               </a>
 
               <div className="border-t border-ig-separator/30 dark:border-ig-separator-dark/30 my-2" />
+
+              {/* Get the App */}
+              <a href="/scholars-hub.apk" download className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-ig-bg-elevated text-ig-primary font-bold w-full">
+                <HiDownload className="w-5 h-5" />
+                <span>Get the App</span>
+              </a>
 
               {/* Theme Toggle */}
               <button onClick={() => { toggleTheme(); setMobileMenuOpen(false); }} className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-ig-bg-elevated text-ig-text dark:text-ig-text-light w-full">

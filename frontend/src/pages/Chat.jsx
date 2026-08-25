@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
 import toast from 'react-hot-toast';
-import { HiPaperAirplane, HiOutlineChat, HiOutlineSearch, HiArrowLeft, HiPaperClip, HiDocumentText, HiTrash } from 'react-icons/hi';
+import { HiPaperAirplane, HiOutlineChat, HiOutlineSearch, HiArrowLeft, HiPaperClip, HiDocumentText, HiTrash, HiPencil, HiCheck, HiX } from 'react-icons/hi';
 import { uploadFiles, deleteFile } from '../api';
 
 export default function Chat() {
@@ -18,6 +18,8 @@ export default function Chat() {
   const [isSearching, setIsSearching] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
+  const [editingMessageId, setEditingMessageId] = useState(null);
+  const [editContent, setEditContent] = useState('');
   
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -294,6 +296,42 @@ export default function Chat() {
     }
   };
 
+  const handleEditMessage = async (msgId) => {
+    if (!editContent.trim()) return;
+    try {
+      const { error } = await supabase
+        .from('messages')
+        .update({ content: editContent.trim() })
+        .eq('id', msgId)
+        .eq('sender_id', user._id);
+        
+      if (error) throw error;
+      
+      setMessages(prev => prev.map(m => m.id === msgId ? { ...m, content: editContent.trim() } : m));
+      toast.success('Message updated');
+      setEditingMessageId(null);
+      setEditContent('');
+    } catch (err) {
+      console.error('Error editing message:', err);
+      toast.error('Failed to edit: ' + err.message);
+    }
+  };
+
+  const renderContentWithLinks = (text, isMine) => {
+    if (!text) return null;
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return text.split(urlRegex).map((part, i) => {
+      if (part.match(urlRegex)) {
+        return (
+          <a key={i} href={part} target="_blank" rel="noopener noreferrer" className={`underline font-semibold hover:opacity-80 transition-opacity break-all ${isMine ? 'text-white' : 'text-ig-primary'}`}>
+            {part}
+          </a>
+        );
+      }
+      return <span key={i} className="whitespace-pre-wrap break-words">{part}</span>;
+    });
+  };
+
   const handleFileSelect = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -359,14 +397,18 @@ export default function Chat() {
     
     switch (msg.attachment_type) {
       case 'image':
-        return <img src={msg.attachment_url} alt={msg.attachment_name} className="max-w-full rounded-lg mt-2 max-h-64 object-cover cursor-pointer" onClick={() => window.open(msg.attachment_url, '_blank')} />;
+        return (
+          <a href={msg.attachment_url} target="_blank" rel="noopener noreferrer" className="block mt-2">
+            <img src={msg.attachment_url} alt={msg.attachment_name} className="max-w-full rounded-lg max-h-64 object-cover" />
+          </a>
+        );
       case 'video':
         return <video src={msg.attachment_url} controls className="max-w-full rounded-lg mt-2 max-h-64" />;
       case 'audio':
         return <audio src={msg.attachment_url} controls className="w-full mt-2 max-w-[200px]" />;
       case 'pdf':
         return (
-          <a href={msg.attachment_url} target="_blank" rel="noopener noreferrer" className={`flex items-center gap-2 mt-2 p-2 rounded-lg transition-colors ${msg.sender_id === user._id ? 'bg-white/20 hover:bg-white/30' : 'bg-gray-100 dark:bg-ig-bg-elevated hover:bg-gray-200 dark:hover:bg-ig-bg-elevated/80'}`}>
+          <a href={msg.attachment_url} target="_blank" rel="noopener noreferrer" className={`flex items-center gap-2 mt-2 p-2 rounded-lg transition-colors ${msg.sender_id === user._id ? 'bg-white/20 hover:bg-white/30 text-white' : 'bg-gray-100 dark:bg-ig-bg-elevated hover:bg-gray-200 dark:hover:bg-ig-bg-elevated/80'}`}>
             <HiDocumentText className={`w-8 h-8 ${msg.sender_id === user._id ? 'text-white' : 'text-red-500'}`} />
             <span className="text-sm font-semibold truncate max-w-[150px]">{msg.attachment_name}</span>
           </a>
@@ -509,13 +551,25 @@ export default function Chat() {
                       )}
                       <div className="flex items-center gap-2 max-w-[85%]">
                         {isMine && (
-                          <button
-                            onClick={() => deleteMessage(msg.id)}
-                            className="p-2 text-ig-error opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity rounded-full hover:bg-gray-100 dark:hover:bg-ig-bg-elevated"
-                            title="Delete message"
-                          >
-                            <HiTrash className="w-4 h-4" />
-                          </button>
+                          <div className="flex flex-col gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+                            <button
+                              onClick={() => {
+                                setEditingMessageId(msg.id);
+                                setEditContent(msg.content);
+                              }}
+                              className="p-2 text-ig-text-2 hover:text-ig-primary rounded-full hover:bg-gray-100 dark:hover:bg-ig-bg-elevated"
+                              title="Edit message"
+                            >
+                              <HiPencil className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => deleteMessage(msg.id)}
+                              className="p-2 text-ig-error rounded-full hover:bg-gray-100 dark:hover:bg-ig-bg-elevated"
+                              title="Delete message"
+                            >
+                              <HiTrash className="w-4 h-4" />
+                            </button>
+                          </div>
                         )}
                         <div 
                           className={`px-4 py-2 rounded-2xl text-sm ${
@@ -524,10 +578,34 @@ export default function Chat() {
                               : 'bg-white dark:bg-ig-bg-elevated text-ig-text dark:text-ig-text-light border border-ig-separator/50 dark:border-ig-separator-dark/50 rounded-bl-sm shadow-sm'
                           }`}
                         >
-                          {(!msg.attachment_url || msg.content !== ('Sent an attachment: ' + msg.attachment_name)) && (
-                            <p className="whitespace-pre-wrap break-words">{msg.content}</p>
+                          {editingMessageId === msg.id ? (
+                            <div className="flex items-center gap-2">
+                              <input 
+                                type="text" 
+                                value={editContent} 
+                                onChange={(e) => setEditContent(e.target.value)}
+                                className="text-ig-text dark:text-ig-text-light bg-white dark:bg-ig-bg-dark px-2 py-1 rounded border-none focus:ring-1 focus:ring-ig-primary text-sm min-w-[150px]"
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') handleEditMessage(msg.id);
+                                  if (e.key === 'Escape') setEditingMessageId(null);
+                                }}
+                                autoFocus
+                              />
+                              <button onClick={() => handleEditMessage(msg.id)} className="p-1 hover:bg-white/20 rounded-full" title="Save">
+                                <HiCheck className="w-4 h-4 text-white" />
+                              </button>
+                              <button onClick={() => setEditingMessageId(null)} className="p-1 hover:bg-white/20 rounded-full" title="Cancel">
+                                <HiX className="w-4 h-4 text-white" />
+                              </button>
+                            </div>
+                          ) : (
+                            <>
+                              {(!msg.attachment_url || msg.content !== ('Sent an attachment: ' + msg.attachment_name)) && (
+                                <div>{renderContentWithLinks(msg.content, isMine)}</div>
+                              )}
+                              {renderAttachment(msg)}
+                            </>
                           )}
-                          {renderAttachment(msg)}
                         </div>
                       </div>
                     </motion.div>

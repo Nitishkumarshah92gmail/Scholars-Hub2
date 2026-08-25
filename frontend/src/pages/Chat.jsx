@@ -4,8 +4,8 @@ import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
 import toast from 'react-hot-toast';
-import { HiPaperAirplane, HiOutlineChat, HiOutlineSearch, HiArrowLeft, HiPaperClip, HiDocumentText } from 'react-icons/hi';
-import { uploadFiles } from '../api';
+import { HiPaperAirplane, HiOutlineChat, HiOutlineSearch, HiArrowLeft, HiPaperClip, HiDocumentText, HiTrash } from 'react-icons/hi';
+import { uploadFiles, deleteFile } from '../api';
 
 export default function Chat() {
   const { user } = useAuth();
@@ -262,6 +262,38 @@ export default function Chat() {
     }
   };
 
+  const deleteMessage = async (msgId) => {
+    if (!window.confirm('Delete this message?')) return;
+    try {
+      // Find the message to get attachment URL
+      const msgToDelete = messages.find(m => m.id === msgId);
+
+      const { error } = await supabase
+        .from('messages')
+        .delete()
+        .eq('id', msgId)
+        .eq('sender_id', user._id); // Ensure only sender can delete
+
+      if (error) throw error;
+      
+      setMessages(prev => prev.filter(m => m.id !== msgId));
+      toast.success('Message deleted');
+
+      // Attempt to delete physical file from storage if it exists
+      if (msgToDelete?.attachment_url) {
+        const fileId = msgToDelete.attachment_url.split('/').pop().split('?')[0];
+        try {
+          await deleteFile(fileId);
+        } catch (err) {
+          console.warn('Could not delete attachment file:', err);
+        }
+      }
+    } catch (err) {
+      console.error('Error deleting message:', err);
+      toast.error('Failed to delete message: ' + err.message);
+    }
+  };
+
   const handleFileSelect = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -468,24 +500,35 @@ export default function Chat() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       key={msg.id} 
-                      className={`flex flex-col ${isMine ? 'items-end' : 'items-start'}`}
+                      className={`flex flex-col ${isMine ? 'items-end' : 'items-start'} group`}
                     >
                       {showTime && (
                         <span className="text-[10px] text-ig-text-2 mb-2 mt-4">
                           {format(new Date(msg.created_at), 'MMM d, h:mm a')}
                         </span>
                       )}
-                      <div 
-                        className={`max-w-[75%] px-4 py-2 rounded-2xl text-sm ${
-                          isMine 
-                            ? 'bg-gradient-to-r from-ig-primary to-blue-500 text-white rounded-br-sm shadow-sm' 
-                            : 'bg-white dark:bg-ig-bg-elevated text-ig-text dark:text-ig-text-light border border-ig-separator/50 dark:border-ig-separator-dark/50 rounded-bl-sm shadow-sm'
-                        }`}
-                      >
-                        {(!msg.attachment_url || msg.content !== ('Sent an attachment: ' + msg.attachment_name)) && (
-                          <p className="whitespace-pre-wrap break-words">{msg.content}</p>
+                      <div className="flex items-center gap-2 max-w-[85%]">
+                        {isMine && (
+                          <button
+                            onClick={() => deleteMessage(msg.id)}
+                            className="p-2 text-ig-error opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity rounded-full hover:bg-gray-100 dark:hover:bg-ig-bg-elevated"
+                            title="Delete message"
+                          >
+                            <HiTrash className="w-4 h-4" />
+                          </button>
                         )}
-                        {renderAttachment(msg)}
+                        <div 
+                          className={`px-4 py-2 rounded-2xl text-sm ${
+                            isMine 
+                              ? 'bg-gradient-to-r from-ig-primary to-blue-500 text-white rounded-br-sm shadow-sm' 
+                              : 'bg-white dark:bg-ig-bg-elevated text-ig-text dark:text-ig-text-light border border-ig-separator/50 dark:border-ig-separator-dark/50 rounded-bl-sm shadow-sm'
+                          }`}
+                        >
+                          {(!msg.attachment_url || msg.content !== ('Sent an attachment: ' + msg.attachment_name)) && (
+                            <p className="whitespace-pre-wrap break-words">{msg.content}</p>
+                          )}
+                          {renderAttachment(msg)}
+                        </div>
                       </div>
                     </motion.div>
                   );

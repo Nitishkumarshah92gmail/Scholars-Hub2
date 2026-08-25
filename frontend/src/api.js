@@ -83,5 +83,6 @@ export const uploadAvatar = (formData) =>
   API.post('/upload/avatar', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
+export const deleteFile = (fileId) => API.delete(`/upload/${fileId}`);
 
 export default API;

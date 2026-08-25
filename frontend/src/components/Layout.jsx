@@ -237,10 +237,6 @@ export default function Layout() {
 
         {/* Bottom section — always visible */}
         <div className="px-3 py-2 space-y-0.5 border-t border-ig-separator/30 dark:border-ig-separator-dark/30">
-          <a href="/scholars-hub.apk" download className="nav-link w-full text-ig-primary hover:text-ig-primary">
-            <HiDownload className="w-6 h-6" />
-            <span className="hidden xl:inline font-bold">Get the App</span>
-          </a>
           <button onClick={toggleTheme} className="nav-link w-full">
             {darkMode ? <HiSun className="w-6 h-6" /> : <HiMoon className="w-6 h-6" />}
             <span className="hidden xl:inline">{darkMode ? 'Light Mode' : 'Dark Mode'}</span>
@@ -401,6 +397,10 @@ export default function Layout() {
       <main className="flex-1 md:ml-[245px] xl:ml-[335px] pb-16 md:pb-0 pt-14 md:pt-0 relative">
         {/* Desktop Top Right Actions */}
         <div className="hidden md:flex fixed top-4 right-6 z-40 items-center gap-4">
+          <a href="/scholars-hub.apk" download className="flex items-center gap-2 px-4 py-2 bg-ig-primary hover:bg-blue-600 text-white text-sm font-bold rounded-full transition-colors shadow-sm">
+            <HiDownload className="w-4 h-4" />
+            Get App
+          </a>
           <NavLink
             to="/dashboard/notifications"
             className={({ isActive }) =>

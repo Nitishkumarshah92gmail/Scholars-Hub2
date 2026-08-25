@@ -6,6 +6,7 @@ import { getNotifications, getTotalUsers } from '../api';
 import { supabase } from '../lib/supabase';
 import toast from 'react-hot-toast';
 import logoImg from '../assets/logo.png';
+import { LocalNotifications } from '@capacitor/local-notifications';
 
 
 import {
@@ -61,8 +62,31 @@ export default function Layout() {
         .then((res) => setTotalUsers(res.data.totalUsers || 0))
         .catch(() => { });
     }, 300000);
-    return () => { clearInterval(notifInterval); clearInterval(usersInterval); };
-  }, []);
+
+    const requestPushPermissions = async () => {
+      try {
+        const { display } = await LocalNotifications.requestPermissions();
+        console.log('LocalNotifications permission:', display);
+      } catch (err) {
+        console.error('Failed to request notification permissions', err);
+      }
+    };
+    requestPushPermissions();
+
+    // Listen for notification taps
+    LocalNotifications.addListener('localNotificationActionPerformed', (notificationAction) => {
+      const data = notificationAction.notification.extra?.data;
+      if (data) {
+        navigate(data);
+      }
+    });
+
+    return () => { 
+      clearInterval(notifInterval); 
+      clearInterval(usersInterval); 
+      LocalNotifications.removeAllListeners();
+    };
+  }, [navigate]);
 
   useEffect(() => {
     if (!user) return;
@@ -91,6 +115,7 @@ export default function Layout() {
             if (newMsg.sender_id !== user._id) {
                const { data: sender } = await supabase.from('profiles').select('name, avatar').eq('id', newMsg.sender_id).single();
                if (sender) {
+                  // Show in-app toast
                   toast((t) => (
                      <div className="flex items-center gap-3 cursor-pointer" onClick={() => { toast.dismiss(t.id); navigate('/dashboard/messages'); }}>
                         <img src={sender.avatar || `https://ui-avatars.com/api/?name=${sender.name}`} className="w-10 h-10 rounded-full object-cover" />
@@ -100,6 +125,26 @@ export default function Layout() {
                         </div>
                      </div>
                   ), { duration: 5000 });
+                  
+                  // Trigger local push notification for Android
+                  try {
+                    LocalNotifications.schedule({
+                      notifications: [
+                        {
+                          title: `${sender.name} sent a message`,
+                          body: newMsg.content,
+                          id: Math.floor(Math.random() * 2147483647),
+                          schedule: { at: new Date(Date.now() + 100) }, // Trigger immediately
+                          actionTypeId: '',
+                          extra: {
+                            data: '/dashboard/messages'
+                          }
+                        }
+                      ]
+                    });
+                  } catch (err) {
+                    console.error('Failed to schedule local notification', err);
+                  }
                }
             }
           }

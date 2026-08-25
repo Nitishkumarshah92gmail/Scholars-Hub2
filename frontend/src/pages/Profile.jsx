@@ -111,7 +111,11 @@ export default function Profile() {
           <div className="relative">
             <div className="avatar-ring p-[3px]">
               <img
-                src={profile.avatar || `https://ui-avatars.com/api/?name=${profile.name}&size=200`}
+                src={
+                  editForm?.avatarFile 
+                    ? URL.createObjectURL(editForm.avatarFile) 
+                    : (profile.avatar || `https://ui-avatars.com/api/?name=${profile.name}&size=200`)
+                }
                 alt={profile.name}
                 className="w-20 h-20 sm:w-36 sm:h-36 rounded-full object-cover"
               />

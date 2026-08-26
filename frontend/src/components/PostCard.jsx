@@ -213,7 +213,7 @@ export default memo(function PostCard({ post, onUpdate }) {
         // Fallback: extract ID from fileUrl if youtubeId is missing
         let videoId = post.youtubeId;
         if (!videoId && post.fileUrl) {
-          const m = post.fileUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
+          const m = post.fileUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/live\/)([a-zA-Z0-9_-]{11})/);
           if (m) videoId = m[1];
         }
         if (!videoId) return <div className="p-6 text-center text-ig-text-2">Invalid YouTube URL</div>;
@@ -250,7 +250,7 @@ export default memo(function PostCard({ post, onUpdate }) {
         let vidId = post.youtubeId || '';
         // Fallback: extract from fileUrl
         if (!vidId && !plId && post.fileUrl) {
-          const vm = post.fileUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+          const vm = post.fileUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/live\/)([a-zA-Z0-9_-]{11})/);
           if (vm) vidId = vm[1];
           const pm = post.fileUrl.match(/[?&]list=([a-zA-Z0-9_-]+)/);
           if (pm) {

@@ -16,6 +16,7 @@ import {
   HiMoon,
   HiArrowRight,
   HiGlobe,
+  HiDownload,
 } from 'react-icons/hi';
 
 export default function Landing() {
@@ -54,7 +55,7 @@ export default function Landing() {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-ig-bg/95 dark:bg-ig-bg-dark/95 backdrop-blur-sm border-b border-ig-separator dark:border-ig-separator-dark">
         <div className="max-w-[975px] mx-auto px-4 h-[60px] flex items-center justify-between">
           <h1 className="text-xl font-heading font-bold text-ig-text dark:text-ig-text-light flex items-center gap-2">
-            <img src={logoImg} alt="Scholars Hub" className="w-8 h-8 object-contain" />
+            <img src={logoImg} alt="Scholars Hub" className="w-8 h-8 rounded-full object-cover" />
             Scholars<span className="gradient-text"> Hub</span>
           </h1>
           <div className="flex items-center gap-3">
@@ -64,6 +65,14 @@ export default function Landing() {
             >
               {darkMode ? <HiSun className="w-5 h-5" /> : <HiMoon className="w-5 h-5" />}
             </button>
+            <a
+              href="/scholars-hub.apk"
+              download
+              className="hidden sm:flex items-center gap-1 text-ig-text-2 hover:text-ig-primary dark:hover:text-ig-primary-hover font-semibold text-sm transition-colors"
+            >
+              <HiDownload className="w-4 h-4" />
+              App
+            </a>
             <Link
               to="/login"
               className="text-ig-primary hover:text-ig-primary-hover font-semibold text-sm transition-colors"
@@ -125,6 +134,14 @@ export default function Landing() {
                 Get Started
                 <HiArrowRight className="w-4 h-4" />
               </Link>
+              <a 
+                href="/scholars-hub.apk" 
+                download
+                className="btn-outline text-base px-8 py-3 flex items-center gap-2 border-transparent bg-gray-100 hover:bg-gray-200 dark:bg-ig-bg-elevated dark:hover:bg-ig-separator-dark transition-colors"
+              >
+                <HiDownload className="w-5 h-5" />
+                Download App
+              </a>
               <Link
                 to="/login"
                 className="text-ig-text-2 hover:text-ig-text dark:hover:text-ig-text-light font-semibold transition-colors flex items-center gap-2"
@@ -225,7 +242,7 @@ export default function Landing() {
         <div className="max-w-[975px] mx-auto flex flex-col items-center gap-3">
           <div className="flex flex-col sm:flex-row items-center justify-between w-full gap-3">
             <div className="flex items-center gap-2">
-              <img src={logoImg} alt="Scholars Hub" className="w-6 h-6 object-contain" />
+              <img src={logoImg} alt="Scholars Hub" className="w-6 h-6 rounded-full object-cover" />
               <span className="font-heading font-bold text-sm text-ig-text dark:text-ig-text-light">
                 Scholars<span className="gradient-text"> Hub</span>
               </span>

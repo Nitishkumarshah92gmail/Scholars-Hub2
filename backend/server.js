@@ -52,6 +52,25 @@ if (require.main === module) {
   app.listen(PORT, () => {
     console.log(`StudyShare server running on port ${PORT} (Supabase + Google Drive)`);
 
+    // --- Keep-alive self-ping (prevents Render free-tier cold starts) ---
+    // Render spins down free services after 15 min of inactivity.
+    // This pings our own health endpoint every 14 minutes to stay awake.
+    const KEEP_ALIVE_INTERVAL_MS = 14 * 60 * 1000; // 14 minutes
+    const RENDER_URL = process.env.RENDER_EXTERNAL_URL; // Render sets this automatically
+    if (RENDER_URL) {
+      setInterval(() => {
+        const https = require('https');
+        https.get(`${RENDER_URL}/api/health`, (res) => {
+          console.log(`🏓 Keep-alive ping: ${res.statusCode}`);
+        }).on('error', (err) => {
+          console.error('🏓 Keep-alive ping failed:', err.message);
+        });
+      }, KEEP_ALIVE_INTERVAL_MS);
+      console.log('🏓 Keep-alive self-ping enabled (every 14 min)');
+    } else {
+      console.log('🏓 Keep-alive skipped (no RENDER_EXTERNAL_URL – running locally?)');
+    }
+
     // Test Google Drive on startup
     try {
       const googleDrive = require('./config/googleDrive');

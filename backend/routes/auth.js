@@ -69,18 +69,28 @@ router.get('/me', auth, async (req, res) => {
           .catch(() => ({ data: [] })),
       ]);
 
+      const followers = followersResult.data || [];
+      const following = followingResult.data || [];
       const bookmarkIds = (bookmarksResult.data || []).map((b) => b.post_id);
-      return res.json(transformUser(profile, followersResult.data || [], followingResult.data || [], bookmarkIds));
-    }
 
-    // Fallback: get from Supabase Auth token
-    const token = req.header('Authorization')?.replace('Bearer ', '');
-    const { data: { user } } = await supabase.auth.getUser(token);
-    if (user) {
-      return res.json(buildUserFromAuth(user));
+      res.json(transformUser(profile, followers, following, bookmarkIds));
+    } else {
+      // Fallback if profile doesn't exist yet in DB, ensure shape matches transformUser
+      res.json({
+        _id: req.user.id,
+        name: req.user.name,
+        email: req.user.email,
+        avatar: req.user.avatar,
+        bio: req.user.bio,
+        school: req.user.school,
+        subjects: req.user.subjects || [],
+        followers: [],
+        following: [],
+        bookmarks: [],
+        createdAt: req.user.created_at,
+        updatedAt: req.user.updated_at
+      });
     }
-
-    res.status(404).json({ error: 'Profile not found.' });
   } catch (error) {
     console.error('Get me error:', error);
     // Even on error, try to return auth-based profile

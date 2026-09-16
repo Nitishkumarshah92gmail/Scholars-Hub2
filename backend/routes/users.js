@@ -59,6 +59,16 @@ router.get('/stats/count', auth, async (req, res) => {
   }
 });
 
+// GET /api/users/debug/env — temporary diagnostic endpoint
+router.get('/debug/env', (req, res) => {
+  res.json({
+    hasUrl: !!process.env.SUPABASE_URL,
+    hasServiceKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+    hasAnonKey: !!process.env.SUPABASE_ANON_KEY,
+    urlPrefix: process.env.SUPABASE_URL ? process.env.SUPABASE_URL.substring(0, 15) + '...' : 'none',
+  });
+});
+
 router.get('/search/find', auth, async (req, res) => {
   try {
     const { q } = req.query;

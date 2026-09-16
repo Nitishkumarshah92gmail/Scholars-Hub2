@@ -104,11 +104,11 @@ export default function Profile() {
   }
 
   return (
-    <div className="relative min-h-screen">
-      <ParticleCanvas />
-      <div className="relative z-10">
-        {/* Profile Header — Instagram-style */}
-        <div className="flex items-start gap-6 sm:gap-12 mb-8 bg-ig-bg/50 dark:bg-[#0f0f13]/60 p-6 sm:p-8 rounded-[32px] border border-ig-separator dark:border-white/10 backdrop-blur-md shadow-ag-glass">
+    <div>
+      {/* Profile Header — Instagram-style */}
+      <div className="relative overflow-hidden flex items-start gap-6 sm:gap-12 mb-8 bg-ig-bg/50 dark:bg-[#0f0f13]/60 p-6 sm:p-8 rounded-[32px] border border-ig-separator dark:border-white/10 backdrop-blur-md shadow-ag-glass">
+        <ParticleCanvas />
+        <div className="relative z-10 flex items-start gap-6 sm:gap-12 w-full">
         {/* Avatar */}
         <div className="flex-shrink-0">
           <div className="relative">
@@ -176,6 +176,7 @@ export default function Profile() {
               ))}
             </div>
           )}
+        </div>
         </div>
       </div>
 

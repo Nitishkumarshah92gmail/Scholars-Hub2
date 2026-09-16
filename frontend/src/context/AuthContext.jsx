@@ -35,14 +35,10 @@ export function AuthProvider({ children }) {
   const fetchProfile = async (accessToken, supabaseUser = null) => {
     try {
       const apiUrl = import.meta.env.VITE_API_URL || '/api';
-      const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 10000); // 10 s timeout
       try {
         const res = await fetch(`${apiUrl}/auth/me`, {
           headers: { Authorization: `Bearer ${accessToken}` },
-          signal: controller.signal,
         });
-        clearTimeout(timer);
         if (res.ok) {
           const profile = await res.json();
           setUser(profile);
@@ -51,7 +47,6 @@ export function AuthProvider({ children }) {
         // Non-ok response (e.g. 503 when backend Supabase isn't configured)
         console.warn(`Backend /auth/me returned ${res.status}, using session fallback`);
       } catch (fetchErr) {
-        clearTimeout(timer);
         console.warn('Backend /auth/me unavailable, using session fallback:', fetchErr.message);
       }
     } catch (err) {

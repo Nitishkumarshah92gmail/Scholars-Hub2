@@ -104,7 +104,12 @@ export default function Profile() {
   }
 
   return (
-    <div>
+    <div className="relative min-h-screen">
+      {/* Background ambient glowing orbs */}
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-ag-primary/10 dark:bg-ag-primary/20 rounded-full blur-[100px] pointer-events-none animate-pulse-glow" />
+      <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-purple-500/10 dark:bg-purple-500/10 rounded-full blur-[120px] pointer-events-none animate-float" style={{ animationDelay: '2s' }} />
+
+      <div className="relative z-10">
       {/* Profile Header — Instagram-style */}
       <div className="relative overflow-hidden flex items-start gap-6 sm:gap-12 mb-8 bg-ig-bg/50 dark:bg-[#0f0f13]/60 p-6 sm:p-8 rounded-[32px] border border-ig-separator dark:border-white/10 backdrop-blur-md shadow-ag-glass">
         <ParticleCanvas />
@@ -243,6 +248,7 @@ export default function Profile() {
             ))}
           </div>
         )}
+      </div>
       </div>
     </div>
   );

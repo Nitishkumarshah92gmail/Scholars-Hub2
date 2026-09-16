@@ -232,9 +232,22 @@ export default function Layout() {
           <div className="pt-2 mt-2 border-t border-ig-separator/30 dark:border-ig-separator-dark/30 space-y-0.5">
 
 
-            <a href="https://nptel.ac.in/courses" target="_blank" rel="noopener noreferrer" className="nav-link w-full">
-              <HiOutlineAcademicCap className="w-6 h-6" />
-              <span className="hidden xl:inline">NPTEL Courses</span>
+            <a href="https://nptel.ac.in/courses" target="_blank" rel="noopener noreferrer" 
+               className="group relative flex items-center gap-3 w-full p-3 my-2 rounded-[16px] overflow-hidden transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-ag-glow hover:shadow-ag-glow-strong border border-white/20 dark:border-white/10"
+            >
+              {/* Animated gradient background */}
+              <div className="absolute inset-0 bg-ig-gradient-vivid opacity-80 group-hover:opacity-100 transition-opacity duration-300 animate-shimmer" style={{ backgroundSize: '200% 200%' }} />
+              {/* Glass overlay for depth */}
+              <div className="absolute inset-0 bg-black/10 dark:bg-black/20 backdrop-blur-[2px]" />
+              
+              <HiOutlineAcademicCap className="w-6 h-6 text-white relative z-10 drop-shadow-md" />
+              <div className="hidden xl:flex flex-col relative z-10">
+                <span className="text-white font-bold text-sm tracking-wide drop-shadow-md">NPTEL Core</span>
+                <span className="text-white/80 text-[10px] font-medium uppercase tracking-wider">Free Courses</span>
+              </div>
+              
+              {/* Shine effect */}
+              <div className="absolute inset-0 -translate-x-full group-hover:animate-[slideInRight_1s_ease-in-out] bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12" />
             </a>
           </div>
         </div>
@@ -353,9 +366,16 @@ export default function Layout() {
               {/* External Links */}
 
 
-              <a href="https://nptel.ac.in/courses" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 px-3 py-2.5 rounded-ag-sm hover:bg-gray-100 dark:hover:bg-ag-surface-container-high text-ig-text dark:text-ig-text-light transition-colors">
-                <HiOutlineAcademicCap className="w-5 h-5" />
-                <span>NPTEL Courses</span>
+              <a href="https://nptel.ac.in/courses" target="_blank" rel="noopener noreferrer" 
+                 className="relative overflow-hidden flex items-center gap-3 px-4 py-3 mt-4 rounded-xl shadow-ag-glow bg-ig-gradient-vivid animate-shimmer"
+                 style={{ backgroundSize: '200% 200%' }}
+              >
+                <div className="absolute inset-0 bg-black/10 backdrop-blur-[2px]" />
+                <HiOutlineAcademicCap className="w-6 h-6 text-white relative z-10" />
+                <div className="flex flex-col relative z-10">
+                  <span className="text-white font-bold text-sm">NPTEL Core</span>
+                  <span className="text-white/80 text-[10px] font-medium uppercase">Free Courses</span>
+                </div>
               </a>
 
               <div className="border-t border-ig-separator/30 dark:border-ig-separator-dark/30 my-2" />

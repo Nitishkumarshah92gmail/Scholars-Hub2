@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPost, validateYoutubeUrl, getPresignedUrl, uploadToR2 } from '../api';
 import imageCompression from 'browser-image-compression';
@@ -8,7 +8,6 @@ import {
   HiDocumentText,
   HiPhotograph,
   HiPlay,
-  HiCollection,
   HiX,
   HiUpload,
   HiLink,

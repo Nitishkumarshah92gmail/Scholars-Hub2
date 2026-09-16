@@ -174,32 +174,24 @@ router.get('/:id', auth, async (req, res) => {
       .eq('id', userId)
       .maybeSingle();
 
-    // If tables don't exist, return basic auth info for own profile
-    if (profileErr && profileErr.code === 'PGRST205') {
+    // If tables don't exist or profile is missing, return basic auth info for own profile
+    if (!profile || (profileErr && profileErr.code === 'PGRST205')) {
       if (userId === req.user.id) {
-        const meta = req.user.user_metadata || {};
-        return res.json({
-          user: {
-            _id: req.user.id,
-            name: meta.name || 'User',
-            email: req.user.email || '',
-            avatar: meta.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(meta.name || 'User')}&background=1e3a5f&color=fbbf24&size=200`,
-            bio: meta.bio || '',
-            school: meta.school || '',
-            subjects: meta.subjects || [],
-            followers: [],
-            following: [],
-            bookmarks: [],
-            createdAt: req.user.created_at,
-            updatedAt: req.user.created_at,
-          },
-          posts: [],
-        });
+        profile = {
+          id: req.user.id,
+          name: req.user.name || 'User',
+          email: req.user.email || '',
+          avatar: req.user.avatar || '',
+          bio: req.user.bio || '',
+          school: req.user.school || '',
+          subjects: req.user.subjects || [],
+          created_at: req.user.created_at,
+          updated_at: req.user.updated_at || req.user.created_at,
+        };
+      } else {
+        return res.status(404).json({ error: 'User not found.' });
       }
-      return res.status(404).json({ error: 'User not found.' });
     }
-
-    if (!profile) return res.status(404).json({ error: 'User not found.' });
 
     // Run all 4 queries in parallel for maximum speed
     const [followersResult, followingResult, bookmarksResult, postsResult] = await Promise.all([

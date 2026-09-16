@@ -69,7 +69,15 @@ const auth = async (req, res, next) => {
         bio: userData.bio,
         school: userData.school,
         subjects: userData.subjects,
-      }, { onConflict: 'id' }).catch(() => {});
+      }, { onConflict: 'id' }).then(({ error: upsertErr }) => {
+        if (upsertErr) {
+          console.error('Failed to auto-create profile in auth middleware:', upsertErr);
+        } else {
+          console.log('Successfully auto-created profile for user:', user.id);
+        }
+      }).catch((err) => {
+        console.error('Exception in auto-create profile:', err);
+      });
     }
 
     // Cache the result

@@ -61,10 +61,20 @@ router.get('/stats/count', auth, async (req, res) => {
 
 // GET /api/users/debug/env — temporary diagnostic endpoint
 router.get('/debug/env', (req, res) => {
+  let role = 'unknown';
+  if (process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    try {
+      const parts = process.env.SUPABASE_SERVICE_ROLE_KEY.split('.');
+      if (parts.length === 3) {
+        const payload = JSON.parse(Buffer.from(parts[1], 'base64').toString('utf8'));
+        role = payload.role;
+      }
+    } catch(e) { role = 'error decoding'; }
+  }
   res.json({
     hasUrl: !!process.env.SUPABASE_URL,
     hasServiceKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
-    hasAnonKey: !!process.env.SUPABASE_ANON_KEY,
+    keyRole: role,
     urlPrefix: process.env.SUPABASE_URL ? process.env.SUPABASE_URL.substring(0, 15) + '...' : 'none',
   });
 });

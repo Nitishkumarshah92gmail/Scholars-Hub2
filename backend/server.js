@@ -13,6 +13,9 @@ const app = express();
 
 // --- Security Middleware ---
 
+// Trust the reverse proxy (Render Load Balancer) so rate limiter gets the real client IP
+app.set('trust proxy', 1);
+
 // CORS: only allow requests from our own frontend
 app.use(cors({
   origin: [
@@ -20,14 +23,15 @@ app.use(cors({
     'https://scholarshub.social',
     'http://localhost:5173',
     'http://localhost:5174',
+    'http://localhost:5000',
   ],
   credentials: true,
 }));
 
-// Global rate limiter: 100 requests per minute per IP
+// Global rate limiter: 500 requests per minute per IP
 app.use(rateLimit({
   windowMs: 60 * 1000,
-  max: 100,
+  max: 500,
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: 'Too many requests, please try again later.' },

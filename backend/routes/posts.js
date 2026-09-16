@@ -138,19 +138,21 @@ router.get('/', auth, async (req, res) => {
     // If not enough posts, fill with trending/recent from other users
     if (posts.length < limit) {
       const remaining = limit - posts.length;
-      const existingIds = new Set(posts.map((p) => String(p.id)));
+      const existingIds = posts.map((p) => String(p.id));
 
       let trendingQuery = supabase
         .from('posts')
         .select(POST_SELECT)
         .order('created_at', { ascending: false })
-        .limit(remaining + existingIds.size + 5);
+        .limit(remaining);
 
-      const { data: allRecent } = await trendingQuery;
-      const trending = (allRecent || [])
-        .filter((p) => !existingIds.has(String(p.id)))
-        .slice(0, remaining);
-      posts = [...posts, ...trending];
+      // Only add the NOT IN filter if there are actually existing posts
+      if (existingIds.length > 0) {
+        trendingQuery = trendingQuery.not('id', 'in', `(${existingIds.join(',')})`);
+      }
+
+      const { data: trending } = await trendingQuery;
+      posts = [...posts, ...(trending || [])];
     }
 
     // Final dedup pass to guarantee no duplicates

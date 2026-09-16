@@ -3,7 +3,6 @@ const multer = require('multer');
 const path = require('path');
 const auth = require('../middleware/auth');
 const supabase = require('../config/supabase');
-const googleDrive = require('../config/googleDrive');
 
 const router = express.Router();
 

@@ -320,11 +320,12 @@ export default memo(function PostCard({ post, onUpdate }) {
         <Link to={`/dashboard/profile/${post.author?._id}`} className="flex items-center gap-3 group">
           <div className="avatar-ring">
             <img
-              src={post.author?.avatar || `https://ui-avatars.com/api/?name=${post.author?.name}&size=64`}
+              src={post.author?.avatar || `https://ui-avatars.com/api/?name=${post.author?.name}`}
+              onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${post.author?.name}&background=1e3a5f&color=fbbf24`; }}
               alt={post.author?.name}
-              className="w-8 h-8 rounded-full object-cover"
               loading="lazy"
               decoding="async"
+              className="w-10 h-10 rounded-full object-cover shadow-sm border border-ig-separator/10"
             />
           </div>
           <div>
@@ -387,7 +388,7 @@ export default memo(function PostCard({ post, onUpdate }) {
       </div>
 
       {/* Actions — Instagram style */}
-      <div className="px-4 pt-3 pb-1">
+      <div className="px-6 pt-4 pb-2">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-4">
             <button
@@ -458,18 +459,19 @@ export default memo(function PostCard({ post, onUpdate }) {
 
       {/* Comments Section */}
       {showComments && (
-        <div className="px-4 pb-3 border-t border-ig-separator dark:border-ig-separator-dark animate-fade-in">
+        <div className="px-6 py-4 border-t border-ig-separator dark:border-ig-separator-dark animate-fade-in">
           {/* Comments List */}
           <div className="mt-3 space-y-3 max-h-60 overflow-y-auto">
             {comments.map((comment, idx) => (
               <div key={comment._id || idx} className="flex gap-2">
                 <Link to={`/dashboard/profile/${comment.author?._id}`}>
                   <img
-                    src={comment.author?.avatar || `https://ui-avatars.com/api/?name=${comment.author?.name}&size=56`}
-                    alt=""
-                    className="w-7 h-7 rounded-full object-cover flex-shrink-0"
+                    src={comment.author?.avatar || `https://ui-avatars.com/api/?name=${comment.author?.name}`}
+                    onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${comment.author?.name}&background=1e3a5f&color=fbbf24`; }}
+                    alt={comment.author?.name}
                     loading="lazy"
                     decoding="async"
+                    className="w-8 h-8 rounded-full object-cover shadow-sm"
                   />
                 </Link>
                 <div className="flex-1">
@@ -491,9 +493,10 @@ export default memo(function PostCard({ post, onUpdate }) {
           {/* Comment Form */}
           <form onSubmit={handleComment} className="flex items-center gap-2 mt-3 pt-3 border-t border-ig-separator dark:border-ig-separator-dark">
             <img
-              src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.name}&size=56`}
+              src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.name}`}
+              onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${user?.name}&background=1e3a5f&color=fbbf24`; }}
               alt=""
-              className="w-7 h-7 rounded-full object-cover flex-shrink-0"
+              className="w-7 h-7 rounded-full object-cover flex-shrink-0 shadow-sm"
               loading="lazy"
               decoding="async"
             />

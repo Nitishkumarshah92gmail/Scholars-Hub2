@@ -86,8 +86,9 @@ export default function Notifications() {
             >
               <img
                 src={notif.sender?.avatar || `https://ui-avatars.com/api/?name=${notif.sender?.name}`}
+                onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${notif.sender?.name}&background=1e3a5f&color=fbbf24`; }}
                 alt=""
-                className="w-11 h-11 rounded-full object-cover flex-shrink-0"
+                className="w-11 h-11 rounded-full object-cover flex-shrink-0 shadow-sm"
               />
               <div className="flex-1 min-w-0">
                 <p className="text-sm text-ig-text dark:text-ig-text-light leading-snug">

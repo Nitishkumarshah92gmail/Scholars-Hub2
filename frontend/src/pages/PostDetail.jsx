@@ -211,13 +211,14 @@ export default function PostDetail() {
 
       <div className="card overflow-hidden">
         {/* Author Header */}
-        <div className="px-4 py-3 flex items-center justify-between border-b border-ig-separator dark:border-ig-separator-dark">
+        <div className="px-6 py-4 flex items-center justify-between border-b border-ig-separator dark:border-white/10">
           <Link to={`/dashboard/profile/${post.author?._id}`} className="flex items-center gap-3 group">
             <div className="avatar-ring">
               <img
                 src={post.author?.avatar || `https://ui-avatars.com/api/?name=${post.author?.name}`}
+                onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${post.author?.name}&background=1e3a5f&color=fbbf24`; }}
                 alt=""
-                className="w-8 h-8 rounded-full object-cover"
+                className="w-8 h-8 rounded-full object-cover shadow-sm"
               />
             </div>
             <div>
@@ -237,8 +238,8 @@ export default function PostDetail() {
         {renderContent()}
 
         {/* Actions */}
-        <div className="px-4 pt-3 pb-1">
-          <div className="flex items-center justify-between mb-2">
+        <div className="px-6 pt-5 pb-3">
+          <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-4">
               <button onClick={handleLike} className={`transition-all ${likeAnimating ? 'like-animate' : ''} ${liked ? 'text-ig-error' : 'text-ig-text dark:text-ig-text-light hover:opacity-60'}`}>
                 {liked ? <HiHeart className="w-7 h-7" /> : <HiOutlineHeart className="w-7 h-7" />}
@@ -272,7 +273,7 @@ export default function PostDetail() {
           <p className="text-[10px] text-ig-text-2 uppercase tracking-wider mt-2 mb-3">{timeAgo(post.createdAt)}</p>
 
           {/* Additional Actions */}
-          <div className="flex gap-3 mb-3 border-t border-ig-separator dark:border-ig-separator-dark pt-3">
+          <div className="flex gap-3 mb-4 border-t border-ig-separator dark:border-white/10 pt-4">
             <button onClick={handleReport} className="text-xs text-ig-text-2 hover:text-ig-error flex items-center gap-1">
               <HiOutlineFlag className="w-4 h-4" /> Report
             </button>
@@ -285,12 +286,17 @@ export default function PostDetail() {
         </div>
 
         {/* Comments */}
-        <div className="px-4 pb-4 border-t border-ig-separator dark:border-ig-separator-dark">
-          <div className="mt-3 space-y-3 max-h-80 overflow-y-auto">
+        <div className="px-6 pb-6 border-t border-ig-separator dark:border-white/10">
+          <div className="mt-4 space-y-4 max-h-80 overflow-y-auto pr-2 custom-scrollbar">
             {comments.map((comment, idx) => (
               <div key={comment._id || idx} className="flex gap-2">
                 <Link to={`/dashboard/profile/${comment.author?._id}`}>
-                  <img src={comment.author?.avatar || `https://ui-avatars.com/api/?name=${comment.author?.name}`} alt="" className="w-8 h-8 rounded-full object-cover flex-shrink-0" />
+                  <img 
+                    src={comment.author?.avatar || `https://ui-avatars.com/api/?name=${comment.author?.name}`} 
+                    onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${comment.author?.name}&background=1e3a5f&color=fbbf24`; }}
+                    alt="" 
+                    className="w-8 h-8 rounded-full object-cover flex-shrink-0 shadow-sm" 
+                  />
                 </Link>
                 <div className="flex-1">
                   <p className="text-sm">
@@ -308,7 +314,12 @@ export default function PostDetail() {
 
           {/* Comment Input */}
           <form onSubmit={handleComment} className="flex items-center gap-2 mt-3 pt-3 border-t border-ig-separator dark:border-ig-separator-dark">
-            <img src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.name}`} alt="" className="w-8 h-8 rounded-full object-cover flex-shrink-0" />
+            <img 
+              src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.name}`} 
+              onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${user?.name}&background=1e3a5f&color=fbbf24`; }}
+              alt="" 
+              className="w-8 h-8 rounded-full object-cover flex-shrink-0 shadow-sm" 
+            />
             <input
               type="text"
               value={commentText}

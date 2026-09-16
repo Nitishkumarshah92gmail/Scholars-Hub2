@@ -455,7 +455,12 @@ export default function Chat() {
                     onClick={() => startConversation(result)}
                     className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-ag-surface-container-high transition-colors text-left"
                   >
-                    <img src={result.avatar || `https://ui-avatars.com/api/?name=${result.name}`} alt={result.name} className="w-10 h-10 rounded-full object-cover" />
+                    <img 
+                      src={result.avatar || `https://ui-avatars.com/api/?name=${result.name}`} 
+                      onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${result.name}&background=1e3a5f&color=fbbf24`; }}
+                      alt={result.name} 
+                      className="w-10 h-10 rounded-full object-cover shadow-sm" 
+                    />
                     <div>
                       <p className="font-semibold text-sm text-ig-text dark:text-ig-text-light">{result.name}</p>
                       <p className="text-xs text-ig-text-2 truncate">{result.school}</p>
@@ -479,7 +484,12 @@ export default function Chat() {
                     onClick={() => setActiveConversation(convo)}
                     className={`w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left ${activeConversation?.id === convo.id ? 'bg-gray-100 dark:bg-ag-surface-container-high' : 'hover:bg-gray-100 dark:hover:bg-ag-surface-container-high'}`}
                   >
-                    <img src={convo.otherUser.avatar || `https://ui-avatars.com/api/?name=${convo.otherUser.name}`} alt={convo.otherUser.name} className="w-12 h-12 rounded-full object-cover" />
+                    <img 
+                      src={convo.otherUser.avatar || `https://ui-avatars.com/api/?name=${convo.otherUser.name}`} 
+                      onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${convo.otherUser.name}&background=1e3a5f&color=fbbf24`; }}
+                      alt={convo.otherUser.name} 
+                      className="w-12 h-12 rounded-full object-cover shadow-sm" 
+                    />
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between items-baseline mb-0.5">
                         <p className="font-semibold text-sm text-ig-text dark:text-ig-text-light truncate">{convo.otherUser.name}</p>
@@ -517,6 +527,7 @@ export default function Chat() {
               </button>
               <img 
                 src={activeConversation.otherUser.avatar || `https://ui-avatars.com/api/?name=${activeConversation.otherUser.name}`} 
+                onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${activeConversation.otherUser.name}&background=1e3a5f&color=fbbf24`; }}
                 alt={activeConversation.otherUser.name} 
                 className="w-10 h-10 rounded-full object-cover border border-ig-separator/20" 
               />

@@ -25,6 +25,14 @@ html {
     transition: background-color var(--ag-transition), color var(--ag-transition);
   }
 
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading tracking-tight;
+  }
+  
+  h1 { @apply text-4xl md:text-5xl lg:text-6xl; }
+  h2 { @apply text-3xl md:text-4xl lg:text-5xl; }
+  h3 { @apply text-2xl md:text-3xl lg:text-4xl; }
+
   /* Smooth transitions on ALL interactive elements */
   a, button, input, select, textarea {
     transition: all var(--ag-transition-fast);
@@ -94,11 +102,11 @@ html {
 
   /* ── Cards: Large radius, subtle border, smooth hover ── */
   .card {
-    @apply bg-ig-bg dark:bg-ag-surface-container rounded-ag-sm border border-ig-separator dark:border-ig-separator-dark;
+    @apply bg-ig-bg dark:bg-[#0f0f13] rounded-3xl border border-ig-separator dark:border-white/10 shadow-sm dark:shadow-ag-glass;
     transition: all var(--ag-transition);
   }
   .card:hover {
-    @apply dark:border-ag-outline-variant;
+    @apply dark:border-white/20;
   }
 
   /* ── Skeleton ── */

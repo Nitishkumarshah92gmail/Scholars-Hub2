@@ -119,7 +119,11 @@ export default function Layout() {
                   // Show in-app toast
                   toast((t) => (
                      <div className="flex items-center gap-3 cursor-pointer" onClick={() => { toast.dismiss(t.id); navigate('/dashboard/messages'); }}>
-                        <img src={sender.avatar || `https://ui-avatars.com/api/?name=${sender.name}`} className="w-10 h-10 rounded-full object-cover" />
+                        <img 
+                          src={sender.avatar || `https://ui-avatars.com/api/?name=${sender.name}`} 
+                          onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${sender.name}&background=1e3a5f&color=fbbf24`; }}
+                          className="w-10 h-10 rounded-full object-cover" 
+                        />
                         <div className="min-w-0">
                            <p className="font-bold text-sm text-ig-text dark:text-ig-text-light truncate">{sender.name} sent a message</p>
                            <p className="text-xs text-ig-text-2 truncate max-w-[200px]">{newMsg.content}</p>
@@ -181,9 +185,9 @@ export default function Layout() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-ig-bg-2 dark:bg-black transition-colors duration-300">
-      {/* Desktop Sidebar */}
-      <aside className="hidden md:flex flex-col w-[245px] xl:w-[335px] fixed h-full bg-ig-bg dark:bg-ag-surface-dim border-r border-ig-separator dark:border-ig-separator-dark/50 z-30 transition-colors duration-300">
+    <div className="min-h-screen flex flex-col md:flex-row bg-ig-bg-2 dark:bg-black transition-colors duration-300 md:p-4">
+      {/* Desktop Sidebar - Floating Pill */}
+      <aside className="hidden md:flex flex-col w-[245px] xl:w-[320px] fixed h-[calc(100vh-32px)] bg-ig-bg dark:bg-ag-surface-dim border border-ig-separator dark:border-white/10 rounded-[32px] shadow-ag-glass z-30 transition-colors duration-300 overflow-hidden">
         {/* Logo */}
         <div className="px-6 pt-5 pb-3">
           <h1
@@ -252,11 +256,12 @@ export default function Layout() {
           className="px-3 pb-2 cursor-pointer"
           onClick={() => navigate(`/dashboard/profile/${user?._id}`)}
         >
-          <div className="flex items-center gap-3 p-2 rounded-ag-sm hover:bg-gray-100 dark:hover:bg-ag-surface-container-high transition-colors">
+          <div className="flex items-center gap-3 p-3 rounded-ag hover:bg-gray-100 dark:hover:bg-ag-surface-container-high transition-colors">
             <img
               src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.name}`}
+              onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${user?.name}&background=1e3a5f&color=fbbf24`; }}
               alt={user?.name}
-              className="w-8 h-8 rounded-full object-cover"
+              className="w-10 h-10 rounded-full object-cover shadow-sm"
             />
             <div className="flex-1 min-w-0 hidden xl:block">
               <p className="font-semibold text-sm truncate text-ig-text dark:text-ig-text-light">{user?.name}</p>
@@ -375,13 +380,14 @@ export default function Layout() {
             {/* User info at bottom of menu */}
             <div className="px-3 py-3 border-t border-ig-separator/30 dark:border-ig-separator-dark/30">
               <div
-                className="flex items-center gap-3 p-2 rounded-ag-sm hover:bg-gray-100 dark:hover:bg-ag-surface-container-high cursor-pointer transition-colors"
+                className="flex items-center gap-3 p-3 rounded-ag hover:bg-gray-100 dark:hover:bg-ag-surface-container-high cursor-pointer transition-colors"
                 onClick={() => { navigate(`/dashboard/profile/${user?._id}`); setMobileMenuOpen(false); }}
               >
                 <img
                   src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.name}`}
+                  onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${user?.name}&background=1e3a5f&color=fbbf24`; }}
                   alt={user?.name}
-                  className="w-8 h-8 rounded-full object-cover"
+                  className="w-10 h-10 rounded-full object-cover shadow-sm"
                 />
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-sm truncate text-ig-text dark:text-ig-text-light">{user?.name}</p>
@@ -393,10 +399,10 @@ export default function Layout() {
         </div>
       )}
 
-      {/* Main Content */}
-      <main className="flex-1 md:ml-[245px] xl:ml-[335px] pb-16 md:pb-0 pt-14 md:pt-0 relative">
+      {/* Main Content - Floating Window */}
+      <main className="flex-1 md:ml-[260px] xl:ml-[340px] md:h-[calc(100vh-32px)] bg-ig-bg dark:bg-[#080808] md:border border-ig-separator dark:border-white/10 md:rounded-[32px] md:shadow-ag-glass overflow-y-auto overflow-x-hidden pb-16 md:pb-0 pt-14 md:pt-0 relative">
         {/* Desktop Top Right Actions */}
-        <div className="hidden md:flex fixed top-4 right-6 z-40 items-center gap-3">
+        <div className="hidden md:flex fixed top-8 right-10 z-40 items-center gap-4">
           <a href="/scholars-hub.apk" download className="flex items-center gap-2 px-4 py-2 bg-ag-primary hover:bg-ag-primary-hover text-white text-sm font-bold rounded-ag-pill transition-all hover:shadow-ag-glow">
             <HiDownload className="w-4 h-4" />
             Get App
@@ -420,7 +426,7 @@ export default function Layout() {
           </NavLink>
         </div>
 
-        <div className="max-w-[630px] mx-auto px-4 py-6">
+        <div className="max-w-[700px] mx-auto px-4 md:px-8 py-8 md:py-12">
           <Outlet />
         </div>
       </main>

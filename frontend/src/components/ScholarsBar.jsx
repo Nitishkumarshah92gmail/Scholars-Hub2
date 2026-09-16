@@ -63,16 +63,17 @@ export default function ScholarsBar() {
             >
               <div className="relative">
                 <div className="w-[62px] h-[62px] rounded-full p-[2.5px] bg-gradient-to-br from-ig-primary via-purple-500 to-pink-500 group-hover:scale-105 transition-transform">
-                  <img
-                    src={
-                      scholar.avatar ||
-                      `https://ui-avatars.com/api/?name=${encodeURIComponent(scholar.name)}&background=1e3a5f&color=fbbf24&size=64`
-                    }
-                    alt={scholar.name}
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full h-full rounded-full object-cover border-[2.5px] border-ig-bg dark:border-black"
-                  />
+                    <img
+                      src={
+                        scholar.avatar ||
+                        `https://ui-avatars.com/api/?name=${encodeURIComponent(scholar.name)}`
+                      }
+                      onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(scholar.name)}&background=1e3a5f&color=fbbf24`; }}
+                      alt={scholar.name}
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-full rounded-full object-cover border-[2.5px] border-ig-bg dark:border-black"
+                    />
                 </div>
                 {/* Online indicator */}
                 <span className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 bg-blue-500 rounded-full border-2 border-ig-bg dark:border-black" />
@@ -141,8 +142,9 @@ export default function ScholarsBar() {
                       <img
                         src={
                           scholar.avatar ||
-                          `https://ui-avatars.com/api/?name=${encodeURIComponent(scholar.name)}&background=1e3a5f&color=fbbf24&size=200`
+                          `https://ui-avatars.com/api/?name=${encodeURIComponent(scholar.name)}`
                         }
+                        onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(scholar.name)}&background=1e3a5f&color=fbbf24`; }}
                         alt={scholar.name}
                         className="w-full h-full rounded-full object-cover border-2 border-ig-bg dark:border-black"
                       />

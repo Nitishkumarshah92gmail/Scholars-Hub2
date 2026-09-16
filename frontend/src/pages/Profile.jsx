@@ -114,10 +114,11 @@ export default function Profile() {
                 src={
                   editForm?.avatarFile 
                     ? URL.createObjectURL(editForm.avatarFile) 
-                    : (profile.avatar || `https://ui-avatars.com/api/?name=${profile.name}&size=200`)
+                    : (profile.avatar || `https://ui-avatars.com/api/?name=${profile.name}`)
                 }
+                onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${profile.name}&background=1e3a5f&color=fbbf24&size=200`; }}
                 alt={profile.name}
-                className="w-20 h-20 sm:w-36 sm:h-36 rounded-full object-cover"
+                className="w-20 h-20 sm:w-36 sm:h-36 rounded-full object-cover shadow-sm"
               />
             </div>
             {isOwnProfile && editing && (

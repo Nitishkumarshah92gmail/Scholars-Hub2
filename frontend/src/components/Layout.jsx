@@ -257,12 +257,14 @@ export default function Layout() {
           onClick={() => navigate(`/dashboard/profile/${user?._id}`)}
         >
           <div className="flex items-center gap-3 p-3 rounded-ag hover:bg-gray-100 dark:hover:bg-ag-surface-container-high transition-colors">
-            <img
-              src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.name}`}
-              onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${user?.name}&background=1e3a5f&color=fbbf24`; }}
-              alt={user?.name}
-              className="w-10 h-10 rounded-full object-cover shadow-sm"
-            />
+            <div className="w-[46px] h-[46px] flex-shrink-0 rounded-full p-[2px] bg-gradient-to-br from-ig-primary via-purple-500 to-pink-500">
+              <img
+                src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.name}`}
+                onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${user?.name}&background=1e3a5f&color=fbbf24`; }}
+                alt={user?.name}
+                className="w-full h-full rounded-full object-cover border-[2px] border-ig-bg dark:border-ag-surface-dim shadow-sm"
+              />
+            </div>
             <div className="flex-1 min-w-0 hidden xl:block">
               <p className="font-semibold text-sm truncate text-ig-text dark:text-ig-text-light">{user?.name}</p>
               <p className="text-xs text-ig-text-2 truncate">{user?.school || 'Student'}</p>

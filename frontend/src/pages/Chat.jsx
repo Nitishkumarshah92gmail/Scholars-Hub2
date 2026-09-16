@@ -5,7 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
 import toast from 'react-hot-toast';
 import { HiPaperAirplane, HiOutlineChat, HiOutlineSearch, HiArrowLeft, HiPaperClip, HiDocumentText, HiTrash, HiPencil, HiCheck, HiX } from 'react-icons/hi';
-import { uploadFiles, deleteFile } from '../api';
+import { deleteFile, getPresignedUrl, uploadDirect } from '../api';
+import imageCompression from 'browser-image-compression';
 
 export default function Chat() {
   const { user } = useAuth();
@@ -356,12 +357,15 @@ export default function Chat() {
     }
 
     try {
-      const formData = new FormData();
-      formData.append('files', file);
-      formData.append('subfolder', 'chat');
+      let fileToUpload = file;
+      if (attachmentType === 'image') {
+        const options = { maxSizeMB: 1, maxWidthOrHeight: 1920, useWebWorker: true };
+        try { fileToUpload = await imageCompression(file, options); } catch (err) { console.error(err); }
+      }
       
-      const res = await uploadFiles(formData);
-      const fileUrl = res.data.urls[0].fileUrl;
+      const { data: { uploadUrl, publicUrl } } = await getPresignedUrl(file.name, fileToUpload.type, 'chat');
+      await uploadDirect(uploadUrl, fileToUpload);
+      const fileUrl = publicUrl;
       
       // Send message with attachment
       const { error } = await supabase

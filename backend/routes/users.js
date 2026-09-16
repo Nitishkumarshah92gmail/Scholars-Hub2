@@ -168,7 +168,7 @@ router.get('/:id', auth, async (req, res) => {
   try {
     const userId = req.params.id;
 
-    const { data: profile, error: profileErr } = await supabase
+    let { data: profile, error: profileErr } = await supabase
       .from('profiles')
       .select('*')
       .eq('id', userId)

@@ -254,10 +254,6 @@ export default function Layout() {
 
         {/* Bottom section — always visible */}
         <div className="px-3 py-2 space-y-0.5 border-t border-ig-separator/30 dark:border-ig-separator-dark/30">
-          <button onClick={toggleTheme} className="nav-link w-full">
-            {darkMode ? <HiSun className="w-6 h-6" /> : <HiMoon className="w-6 h-6" />}
-            <span className="hidden xl:inline">{darkMode ? 'Light Mode' : 'Dark Mode'}</span>
-          </button>
           <button onClick={handleLogout} className="nav-link w-full text-ig-error hover:text-ig-error">
             <HiLogout className="w-6 h-6" />
             <span className="hidden xl:inline">Log out</span>
@@ -390,12 +386,6 @@ export default function Layout() {
                 <HiDownload className="w-5 h-5" />
                 <span>Get the App</span>
               </a>
-
-              {/* Theme Toggle */}
-              <button onClick={() => { toggleTheme(); setMobileMenuOpen(false); }} className="flex items-center gap-3 px-3 py-2.5 rounded-ag-sm hover:bg-gray-100 dark:hover:bg-ag-surface-container-high text-ig-text dark:text-ig-text-light w-full transition-colors">
-                {darkMode ? <HiSun className="w-5 h-5" /> : <HiMoon className="w-5 h-5" />}
-                <span>{darkMode ? 'Light Mode' : 'Dark Mode'}</span>
-              </button>
 
               {/* Logout */}
               <button onClick={() => { handleLogout(); setMobileMenuOpen(false); }} className="flex items-center gap-3 px-3 py-2.5 rounded-ag-sm hover:bg-gray-100 dark:hover:bg-ag-surface-container-high text-ig-error w-full transition-colors">

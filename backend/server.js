@@ -70,31 +70,5 @@ if (require.main === module) {
     } else {
       console.log('🏓 Keep-alive skipped (no RENDER_EXTERNAL_URL – running locally?)');
     }
-
-    // Test Google Drive on startup
-    try {
-      const googleDrive = require('./config/googleDrive');
-      const drive = googleDrive.getDriveClient();
-      if (drive) {
-        console.log('🚀 Google Drive client ready at startup');
-        // Verify access to target folder
-        const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
-        if (folderId) {
-          drive.files.list({
-            q: `'${folderId}' in parents and trashed=false`,
-            fields: 'files(id, name)',
-            pageSize: 1,
-          }).then(res => {
-            console.log(`✅ Google Drive folder ${folderId} accessible - ${res.data.files.length} file(s) found`);
-          }).catch(err => {
-            console.error('❌ Google Drive folder access FAILED:', err.message);
-          });
-        }
-      } else {
-        console.warn('⚠️ Google Drive client NOT initialized - uploads will use Supabase only');
-      }
-    } catch (err) {
-      console.error('❌ Google Drive startup check failed:', err.message);
-    }
   });
 }

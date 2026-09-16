@@ -4,14 +4,8 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   build: {
-    // Enable minification with terser for smaller bundles
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_debugger: true,
-        pure_funcs: ['console.log', 'console.info'],
-      },
-    },
+    // Use default esbuild for minification (much faster and less memory-intensive for Render free tier)
+    minify: 'esbuild',
     // Target modern browsers for smaller output
     target: 'es2020',
     // Enable CSS code splitting

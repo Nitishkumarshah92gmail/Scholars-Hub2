@@ -4,7 +4,6 @@ const path = require('path');
 const auth = require('../middleware/auth');
 const supabase = require('../config/supabase');
 const googleDrive = require('../config/googleDrive');
-const { generatePresignedUrl } = require('../config/r2');
 
 const router = express.Router();
 
@@ -113,8 +112,31 @@ router.get('/presigned-url', auth, async (req, res) => {
             return res.status(400).json({ error: 'fileName and fileType are required' });
         }
         
-        const result = await generatePresignedUrl(fileName, fileType, subfolder || 'images');
-        res.json(result);
+        const ext = fileName.split('.').pop().replace(/[^a-zA-Z0-9]/g, '');
+        const uniqueName = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}.${ext}`;
+        const filePath = `${subfolder || 'images'}/${uniqueName}`;
+
+        // Generate a signed upload URL via Supabase Storage
+        const { data, error } = await supabase.storage
+            .from(SUPABASE_BUCKET)
+            .createSignedUploadUrl(filePath);
+
+        if (error) {
+            throw error;
+        }
+
+        // Get public URL
+        const { data: urlData } = supabase.storage
+            .from(SUPABASE_BUCKET)
+            .getPublicUrl(filePath);
+
+        res.json({
+            uploadUrl: data.signedUrl,
+            token: data.token,
+            path: data.path,
+            publicUrl: urlData.publicUrl,
+            fileId: uniqueName
+        });
     } catch (err) {
         console.error('Presigned URL error:', err);
         res.status(500).json({ error: err.message || 'Failed to generate presigned URL.' });

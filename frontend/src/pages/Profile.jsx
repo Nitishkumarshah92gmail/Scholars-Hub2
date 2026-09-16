@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { getUser, updateUser, uploadAvatar, getTotalUsers } from '../api';
+import { getUser, updateUser, getTotalUsers, getPresignedUrl, uploadDirect } from '../api';
 import PostCard from '../components/PostCard';
 import PostSkeleton from '../components/PostSkeleton';
 import { SUBJECTS, getSubjectColor } from '../utils';
 import toast from 'react-hot-toast';
 import { HiPencil, HiX, HiCamera, HiUserGroup } from 'react-icons/hi';
 import ParticleCanvas from '../components/ParticleCanvas';
+import imageCompression from 'browser-image-compression';
 
 export default function Profile() {
   const { id } = useParams();
@@ -50,10 +51,14 @@ export default function Profile() {
     try {
       let avatarUrl = profile.avatar;
       if (editForm.avatarFile) {
-        const formData = new FormData();
-        formData.append('avatar', editForm.avatarFile);
-        const uploadRes = await uploadAvatar(formData);
-        avatarUrl = uploadRes.data.fileUrl;
+        // Compress avatar
+        const options = { maxSizeMB: 0.1, maxWidthOrHeight: 400, useWebWorker: true };
+        let fileToUpload = editForm.avatarFile;
+        try { fileToUpload = await imageCompression(editForm.avatarFile, options); } catch (e) { console.error(e); }
+        
+        const { data: { uploadUrl, publicUrl } } = await getPresignedUrl(editForm.avatarFile.name, fileToUpload.type, 'avatars');
+        await uploadDirect(uploadUrl, fileToUpload);
+        avatarUrl = publicUrl;
       }
       const res = await updateUser(id, {
         name: editForm.name,

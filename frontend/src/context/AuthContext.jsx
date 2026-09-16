@@ -34,7 +34,7 @@ export function AuthProvider({ children }) {
   // Falls back to session-based user object if the backend is unavailable.
   const fetchProfile = async (accessToken, supabaseUser = null) => {
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || '/api';
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://scholars-hub2.onrender.com/api';
       try {
         const res = await fetch(`${apiUrl}/auth/me`, {
           headers: { Authorization: `Bearer ${accessToken}` },

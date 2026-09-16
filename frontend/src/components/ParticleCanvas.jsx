@@ -6,21 +6,25 @@ export default function ParticleCanvas() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+    const parent = canvas.parentElement;
+    if (!parent) return;
+
     const ctx = canvas.getContext('2d');
     let animId;
     let particles = [];
-    const PARTICLE_COUNT = 80; // slightly more for starry effect
+    const PARTICLE_COUNT = 80;
 
     function resize() {
-      canvas.width = canvas.offsetWidth * window.devicePixelRatio;
-      canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+      if (!canvas || !parent) return;
+      canvas.width = parent.offsetWidth * window.devicePixelRatio;
+      canvas.height = parent.offsetHeight * window.devicePixelRatio;
       ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
     }
 
     function createParticles() {
       particles = [];
-      const w = canvas.offsetWidth;
-      const h = canvas.offsetHeight;
+      const w = parent.offsetWidth;
+      const h = parent.offsetHeight;
       for (let i = 0; i < PARTICLE_COUNT; i++) {
         particles.push({
           x: Math.random() * w,
@@ -36,8 +40,9 @@ export default function ParticleCanvas() {
     }
 
     function draw() {
-      const w = canvas.offsetWidth;
-      const h = canvas.offsetHeight;
+      if (!parent) return;
+      const w = parent.offsetWidth;
+      const h = parent.offsetHeight;
       ctx.clearRect(0, 0, w, h);
 
       particles.forEach((p) => {
@@ -73,14 +78,16 @@ export default function ParticleCanvas() {
     createParticles();
     draw();
 
-    window.addEventListener('resize', () => {
+    const resizeObserver = new ResizeObserver(() => {
       resize();
       createParticles();
     });
+    
+    resizeObserver.observe(parent);
 
     return () => {
       cancelAnimationFrame(animId);
-      window.removeEventListener('resize', resize);
+      resizeObserver.disconnect();
     };
   }, []);
 

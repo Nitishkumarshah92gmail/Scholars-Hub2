@@ -408,7 +408,7 @@ export default function Chat() {
         return <audio src={msg.attachment_url} controls className="w-full mt-2 max-w-[200px]" />;
       case 'pdf':
         return (
-          <a href={msg.attachment_url} target="_blank" rel="noopener noreferrer" className={`flex items-center gap-2 mt-2 p-2 rounded-lg transition-colors ${msg.sender_id === user._id ? 'bg-white/20 hover:bg-white/30 text-white' : 'bg-gray-100 dark:bg-ig-bg-elevated hover:bg-gray-200 dark:hover:bg-ig-bg-elevated/80'}`}>
+          <a href={msg.attachment_url} target="_blank" rel="noopener noreferrer" className={`flex items-center gap-2 mt-2 p-2 rounded-lg transition-colors ${msg.sender_id === user._id ? 'bg-white/20 hover:bg-white/30 text-white' : 'bg-gray-100 dark:bg-ag-surface-container-high hover:bg-gray-200 dark:hover:bg-ag-surface-container-high/80'}`}>
             <HiDocumentText className={`w-8 h-8 ${msg.sender_id === user._id ? 'text-white' : 'text-red-500'}`} />
             <span className="text-sm font-semibold truncate max-w-[150px]">{msg.attachment_name}</span>
           </a>
@@ -421,7 +421,7 @@ export default function Chat() {
   };
 
   return (
-    <div className="h-[calc(100vh-140px)] md:h-[calc(100vh-50px)] flex bg-ig-bg dark:bg-ig-bg-dark rounded-xl border border-ig-separator dark:border-ig-separator-dark overflow-hidden shadow-sm">
+    <div className="h-[calc(100vh-140px)] md:h-[calc(100vh-50px)] flex bg-ig-bg dark:bg-black rounded-ag-sm border border-ig-separator dark:border-ig-separator-dark overflow-hidden shadow-sm">
       
       {/* Sidebar - Conversation List */}
       <div className={`w-full md:w-80 border-r border-ig-separator dark:border-ig-separator-dark flex flex-col ${activeConversation ? 'hidden md:flex' : 'flex'}`}>
@@ -434,7 +434,7 @@ export default function Chat() {
             </div>
             <input
               type="text"
-              className="w-full bg-gray-100 dark:bg-ig-bg-elevated text-ig-text dark:text-ig-text-light border-none rounded-lg pl-10 pr-4 py-2 focus:ring-2 focus:ring-ig-primary transition-shadow"
+              className="w-full bg-gray-100 dark:bg-ag-surface-container-high text-ig-text dark:text-ig-text-light border-none rounded-lg pl-10 pr-4 py-2 focus:ring-2 focus:ring-ag-primary transition-shadow"
               placeholder="Search scholars..."
               value={searchQuery}
               onChange={handleSearch}
@@ -453,7 +453,7 @@ export default function Chat() {
                   <button
                     key={result.id}
                     onClick={() => startConversation(result)}
-                    className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-ig-bg-elevated transition-colors text-left"
+                    className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-ag-surface-container-high transition-colors text-left"
                   >
                     <img src={result.avatar || `https://ui-avatars.com/api/?name=${result.name}`} alt={result.name} className="w-10 h-10 rounded-full object-cover" />
                     <div>
@@ -477,7 +477,7 @@ export default function Chat() {
                   <button
                     key={convo.id}
                     onClick={() => setActiveConversation(convo)}
-                    className={`w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left ${activeConversation?.id === convo.id ? 'bg-gray-100 dark:bg-ig-bg-elevated' : 'hover:bg-gray-100 dark:hover:bg-ig-bg-elevated'}`}
+                    className={`w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left ${activeConversation?.id === convo.id ? 'bg-gray-100 dark:bg-ag-surface-container-high' : 'hover:bg-gray-100 dark:hover:bg-ag-surface-container-high'}`}
                   >
                     <img src={convo.otherUser.avatar || `https://ui-avatars.com/api/?name=${convo.otherUser.name}`} alt={convo.otherUser.name} className="w-12 h-12 rounded-full object-cover" />
                     <div className="flex-1 min-w-0">
@@ -504,14 +504,14 @@ export default function Chat() {
       </div>
 
       {/* Main Chat Area */}
-      <div className={`flex-1 flex flex-col bg-white dark:bg-ig-bg-dark ${!activeConversation ? 'hidden md:flex' : 'flex'}`}>
+      <div className={`flex-1 flex flex-col bg-white dark:bg-black ${!activeConversation ? 'hidden md:flex' : 'flex'}`}>
         {activeConversation ? (
           <>
             {/* Chat Header */}
-            <div className="px-4 py-3 border-b border-ig-separator dark:border-ig-separator-dark flex items-center gap-3 bg-white/80 dark:bg-ig-bg-dark/80 backdrop-blur-md sticky top-0 z-10">
+            <div className="px-4 py-3 border-b border-ig-separator dark:border-ig-separator-dark flex items-center gap-3 bg-white/80 dark:bg-black/80 backdrop-blur-md sticky top-0 z-10">
               <button 
                 onClick={() => setActiveConversation(null)}
-                className="md:hidden p-2 -ml-2 rounded-full text-ig-text dark:text-ig-text-light hover:bg-gray-100 dark:hover:bg-ig-bg-elevated"
+                className="md:hidden p-2 -ml-2 rounded-full text-ig-text dark:text-ig-text-light hover:bg-gray-100 dark:hover:bg-ag-surface-container-high"
               >
                 <HiArrowLeft className="w-5 h-5" />
               </button>
@@ -557,14 +557,14 @@ export default function Chat() {
                                 setEditingMessageId(msg.id);
                                 setEditContent(msg.content);
                               }}
-                              className="p-2 text-ig-text-2 hover:text-ig-primary rounded-full hover:bg-gray-100 dark:hover:bg-ig-bg-elevated"
+                              className="p-2 text-ig-text-2 hover:text-ig-primary rounded-full hover:bg-gray-100 dark:hover:bg-ag-surface-container-high"
                               title="Edit message"
                             >
                               <HiPencil className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => deleteMessage(msg.id)}
-                              className="p-2 text-ig-error rounded-full hover:bg-gray-100 dark:hover:bg-ig-bg-elevated"
+                              className="p-2 text-ig-error rounded-full hover:bg-gray-100 dark:hover:bg-ag-surface-container-high"
                               title="Delete message"
                             >
                               <HiTrash className="w-4 h-4" />
@@ -572,10 +572,10 @@ export default function Chat() {
                           </div>
                         )}
                         <div 
-                          className={`px-4 py-2 rounded-2xl text-sm ${
+                          className={`px-4 py-2 rounded-ag text-sm ${
                             isMine 
                               ? 'bg-gradient-to-r from-ig-primary to-blue-500 text-white rounded-br-sm shadow-sm' 
-                              : 'bg-white dark:bg-ig-bg-elevated text-ig-text dark:text-ig-text-light border border-ig-separator/50 dark:border-ig-separator-dark/50 rounded-bl-sm shadow-sm'
+                              : 'bg-white dark:bg-ag-surface-container-high text-ig-text dark:text-ig-text-light border border-ig-separator/50 dark:border-ig-separator-dark/50 rounded-bl-sm shadow-sm'
                           }`}
                         >
                           {editingMessageId === msg.id ? (
@@ -584,7 +584,7 @@ export default function Chat() {
                                 type="text" 
                                 value={editContent} 
                                 onChange={(e) => setEditContent(e.target.value)}
-                                className="text-ig-text dark:text-ig-text-light bg-white dark:bg-ig-bg-dark px-2 py-1 rounded border-none focus:ring-1 focus:ring-ig-primary text-sm min-w-[150px]"
+                                className="text-ig-text dark:text-ig-text-light bg-white dark:bg-black px-2 py-1 rounded border-none focus:ring-1 focus:ring-ag-primary text-sm min-w-[150px]"
                                 onKeyDown={(e) => {
                                   if (e.key === 'Enter') handleEditMessage(msg.id);
                                   if (e.key === 'Escape') setEditingMessageId(null);
@@ -616,7 +616,7 @@ export default function Chat() {
             </div>
 
             {/* Message Input */}
-            <div className="p-3 bg-white dark:bg-ig-bg-dark border-t border-ig-separator dark:border-ig-separator-dark">
+            <div className="p-3 bg-white dark:bg-black border-t border-ig-separator dark:border-ig-separator-dark">
               <form onSubmit={sendMessage} className="flex items-end gap-2">
                 <input 
                   type="file" 
@@ -629,7 +629,7 @@ export default function Chat() {
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={isUploading}
-                  className="p-3 bg-gray-100 dark:bg-ig-bg-elevated hover:bg-gray-200 dark:hover:bg-ig-separator-dark rounded-full text-ig-text dark:text-ig-text-light transition-colors shrink-0"
+                  className="p-3 bg-gray-100 dark:bg-ag-surface-container-high hover:bg-gray-200 dark:hover:bg-ig-separator-dark rounded-full text-ig-text dark:text-ig-text-light transition-colors shrink-0"
                 >
                   {isUploading ? (
                     <div className="w-5 h-5 border-2 border-ig-primary border-t-transparent rounded-full animate-spin"></div>
@@ -637,7 +637,7 @@ export default function Chat() {
                     <HiPaperClip className="w-5 h-5" />
                   )}
                 </button>
-                <div className="flex-1 bg-gray-100 dark:bg-ig-bg-elevated rounded-3xl p-1 flex items-center border border-transparent focus-within:border-ig-primary/30 transition-colors">
+                <div className="flex-1 bg-gray-100 dark:bg-ag-surface-container-high rounded-3xl p-1 flex items-center border border-transparent focus-within:border-ig-primary/30 transition-colors">
                   <textarea
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}

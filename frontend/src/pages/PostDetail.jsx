@@ -122,7 +122,7 @@ export default function PostDetail() {
         <h3 className="text-base font-semibold text-ig-text dark:text-ig-text-light">
           Sorry, this page isn't available
         </h3>
-        <Link to="/dashboard" className="text-ig-primary hover:text-ig-primary-hover mt-2 inline-block text-sm font-semibold">
+        <Link to="/dashboard" className="text-ig-primary hover:text-ag-primary-hover mt-2 inline-block text-sm font-semibold">
           Go back to feed
         </Link>
       </div>
@@ -133,7 +133,7 @@ export default function PostDetail() {
     switch (post.type) {
       case 'pdf':
         return (
-          <div className="bg-ig-bg-2 dark:bg-ig-bg-elevated p-6 flex items-center justify-between">
+          <div className="bg-ig-bg-2 dark:bg-ag-surface-container-high p-6 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <span className="text-4xl">📄</span>
               <div>

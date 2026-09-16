@@ -70,25 +70,25 @@ export default function Explore() {
 
   return (
     <div>
-      {/* Search Bar — Instagram style */}
+      {/* Search Bar */}
       <div className="relative mb-4">
-        <HiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ig-text-2" />
+        <HiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-ig-text-2" />
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search"
-          className="input-field pl-10 !rounded-lg !bg-ig-bg-2 dark:!bg-ig-bg-elevated text-sm"
+          className="input-field pl-10 !rounded-ag-pill !bg-ig-bg dark:!bg-ag-surface-container text-sm"
         />
       </div>
 
-      {/* Subject Filter — Instagram-style pills */}
+      {/* Subject Filter — Pill buttons */}
       <div className="flex gap-2 overflow-x-auto pb-3 mb-4 scrollbar-hide">
         <button
           onClick={() => setSelectedSubject('All')}
-          className={`flex-shrink-0 px-4 py-1.5 rounded-lg text-sm font-semibold transition-all ${selectedSubject === 'All'
-              ? 'bg-ig-text dark:bg-ig-text-light text-white dark:text-ig-bg-dark'
-              : 'bg-ig-bg dark:bg-ig-bg-elevated text-ig-text dark:text-ig-text-light border border-ig-separator dark:border-ig-separator-dark'
+          className={`flex-shrink-0 px-4 py-1.5 rounded-ag-pill text-sm font-semibold transition-all duration-200 ${selectedSubject === 'All'
+              ? 'bg-ag-primary text-white shadow-ag-glow'
+              : 'bg-ig-bg dark:bg-ag-surface-container-high text-ig-text dark:text-ig-text-light border border-ig-separator dark:border-ig-separator-dark hover:bg-gray-50 dark:hover:bg-ag-tonal-hover'
             }`}
         >
           All
@@ -97,9 +97,9 @@ export default function Explore() {
           <button
             key={subject.name}
             onClick={() => setSelectedSubject(subject.name)}
-            className={`flex-shrink-0 px-4 py-1.5 rounded-lg text-sm font-semibold transition-all ${selectedSubject === subject.name
-                ? 'bg-ig-text dark:bg-ig-text-light text-white dark:text-ig-bg-dark'
-                : 'bg-ig-bg dark:bg-ig-bg-elevated text-ig-text dark:text-ig-text-light border border-ig-separator dark:border-ig-separator-dark'
+            className={`flex-shrink-0 px-4 py-1.5 rounded-ag-pill text-sm font-semibold transition-all duration-200 ${selectedSubject === subject.name
+                ? 'bg-ag-primary text-white shadow-ag-glow'
+                : 'bg-ig-bg dark:bg-ag-surface-container-high text-ig-text dark:text-ig-text-light border border-ig-separator dark:border-ig-separator-dark hover:bg-gray-50 dark:hover:bg-ag-tonal-hover'
               }`}
           >
             {subject.name}
@@ -118,7 +118,7 @@ export default function Explore() {
         ) : posts.length === 0 ? (
           <div className="card p-12 text-center">
             <span className="text-5xl block mb-4">📭</span>
-            <h3 className="text-base font-semibold text-ig-text dark:text-ig-text-light mb-2">
+            <h3 className="text-base font-heading font-semibold text-ig-text dark:text-ig-text-light mb-2">
               No posts found
             </h3>
             <p className="text-sm text-ig-text-2">

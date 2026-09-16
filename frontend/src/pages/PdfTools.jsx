@@ -258,7 +258,7 @@ export default function PdfTools() {
                             onClick={() => setActiveTool(t.id)}
                             className="card p-5 text-left hover:shadow-ig transition-all group"
                         >
-                            <div className={`w-10 h-10 ${t.color} rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
+                            <div className={`w-10 h-10 ${t.color} rounded-ag-sm flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
                                 <t.icon className="w-5 h-5 text-white" />
                             </div>
                             <p className="font-semibold text-sm text-ig-text dark:text-ig-text-light">{t.label}</p>
@@ -279,7 +279,7 @@ export default function PdfTools() {
 
             <div className="card p-6">
                 <div className="flex items-center gap-3 mb-5">
-                    <div className={`w-10 h-10 ${tool.color} rounded-xl flex items-center justify-center`}>
+                    <div className={`w-10 h-10 ${tool.color} rounded-ag-sm flex items-center justify-center`}>
                         <tool.icon className="w-5 h-5 text-white" />
                     </div>
                     <div>
@@ -290,7 +290,7 @@ export default function PdfTools() {
 
                 {/* File drop zone */}
                 <div
-                    className="border-2 border-dashed border-ig-separator dark:border-ig-separator-dark rounded-xl p-8 text-center hover:border-ig-primary transition-colors cursor-pointer mb-4"
+                    className="border-2 border-dashed border-ig-separator dark:border-ig-separator-dark rounded-ag-sm p-8 text-center hover:border-ig-primary transition-colors cursor-pointer mb-4"
                     onClick={() => fileRef.current?.click()}
                 >
                     <HiUpload className="w-8 h-8 text-ig-text-2 mx-auto mb-2" />
@@ -312,7 +312,7 @@ export default function PdfTools() {
                 {files.length > 0 && (
                     <div className="space-y-1.5 mb-4">
                         {files.map((f, i) => (
-                            <div key={i} className="flex items-center gap-2 bg-ig-bg-2 dark:bg-ig-bg-elevated rounded-lg p-2.5">
+                            <div key={i} className="flex items-center gap-2 bg-ig-bg-2 dark:bg-ag-surface-container-high rounded-lg p-2.5">
                                 <span className="text-lg">{activeTool === 'jpg-to-pdf' ? '🖼️' : '📄'}</span>
                                 <div className="flex-1 min-w-0">
                                     <p className="text-xs font-medium truncate text-ig-text dark:text-ig-text-light">{f.name}</p>
@@ -344,7 +344,7 @@ export default function PdfTools() {
                             <button
                                 key={a}
                                 onClick={() => setRotateAngle(a)}
-                                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${rotateAngle === a ? 'bg-ig-primary text-white' : 'bg-ig-bg-2 dark:bg-ig-bg-elevated text-ig-text-2'
+                                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${rotateAngle === a ? 'bg-ag-primary text-white' : 'bg-ig-bg-2 dark:bg-ag-surface-container-high text-ig-text-2'
                                     }`}
                             >
                                 {a}°

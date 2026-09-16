@@ -181,18 +181,18 @@ export default function Layout() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-ig-bg-2 dark:bg-ig-bg-dark">
-      {/* Desktop Sidebar — Instagram-style */}
-      <aside className="hidden md:flex flex-col w-[245px] xl:w-[335px] fixed h-full bg-ig-bg dark:bg-ig-bg-dark border-r border-ig-separator dark:border-ig-separator-dark z-30">
+    <div className="min-h-screen flex flex-col md:flex-row bg-ig-bg-2 dark:bg-black transition-colors duration-300">
+      {/* Desktop Sidebar */}
+      <aside className="hidden md:flex flex-col w-[245px] xl:w-[335px] fixed h-full bg-ig-bg dark:bg-ag-surface-dim border-r border-ig-separator dark:border-ig-separator-dark/50 z-30 transition-colors duration-300">
         {/* Logo */}
         <div className="px-6 pt-5 pb-3">
           <h1
-            className="text-2xl font-heading font-bold text-ig-text dark:text-ig-text-light flex items-center gap-2 cursor-pointer"
+            className="text-2xl font-heading font-bold text-ig-text dark:text-ig-text-light flex items-center gap-2.5 cursor-pointer"
             onClick={() => navigate('/dashboard')}
           >
             <img src={logoImg} alt="Scholars Hub" className="w-9 h-9 rounded-full object-cover" />
             <span>
-              Scholars<span className="gradient-text"> Hub</span>
+              Scholars<span className="gradient-text">Hub</span>
             </span>
           </h1>
         </div>
@@ -215,7 +215,7 @@ export default function Layout() {
                   )}
                   <span className="hidden xl:inline">{item.label}</span>
                   {item.badge > 0 && (
-                    <span className="ml-auto bg-ig-badge text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                    <span className="ml-auto bg-ag-badge text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">
                       {item.badge > 9 ? '9+' : item.badge}
                     </span>
                   )}
@@ -252,7 +252,7 @@ export default function Layout() {
           className="px-3 pb-2 cursor-pointer"
           onClick={() => navigate(`/dashboard/profile/${user?._id}`)}
         >
-          <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-ig-bg-elevated transition-colors">
+          <div className="flex items-center gap-3 p-2 rounded-ag-sm hover:bg-gray-100 dark:hover:bg-ag-surface-container-high transition-colors">
             <img
               src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.name}`}
               alt={user?.name}
@@ -268,36 +268,36 @@ export default function Layout() {
         {/* Contact */}
         <div className="px-6 pb-2 hidden xl:block">
           <div className="flex items-center gap-1.5 mb-1.5">
-            <HiUserGroup className="w-3.5 h-3.5 text-ig-primary" />
+            <HiUserGroup className="w-3.5 h-3.5 text-ag-primary" />
             <span className="text-[11px] font-semibold text-ig-text dark:text-ig-text-light">{totalUsers}</span>
             <span className="text-[10px] text-ig-text-2">scholars using this platform</span>
           </div>
           <p className="text-[10px] text-ig-text-2 leading-relaxed">
-            By <span className="font-semibold">Nitish Kumar Sahu</span> · <a href="mailto:nitishkumarshah92@gmail.com" className="text-ig-primary hover:underline">Report an issue</a>
+            By <span className="font-semibold">Nitish Kumar Sahu</span> · <a href="mailto:nitishkumarshah92@gmail.com" className="text-ag-primary hover:underline">Report an issue</a>
           </p>
         </div>
       </aside>
 
       {/* Mobile Top Header */}
-      <header className="md:hidden fixed top-0 left-0 right-0 bg-ig-bg dark:bg-ig-bg-dark border-b border-ig-separator dark:border-ig-separator-dark z-30 flex items-center justify-between px-4 py-2.5">
+      <header className="md:hidden fixed top-0 left-0 right-0 glass-light dark:glass z-30 flex items-center justify-between px-4 py-2.5 transition-colors duration-300">
         <h1
           className="text-xl font-heading font-bold text-ig-text dark:text-ig-text-light flex items-center gap-2 cursor-pointer"
           onClick={() => navigate('/dashboard')}
         >
           <img src={logoImg} alt="Scholars Hub" className="w-7 h-7 rounded-full object-cover" />
           <span>
-            Scholars<span className="gradient-text"> Hub</span>
+            Scholars<span className="gradient-text">Hub</span>
           </span>
         </h1>
         <NavLink
           to="/dashboard/notifications"
           className={({ isActive }) =>
-            `p-2 rounded-lg transition-colors relative ${isActive ? 'text-ig-text dark:text-ig-text-light' : 'text-ig-text dark:text-ig-text-light opacity-70'}`
+            `p-2 rounded-full transition-all relative ${isActive ? 'text-ig-text dark:text-ig-text-light bg-gray-100 dark:bg-ag-surface-container-high' : 'text-ig-text dark:text-ig-text-light opacity-70 hover:opacity-100'}`
           }
         >
           <HiOutlineBell className="w-6 h-6" />
           {unreadCount > 0 && (
-            <span className="absolute top-1 right-1 bg-ig-badge text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+            <span className="absolute top-1 right-1 bg-ag-badge text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
               {unreadCount > 9 ? '9+' : unreadCount}
             </span>
           )}
@@ -308,12 +308,12 @@ export default function Layout() {
       {mobileMenuOpen && (
         <div className="md:hidden fixed inset-0 z-50 flex">
           {/* Backdrop */}
-          <div className="absolute inset-0 bg-black/50" onClick={() => setMobileMenuOpen(false)} />
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMobileMenuOpen(false)} />
           {/* Slide-in panel */}
-          <div className="relative ml-auto w-72 h-full bg-ig-bg dark:bg-ig-bg-dark shadow-xl flex flex-col animate-slide-in-right">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-ig-separator dark:border-ig-separator-dark">
-              <span className="font-semibold text-ig-text dark:text-ig-text-light">More</span>
-              <button onClick={() => setMobileMenuOpen(false)} className="p-1 rounded-lg text-ig-text dark:text-ig-text-light hover:bg-gray-100 dark:hover:bg-ig-bg-elevated">
+          <div className="relative ml-auto w-72 h-full bg-ig-bg dark:bg-ag-surface-dim shadow-ag-glass flex flex-col animate-slide-in-right">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-ig-separator dark:border-ig-separator-dark/50">
+              <span className="font-heading font-semibold text-ig-text dark:text-ig-text-light">More</span>
+              <button onClick={() => setMobileMenuOpen(false)} className="p-1.5 rounded-full text-ig-text dark:text-ig-text-light hover:bg-gray-100 dark:hover:bg-ag-surface-container-high transition-colors">
                 <HiX className="w-6 h-6" />
               </button>
             </div>
@@ -325,14 +325,14 @@ export default function Layout() {
                   to={item.to}
                   end={item.to === '/dashboard'}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={({ isActive }) => `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${isActive ? 'bg-gray-100 dark:bg-ig-bg-elevated font-semibold' : 'hover:bg-gray-100 dark:hover:bg-ig-bg-elevated'} text-ig-text dark:text-ig-text-light`}
+                  className={({ isActive }) => `flex items-center gap-3 px-3 py-2.5 rounded-ag-sm transition-all ${isActive ? 'bg-gray-100 dark:bg-ag-surface-container-high font-semibold' : 'hover:bg-gray-100 dark:hover:bg-ag-surface-container-high'} text-ig-text dark:text-ig-text-light`}
                 >
                   {({ isActive }) => (
                     <>
                       {isActive ? <item.activeIcon className="w-5 h-5" /> : <item.icon className="w-5 h-5" />}
                       <span>{item.label}</span>
                       {item.badge > 0 && (
-                        <span className="ml-auto bg-ig-badge text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                        <span className="ml-auto bg-ag-badge text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">
                           {item.badge > 9 ? '9+' : item.badge}
                         </span>
                       )}
@@ -346,7 +346,7 @@ export default function Layout() {
               {/* External Links */}
 
 
-              <a href="https://nptel.ac.in/courses" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-ig-bg-elevated text-ig-text dark:text-ig-text-light">
+              <a href="https://nptel.ac.in/courses" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 px-3 py-2.5 rounded-ag-sm hover:bg-gray-100 dark:hover:bg-ag-surface-container-high text-ig-text dark:text-ig-text-light transition-colors">
                 <HiOutlineAcademicCap className="w-5 h-5" />
                 <span>NPTEL Courses</span>
               </a>
@@ -354,19 +354,19 @@ export default function Layout() {
               <div className="border-t border-ig-separator/30 dark:border-ig-separator-dark/30 my-2" />
 
               {/* Get the App */}
-              <a href="/scholars-hub.apk" download className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-ig-bg-elevated text-ig-primary font-bold w-full">
+              <a href="/scholars-hub.apk" download className="flex items-center gap-3 px-3 py-2.5 rounded-ag-sm hover:bg-gray-100 dark:hover:bg-ag-surface-container-high text-ag-primary font-bold w-full transition-colors">
                 <HiDownload className="w-5 h-5" />
                 <span>Get the App</span>
               </a>
 
               {/* Theme Toggle */}
-              <button onClick={() => { toggleTheme(); setMobileMenuOpen(false); }} className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-ig-bg-elevated text-ig-text dark:text-ig-text-light w-full">
+              <button onClick={() => { toggleTheme(); setMobileMenuOpen(false); }} className="flex items-center gap-3 px-3 py-2.5 rounded-ag-sm hover:bg-gray-100 dark:hover:bg-ag-surface-container-high text-ig-text dark:text-ig-text-light w-full transition-colors">
                 {darkMode ? <HiSun className="w-5 h-5" /> : <HiMoon className="w-5 h-5" />}
                 <span>{darkMode ? 'Light Mode' : 'Dark Mode'}</span>
               </button>
 
               {/* Logout */}
-              <button onClick={() => { handleLogout(); setMobileMenuOpen(false); }} className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-ig-bg-elevated text-ig-error w-full">
+              <button onClick={() => { handleLogout(); setMobileMenuOpen(false); }} className="flex items-center gap-3 px-3 py-2.5 rounded-ag-sm hover:bg-gray-100 dark:hover:bg-ag-surface-container-high text-ig-error w-full transition-colors">
                 <HiLogout className="w-5 h-5" />
                 <span>Log out</span>
               </button>
@@ -375,7 +375,7 @@ export default function Layout() {
             {/* User info at bottom of menu */}
             <div className="px-3 py-3 border-t border-ig-separator/30 dark:border-ig-separator-dark/30">
               <div
-                className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-ig-bg-elevated cursor-pointer"
+                className="flex items-center gap-3 p-2 rounded-ag-sm hover:bg-gray-100 dark:hover:bg-ag-surface-container-high cursor-pointer transition-colors"
                 onClick={() => { navigate(`/dashboard/profile/${user?._id}`); setMobileMenuOpen(false); }}
               >
                 <img
@@ -396,22 +396,22 @@ export default function Layout() {
       {/* Main Content */}
       <main className="flex-1 md:ml-[245px] xl:ml-[335px] pb-16 md:pb-0 pt-14 md:pt-0 relative">
         {/* Desktop Top Right Actions */}
-        <div className="hidden md:flex fixed top-4 right-6 z-40 items-center gap-4">
-          <a href="/scholars-hub.apk" download className="flex items-center gap-2 px-4 py-2 bg-ig-primary hover:bg-blue-600 text-white text-sm font-bold rounded-full transition-colors shadow-sm">
+        <div className="hidden md:flex fixed top-4 right-6 z-40 items-center gap-3">
+          <a href="/scholars-hub.apk" download className="flex items-center gap-2 px-4 py-2 bg-ag-primary hover:bg-ag-primary-hover text-white text-sm font-bold rounded-ag-pill transition-all hover:shadow-ag-glow">
             <HiDownload className="w-4 h-4" />
             Get App
           </a>
           <NavLink
             to="/dashboard/notifications"
             className={({ isActive }) =>
-              `relative p-2.5 rounded-full transition-colors ${isActive ? 'bg-gray-100 dark:bg-ig-bg-elevated' : 'hover:bg-gray-100 dark:hover:bg-ig-bg-elevated'} text-ig-text dark:text-ig-text-light`
+              `relative p-2.5 rounded-full transition-all ${isActive ? 'bg-gray-100 dark:bg-ag-surface-container-high' : 'hover:bg-gray-100 dark:hover:bg-ag-surface-container-high'} text-ig-text dark:text-ig-text-light`
             }
           >
             {({ isActive }) => (
               <>
                 {isActive ? <HiBell className="w-6 h-6" /> : <HiOutlineBell className="w-6 h-6" />}
                 {unreadCount > 0 && (
-                  <span className="absolute top-1 right-1 bg-ig-badge text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                  <span className="absolute top-1 right-1 bg-ag-badge text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
                     {unreadCount > 9 ? '9+' : unreadCount}
                   </span>
                 )}
@@ -427,17 +427,17 @@ export default function Layout() {
 
 
 
-      {/* Mobile Bottom Nav — Instagram-style */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-ig-bg dark:bg-ig-bg-dark border-t border-ig-separator dark:border-ig-separator-dark z-30 flex justify-around py-2 px-1 safe-area-pb">
+      {/* Mobile Bottom Nav */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 glass-light dark:glass z-30 flex justify-around py-2 px-1 safe-area-pb transition-colors duration-300">
         {mobileBottomItems.map((item) => (
           <NavLink
             key={item.to}
             to={item.to}
             end={item.to === '/dashboard'}
             className={({ isActive }) =>
-              `flex flex-col items-center gap-0.5 px-3 py-1 transition-colors ${isActive
+              `flex flex-col items-center gap-0.5 px-3 py-1 transition-all ${isActive
                 ? 'text-ig-text dark:text-ig-text-light'
-                : 'text-ig-text dark:text-ig-text-light opacity-60'
+                : 'text-ig-text dark:text-ig-text-light opacity-50 hover:opacity-80'
               }`
             }
           >
@@ -449,7 +449,7 @@ export default function Layout() {
                   <item.icon className="w-7 h-7" />
                 )}
                 {item.badge > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-ig-badge text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 bg-ag-badge text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
                     {item.badge > 9 ? '9+' : item.badge}
                   </span>
                 )}
@@ -460,7 +460,7 @@ export default function Layout() {
         {/* 3-dot More button */}
         <button
           onClick={() => setMobileMenuOpen(true)}
-          className="flex flex-col items-center gap-0.5 px-3 py-1 transition-colors text-ig-text dark:text-ig-text-light opacity-60"
+          className="flex flex-col items-center gap-0.5 px-3 py-1 transition-all text-ig-text dark:text-ig-text-light opacity-50 hover:opacity-80"
         >
           <HiDotsHorizontal className="w-7 h-7" />
         </button>

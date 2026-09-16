@@ -135,7 +135,7 @@ export default memo(function PostCard({ post, onUpdate }) {
     switch (post.type) {
       case 'pdf':
         return (
-          <div className="bg-ig-bg-2 dark:bg-ig-bg-elevated p-6 flex items-center justify-between">
+          <div className="bg-ig-bg-2 dark:bg-ag-surface-container-high p-6 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <span className="text-4xl">📄</span>
               <div>
@@ -190,7 +190,7 @@ export default memo(function PostCard({ post, onUpdate }) {
       }
       case 'drive_link':
         return (
-          <div className="bg-ig-bg-2 dark:bg-ig-bg-elevated p-6 flex items-center justify-between">
+          <div className="bg-ig-bg-2 dark:bg-ag-surface-container-high p-6 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <span className="text-4xl">🔗</span>
               <div>
@@ -346,12 +346,12 @@ export default memo(function PostCard({ post, onUpdate }) {
               <HiDotsHorizontal className="w-5 h-5 text-ig-text dark:text-ig-text-light" />
             </button>
             {showMenu && (
-              <div className="absolute right-0 top-8 bg-ig-bg dark:bg-ig-bg-elevated rounded-xl shadow-ig-elevated border border-ig-separator dark:border-ig-separator-dark py-1 w-48 z-10 animate-fade-in">
+              <div className="absolute right-0 top-8 bg-ig-bg dark:bg-ag-surface-container-high rounded-ag-sm shadow-ag-glass border border-ig-separator dark:border-ig-separator-dark/50 py-1 w-48 z-10 animate-scale-in">
                 {isOwner && (
                   <>
                     <button
                       onClick={handleDelete}
-                      className="w-full text-left px-4 py-3 text-sm text-ig-error hover:bg-ig-bg-2 dark:hover:bg-ig-bg-dark flex items-center gap-3 font-semibold"
+                      className="w-full text-left px-4 py-3 text-sm text-ig-error hover:bg-ig-bg-2 dark:hover:bg-ag-surface-container flex items-center gap-3 font-semibold transition-colors"
                     >
                       <HiTrash className="w-5 h-5" />
                       {confirmDelete ? 'Confirm Delete?' : 'Delete'}
@@ -359,7 +359,7 @@ export default memo(function PostCard({ post, onUpdate }) {
                     {confirmDelete && (
                       <button
                         onClick={() => { setConfirmDelete(false); setShowMenu(false); }}
-                        className="w-full text-left px-4 py-3 text-sm text-ig-text-2 hover:bg-ig-bg-2 dark:hover:bg-ig-bg-dark flex items-center gap-3"
+                        className="w-full text-left px-4 py-3 text-sm text-ig-text-2 hover:bg-ig-bg-2 dark:hover:bg-ag-surface-container flex items-center gap-3 transition-colors"
                       >
                         Cancel
                       </button>
@@ -369,7 +369,7 @@ export default memo(function PostCard({ post, onUpdate }) {
                 {!isOwner && (
                   <button
                     onClick={handleReport}
-                    className="w-full text-left px-4 py-3 text-sm text-ig-error hover:bg-ig-bg-2 dark:hover:bg-ig-bg-dark flex items-center gap-3 font-semibold"
+                    className="w-full text-left px-4 py-3 text-sm text-ig-error hover:bg-ig-bg-2 dark:hover:bg-ag-surface-container flex items-center gap-3 font-semibold transition-colors"
                   >
                     <HiOutlineFlag className="w-5 h-5" />
                     Report

@@ -265,7 +265,7 @@ export default function Upload() {
               {files.length > 0 && (
                 <div className="mt-3 space-y-1.5">
                   {files.map((file, index) => (
-                    <div key={index} className="flex items-center gap-2 bg-ig-bg-2 dark:bg-ig-bg-elevated rounded-lg p-2.5">
+                    <div key={index} className="flex items-center gap-2 bg-ig-bg-2 dark:bg-ag-surface-container-high rounded-lg p-2.5">
                       <span className="text-lg">{type === 'pdf' ? '📄' : '🖼️'}</span>
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-medium truncate text-ig-text dark:text-ig-text-light">{file.name}</p>
@@ -312,8 +312,8 @@ export default function Upload() {
                   type="button"
                   onClick={() => setSubject(s.name)}
                   className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${subject === s.name
-                      ? 'bg-ig-primary text-white'
-                      : 'bg-ig-bg-2 dark:bg-ig-bg-elevated text-ig-text-2 hover:text-ig-text'
+                      ? 'bg-ag-primary text-white'
+                      : 'bg-ig-bg-2 dark:bg-ag-surface-container-high text-ig-text-2 hover:text-ig-text'
                     }`}
                 >
                   {s.name}

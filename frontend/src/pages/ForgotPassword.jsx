@@ -39,16 +39,21 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-ig-bg-2 dark:bg-ig-bg-dark px-4">
-      <div className="w-full max-w-[350px] space-y-3">
+    <div className="min-h-screen flex items-center justify-center bg-ig-bg-2 dark:bg-black px-4">
+      {/* Background glow */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[400px] h-[400px] bg-ag-primary/5 rounded-full blur-[100px]" />
+      </div>
+
+      <div className="relative z-10 w-full max-w-[380px] space-y-3 animate-fade-in-up">
         {/* Main Card */}
         <div className="card px-10 pt-10 pb-6">
           {/* Logo */}
           <div className="text-center mb-6">
-            <div className="w-20 h-20 rounded-full bg-ig-bg-2 dark:bg-ig-bg-elevated border-2 border-ig-text dark:border-ig-text-light flex items-center justify-center mx-auto mb-4">
+            <div className="w-20 h-20 rounded-full bg-ig-bg-2 dark:bg-ag-surface-container-high border-2 border-ig-separator dark:border-ig-separator-dark flex items-center justify-center mx-auto mb-4">
               <HiLockClosed className="w-10 h-10 text-ig-text dark:text-ig-text-light" />
             </div>
-            <h2 className="text-base font-semibold text-ig-text dark:text-ig-text-light">
+            <h2 className="text-base font-heading font-semibold text-ig-text dark:text-ig-text-light">
               Trouble logging in?
             </h2>
             <p className="text-xs text-ig-text-2 mt-2 leading-relaxed">
@@ -83,7 +88,7 @@ export default function ForgotPassword() {
               </button>
             </form>
           ) : (
-            <div className="text-center space-y-4">
+            <div className="text-center space-y-4 animate-fade-in">
               <div className="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center mx-auto">
                 <HiMail className="w-8 h-8 text-green-500" />
               </div>
@@ -101,7 +106,7 @@ export default function ForgotPassword() {
               </a>
               <button
                 onClick={() => { setSent(false); setEmail(''); setResetLink(''); }}
-                className="text-ig-primary text-xs font-semibold hover:text-ig-primary-hover"
+                className="text-ag-primary text-xs font-semibold hover:text-ag-primary-hover transition-colors"
               >
                 Use a different email
               </button>
@@ -115,14 +120,14 @@ export default function ForgotPassword() {
             <div className="flex-1 h-px bg-ig-separator dark:bg-ig-separator-dark" />
           </div>
 
-          <Link to="/register" className="block text-center text-sm font-semibold text-ig-text dark:text-ig-text-light hover:opacity-70">
+          <Link to="/register" className="block text-center text-sm font-semibold text-ig-text dark:text-ig-text-light hover:opacity-70 transition-opacity">
             Create new account
           </Link>
         </div>
 
         {/* Back to Login Card */}
         <div className="card p-5 text-center">
-          <Link to="/login" className="text-sm font-semibold text-ig-text dark:text-ig-text-light hover:opacity-70 flex items-center justify-center gap-2">
+          <Link to="/login" className="text-sm font-semibold text-ig-text dark:text-ig-text-light hover:opacity-70 transition-opacity flex items-center justify-center gap-2">
             <HiArrowLeft className="w-4 h-4" />
             Back to login
           </Link>

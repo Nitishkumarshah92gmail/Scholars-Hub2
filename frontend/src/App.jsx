@@ -23,7 +23,7 @@ const Chat = lazy(() => import('./pages/Chat'));
 
 function PageSpinner() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-navy-950">
+    <div className="min-h-screen flex items-center justify-center bg-ig-bg-2 dark:bg-black">
       <div className="loading-spinner"></div>
     </div>
   );
@@ -80,9 +80,25 @@ export default function App() {
             toastOptions={{
               duration: 3000,
               style: {
-                borderRadius: '12px',
-                background: '#1e3a5f',
-                color: '#fff',
+                borderRadius: '999px',
+                background: '#121212',
+                color: '#E8EAED',
+                border: '1px solid #3C4043',
+                fontSize: '14px',
+                padding: '10px 16px',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+              },
+              success: {
+                iconTheme: {
+                  primary: '#34A853',
+                  secondary: '#121212',
+                },
+              },
+              error: {
+                iconTheme: {
+                  primary: '#EA4335',
+                  secondary: '#121212',
+                },
               },
             }}
           />

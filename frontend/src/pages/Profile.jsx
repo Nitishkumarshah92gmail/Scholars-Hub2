@@ -121,7 +121,7 @@ export default function Profile() {
               />
             </div>
             {isOwnProfile && editing && (
-              <label className="absolute bottom-1 right-1 bg-ig-primary text-white p-2 rounded-full cursor-pointer hover:bg-ig-primary-hover transition-colors shadow-lg">
+              <label className="absolute bottom-1 right-1 bg-ag-primary text-white p-2 rounded-full cursor-pointer hover:bg-ag-primary-hover transition-colors shadow-lg">
                 <HiCamera className="w-4 h-4" />
                 <input
                   type="file"
@@ -201,7 +201,7 @@ export default function Profile() {
                     key={s.name}
                     type="button"
                     onClick={() => setEditForm((prev) => ({ ...prev, subjects: prev.subjects.includes(s.name) ? prev.subjects.filter((x) => x !== s.name) : [...prev.subjects, s.name] }))}
-                    className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${editForm.subjects?.includes(s.name) ? 'bg-ig-primary text-white' : 'bg-ig-bg-2 dark:bg-ig-bg-elevated text-ig-text-2'}`}
+                    className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${editForm.subjects?.includes(s.name) ? 'bg-ag-primary text-white' : 'bg-ig-bg-2 dark:bg-ag-surface-container-high text-ig-text-2'}`}
                   >
                     {s.name}
                   </button>

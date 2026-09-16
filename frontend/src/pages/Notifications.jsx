@@ -81,7 +81,7 @@ export default function Notifications() {
             <Link
               key={notif._id}
               to={notif.type === 'follow' ? `/dashboard/profile/${notif.sender?._id}` : `/dashboard/post/${notif.post?._id}`}
-              className={`flex items-center gap-3 px-3 py-3 hover:bg-ig-bg-2 dark:hover:bg-ig-bg-elevated transition-colors rounded-lg ${!notif.read ? 'bg-ig-primary/5' : ''
+              className={`flex items-center gap-3 px-3 py-3 hover:bg-ig-bg-2 dark:hover:bg-ag-surface-container-high transition-all duration-200 rounded-ag-sm ${!notif.read ? 'bg-ag-primary/5' : ''
                 }`}
             >
               <img

@@ -2,91 +2,236 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Antigravity Design System: CSS Custom Properties ── */
+:root {
+  --ag-transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --ag-transition: 250ms cubic-bezier(0.16, 1, 0.3, 1);
+  --ag-transition-slow: 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  --ag-radius-xl: 28px;
+  --ag-radius-lg: 16px;
+  --ag-radius-md: 12px;
+  --ag-radius-sm: 8px;
+  --ag-radius-pill: 999px;
+}
+
+/* ── Smooth scroll for entire page ── */
+html {
+  scroll-behavior: smooth;
+}
+
 @layer base {
   body {
-    @apply bg-ig-bg-2 text-ig-text dark:bg-ig-bg-dark dark:text-ig-text-light font-body transition-colors duration-200;
+    @apply bg-ig-bg-2 text-ig-text dark:bg-ig-bg-dark dark:text-ig-text-light font-body antialiased;
+    transition: background-color var(--ag-transition), color var(--ag-transition);
+  }
+
+  /* Smooth transitions on ALL interactive elements */
+  a, button, input, select, textarea {
+    transition: all var(--ag-transition-fast);
+  }
+
+  /* Better focus styles */
+  *:focus-visible {
+    outline: 2px solid #1a73e8;
+    outline-offset: 2px;
+    border-radius: 4px;
   }
 }
 
 @layer components {
+  /* ── Buttons: Pill-shaped, Antigravity-style ── */
   .btn-primary {
-    @apply bg-ig-primary hover:bg-ig-primary-hover text-white font-semibold px-6 py-2.5 rounded-lg transition-all duration-200 active:scale-[0.96] disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply bg-ag-primary hover:bg-ag-primary-hover text-white font-semibold px-6 py-2.5 rounded-ag-pill
+           active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed;
+    transition: all var(--ag-transition-fast);
+    box-shadow: 0 1px 3px rgba(26,115,232,0.3);
+  }
+  .btn-primary:hover {
+    box-shadow: 0 4px 12px rgba(26,115,232,0.4);
+    transform: translateY(-1px);
+  }
+  .btn-primary:active {
+    transform: scale(0.97) translateY(0);
   }
 
   .btn-secondary {
-    @apply bg-ig-bg-elevated hover:bg-ig-text-2 text-white font-medium px-5 py-2.5 rounded-lg transition-all duration-200 dark:bg-ig-bg-elevated dark:hover:bg-ig-separator-dark;
+    @apply text-ig-text dark:text-ig-text-light font-medium px-5 py-2.5 rounded-ag-pill
+           border border-ig-separator dark:border-ig-separator-dark
+           disabled:opacity-50 disabled:cursor-not-allowed;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: all var(--ag-transition-fast);
+  }
+  .btn-secondary:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: #9AA0A6;
+    transform: translateY(-1px);
   }
 
   .btn-outline {
-    @apply border border-ig-separator dark:border-ig-separator-dark text-ig-text dark:text-ig-text-light hover:bg-gray-50 dark:hover:bg-ig-bg-elevated font-semibold px-5 py-2 rounded-lg transition-all duration-200;
+    @apply border border-ig-separator dark:border-ig-separator-dark text-ig-text dark:text-ig-text-light
+           font-semibold px-5 py-2 rounded-ag-pill
+           disabled:opacity-50 disabled:cursor-not-allowed;
+    transition: all var(--ag-transition-fast);
+  }
+  .btn-outline:hover {
+    @apply bg-gray-50 dark:bg-ig-bg-elevated;
+    transform: translateY(-1px);
   }
 
+  /* ── Inputs: Dark surface with glow focus ── */
   .input-field {
-    @apply w-full px-4 py-2.5 rounded-lg border border-ig-separator dark:border-ig-separator-dark bg-ig-bg-2 dark:bg-ig-bg-dark text-ig-text dark:text-ig-text-light text-sm focus:ring-1 focus:ring-ig-primary focus:border-ig-primary outline-none transition-all duration-200 placeholder:text-ig-text-2;
+    @apply w-full px-4 py-2.5 rounded-ag-sm border border-ig-separator dark:border-ig-separator-dark
+           bg-ig-bg-2 dark:bg-ag-surface-container text-ig-text dark:text-ig-text-light
+           text-sm outline-none placeholder:text-ig-text-2;
+    transition: all var(--ag-transition-fast);
+  }
+  .input-field:focus {
+    border-color: #1a73e8;
+    box-shadow: 0 0 0 3px rgba(26,115,232,0.15);
   }
 
+  /* ── Cards: Large radius, subtle border, smooth hover ── */
   .card {
-    @apply bg-ig-bg dark:bg-ig-bg-dark-2 rounded-lg border border-ig-separator dark:border-ig-separator-dark transition-all duration-200;
+    @apply bg-ig-bg dark:bg-ag-surface-container rounded-ag-sm border border-ig-separator dark:border-ig-separator-dark;
+    transition: all var(--ag-transition);
+  }
+  .card:hover {
+    @apply dark:border-ag-outline-variant;
   }
 
+  /* ── Skeleton ── */
   .skeleton {
-    @apply animate-pulse bg-gray-200 dark:bg-ig-bg-elevated rounded;
+    @apply rounded-ag-sm;
+    background: linear-gradient(90deg, #1e1e1e 25%, #2d2e30 50%, #1e1e1e 75%);
+    background-size: 200% 100%;
+    animation: shimmer 2s linear infinite;
+  }
+  .dark .skeleton {
+    background: linear-gradient(90deg, #1e1e1e 25%, #2d2e30 50%, #1e1e1e 75%);
+    background-size: 200% 100%;
   }
 
+  /* ── Subject badges ── */
   .subject-badge {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold;
+    @apply inline-flex items-center px-3 py-1 rounded-ag-pill text-xs font-semibold;
+    transition: all var(--ag-transition-fast);
   }
 
+  /* ── Navigation links ── */
   .nav-link {
-    @apply flex items-center gap-4 px-3 py-3 rounded-lg text-ig-text dark:text-ig-text-light hover:bg-gray-100 dark:hover:bg-ig-bg-elevated transition-all duration-200 font-normal text-[15px];
+    @apply flex items-center gap-4 px-3 py-3 rounded-ag-sm text-ig-text dark:text-ig-text-light
+           font-normal text-[15px];
+    transition: all var(--ag-transition-fast);
   }
-
+  .nav-link:hover {
+    @apply bg-gray-100 dark:bg-ag-surface-container-high;
+  }
   .nav-link.active {
     @apply font-bold;
   }
 
+  /* ── Avatar ring ── */
   .avatar-ring {
-    @apply rounded-full p-[2px] bg-ig-gradient-story;
+    @apply rounded-full p-[2px] bg-ig-gradient;
   }
-
   .avatar-ring img {
-    @apply rounded-full border-2 border-ig-bg dark:border-ig-bg-dark-2;
+    @apply rounded-full border-2 border-ig-bg dark:border-ag-surface-container;
   }
 
+  /* ── Gradient text ── */
   .gradient-text {
     @apply bg-ig-gradient bg-clip-text text-transparent;
   }
+
+  /* ── Glassmorphic panels ── */
+  .glass {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .glass-light {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+  }
 }
 
+/* ── Scrollbar: Minimal dark ── */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
-
 ::-webkit-scrollbar-track {
-  @apply bg-transparent;
+  background: transparent;
 }
-
 ::-webkit-scrollbar-thumb {
-  @apply bg-gray-300 dark:bg-ig-separator-dark rounded-full;
+  background: rgba(154, 160, 166, 0.3);
+  border-radius: 999px;
+  transition: background 0.2s;
 }
-
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-gray-400 dark:bg-ig-text-2;
+  background: rgba(154, 160, 166, 0.5);
 }
 
+/* ── Loading spinner ── */
 .loading-spinner {
-  @apply inline-block w-8 h-8 border-[3px] border-ig-separator dark:border-ig-separator-dark border-t-ig-primary rounded-full animate-spin;
+  @apply inline-block w-8 h-8 rounded-full animate-spin;
+  border: 3px solid rgba(154, 160, 166, 0.2);
+  border-top-color: #1a73e8;
 }
 
+/* ── Scrollbar hide utility ── */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
-
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
+/* ── Like animation ── */
 .like-animate {
   animation: likePop 0.3s ease-in-out;
+}
+
+/* ── Particle canvas ── */
+.particles-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Page transition wrapper ── */
+.page-enter {
+  opacity: 0;
+  transform: translateY(8px);
+}
+.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms ease-out, transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── Safe area for mobile bottom nav ── */
+.safe-area-pb {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ── Smooth image loading ── */
+img {
+  transition: opacity 0.3s ease;
+}
+img[loading="lazy"] {
+  opacity: 0;
+}
+img[loading="lazy"].loaded,
+img:not([loading="lazy"]) {
+  opacity: 1;
 }

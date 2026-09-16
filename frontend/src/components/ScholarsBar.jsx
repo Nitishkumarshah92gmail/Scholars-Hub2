@@ -22,8 +22,8 @@ export default function ScholarsBar() {
         <div className="flex gap-4 overflow-hidden">
           {[...Array(6)].map((_, i) => (
             <div key={i} className="flex flex-col items-center gap-2 animate-pulse">
-              <div className="w-16 h-16 rounded-full bg-gray-200 dark:bg-gray-700" />
-              <div className="w-12 h-3 rounded bg-gray-200 dark:bg-gray-700" />
+              <div className="w-16 h-16 rounded-full bg-gray-200 dark:bg-ag-surface-container-high" />
+              <div className="w-12 h-3 rounded bg-gray-200 dark:bg-ag-surface-container-high" />
             </div>
           ))}
         </div>
@@ -71,11 +71,11 @@ export default function ScholarsBar() {
                     alt={scholar.name}
                     loading="lazy"
                     decoding="async"
-                    className="w-full h-full rounded-full object-cover border-[2.5px] border-ig-bg dark:border-ig-bg-dark"
+                    className="w-full h-full rounded-full object-cover border-[2.5px] border-ig-bg dark:border-black"
                   />
                 </div>
                 {/* Online indicator */}
-                <span className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 bg-blue-500 rounded-full border-2 border-ig-bg dark:border-ig-bg-dark" />
+                <span className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 bg-blue-500 rounded-full border-2 border-ig-bg dark:border-black" />
               </div>
               <span className="text-[11px] text-ig-text dark:text-ig-text-light truncate w-full text-center leading-tight">
                 {scholar.name?.length > 10
@@ -109,7 +109,7 @@ export default function ScholarsBar() {
             className="absolute inset-0 bg-black/60"
             onClick={() => setShowAll(false)}
           />
-          <div className="relative bg-ig-bg dark:bg-ig-bg-dark rounded-2xl w-full max-w-md max-h-[80vh] flex flex-col shadow-2xl overflow-hidden">
+          <div className="relative bg-ig-bg dark:bg-ag-surface-dim rounded-ag border border-ig-separator dark:border-ig-separator-dark/50 w-full max-w-md max-h-[80vh] flex flex-col shadow-ag-glass overflow-hidden">
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-ig-separator dark:border-ig-separator-dark">
               <h3 className="text-base font-semibold text-ig-text dark:text-ig-text-light">
@@ -117,7 +117,7 @@ export default function ScholarsBar() {
               </h3>
               <button
                 onClick={() => setShowAll(false)}
-                className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-ig-bg-elevated transition-colors text-ig-text dark:text-ig-text-light"
+                className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-ag-surface-container-high transition-colors text-ig-text dark:text-ig-text-light"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -134,7 +134,7 @@ export default function ScholarsBar() {
                     setShowAll(false);
                     navigate(`/dashboard/profile/${scholar._id}`);
                   }}
-                  className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-ig-bg-elevated transition-colors"
+                  className="flex items-center gap-3 w-full px-3 py-2.5 rounded-ag-sm hover:bg-gray-100 dark:hover:bg-ag-surface-container-high transition-colors"
                 >
                   <div className="relative flex-shrink-0">
                     <div className="w-12 h-12 rounded-full p-[2px] bg-gradient-to-br from-ig-primary via-purple-500 to-pink-500">
@@ -144,10 +144,10 @@ export default function ScholarsBar() {
                           `https://ui-avatars.com/api/?name=${encodeURIComponent(scholar.name)}&background=1e3a5f&color=fbbf24&size=200`
                         }
                         alt={scholar.name}
-                        className="w-full h-full rounded-full object-cover border-2 border-ig-bg dark:border-ig-bg-dark"
+                        className="w-full h-full rounded-full object-cover border-2 border-ig-bg dark:border-black"
                       />
                     </div>
-                    <span className="absolute bottom-0 right-0 w-3 h-3 bg-blue-500 rounded-full border-2 border-ig-bg dark:border-ig-bg-dark" />
+                    <span className="absolute bottom-0 right-0 w-3 h-3 bg-blue-500 rounded-full border-2 border-ig-bg dark:border-black" />
                   </div>
                   <div className="flex-1 min-w-0 text-left">
                     <p className="text-sm font-semibold text-ig-text dark:text-ig-text-light truncate">

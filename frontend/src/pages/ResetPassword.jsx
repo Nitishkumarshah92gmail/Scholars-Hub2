@@ -83,10 +83,10 @@ export default function ResetPassword() {
   // Loading state while checking for recovery session
   if (checking) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-ig-bg-2 dark:bg-ig-bg-dark px-4">
-        <div className="w-full max-w-[350px]">
+      <div className="min-h-screen flex items-center justify-center bg-ig-bg-2 dark:bg-black px-4">
+        <div className="w-full max-w-[380px]">
           <div className="card px-10 py-10 text-center">
-            <div className="w-8 h-8 border-2 border-ig-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+            <div className="loading-spinner mx-auto mb-4" />
             <p className="text-sm text-ig-text-2">Verifying reset link...</p>
           </div>
         </div>
@@ -97,13 +97,13 @@ export default function ResetPassword() {
   // No valid session — invalid or expired link
   if (!sessionReady) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-ig-bg-2 dark:bg-ig-bg-dark px-4">
-        <div className="w-full max-w-[350px] space-y-3">
+      <div className="min-h-screen flex items-center justify-center bg-ig-bg-2 dark:bg-black px-4">
+        <div className="relative z-10 w-full max-w-[380px] space-y-3 animate-fade-in-up">
           <div className="card px-10 py-10 text-center">
             <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-4">
               <HiLockClosed className="w-8 h-8 text-red-500" />
             </div>
-            <h2 className="text-base font-semibold text-ig-text dark:text-ig-text-light mb-2">
+            <h2 className="text-base font-heading font-semibold text-ig-text dark:text-ig-text-light mb-2">
               Invalid or expired link
             </h2>
             <p className="text-xs text-ig-text-2 leading-relaxed mb-4">
@@ -117,7 +117,7 @@ export default function ResetPassword() {
             </Link>
           </div>
           <div className="card p-5 text-center">
-            <Link to="/login" className="text-sm font-semibold text-ig-text dark:text-ig-text-light hover:opacity-70">
+            <Link to="/login" className="text-sm font-semibold text-ig-text dark:text-ig-text-light hover:opacity-70 transition-opacity">
               Back to login
             </Link>
           </div>
@@ -127,19 +127,24 @@ export default function ResetPassword() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-ig-bg-2 dark:bg-ig-bg-dark px-4">
-      <div className="w-full max-w-[350px] space-y-3">
+    <div className="min-h-screen flex items-center justify-center bg-ig-bg-2 dark:bg-black px-4">
+      {/* Background glow */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[400px] h-[400px] bg-ag-primary/5 rounded-full blur-[100px]" />
+      </div>
+
+      <div className="relative z-10 w-full max-w-[380px] space-y-3 animate-fade-in-up">
         <div className="card px-10 pt-10 pb-6">
           {/* Header */}
           <div className="text-center mb-6">
-            <div className="w-20 h-20 rounded-full bg-ig-bg-2 dark:bg-ig-bg-elevated border-2 border-ig-text dark:border-ig-text-light flex items-center justify-center mx-auto mb-4">
+            <div className="w-20 h-20 rounded-full bg-ig-bg-2 dark:bg-ag-surface-container-high border-2 border-ig-separator dark:border-ig-separator-dark flex items-center justify-center mx-auto mb-4">
               {success ? (
                 <HiCheckCircle className="w-10 h-10 text-green-500" />
               ) : (
                 <HiLockClosed className="w-10 h-10 text-ig-text dark:text-ig-text-light" />
               )}
             </div>
-            <h2 className="text-base font-semibold text-ig-text dark:text-ig-text-light">
+            <h2 className="text-base font-heading font-semibold text-ig-text dark:text-ig-text-light">
               {success ? 'Password Updated!' : 'Set new password'}
             </h2>
             {!success && (
@@ -163,7 +168,7 @@ export default function ResetPassword() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-ig-text-2 hover:text-ig-text dark:hover:text-ig-text-light"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-ig-text-2 hover:text-ig-text dark:hover:text-ig-text-light transition-colors"
                 >
                   {showPassword ? <HiEyeOff className="w-4 h-4" /> : <HiEye className="w-4 h-4" />}
                 </button>
@@ -190,7 +195,7 @@ export default function ResetPassword() {
               </button>
             </form>
           ) : (
-            <div className="text-center space-y-4">
+            <div className="text-center space-y-4 animate-fade-in">
               <p className="text-xs text-ig-text-2 leading-relaxed">
                 Your password has been updated successfully. You can now log in with your new password.
               </p>

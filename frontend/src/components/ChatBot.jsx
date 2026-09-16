@@ -94,7 +94,7 @@ export default function ChatBot() {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-50 w-14 h-14 rounded-full bg-ig-primary hover:bg-ig-primary-hover text-white shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95"
+          className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-50 w-14 h-14 rounded-full bg-ag-primary hover:bg-ag-primary-hover text-white shadow-ag-glow-strong flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95"
           title="Chat with AI"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -105,9 +105,9 @@ export default function ChatBot() {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-50 w-[340px] sm:w-[380px] h-[500px] flex flex-col rounded-2xl shadow-2xl border border-ig-separator dark:border-ig-separator-dark overflow-hidden bg-ig-bg dark:bg-ig-bg-dark-2 animate-in">
+        <div className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-50 w-[340px] sm:w-[380px] h-[500px] flex flex-col rounded-ag shadow-ag-glass border border-ig-separator dark:border-ig-separator-dark/50 overflow-hidden bg-ig-bg dark:bg-ag-surface-dim animate-scale-in">
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 bg-ig-primary text-white">
+          <div className="flex items-center justify-between px-4 py-3 bg-ag-primary text-white">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -136,8 +136,8 @@ export default function ChatBot() {
               >
                 <div
                   className={`max-w-[85%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ${msg.role === 'user'
-                      ? 'bg-ig-primary text-white rounded-br-md'
-                      : 'bg-gray-100 dark:bg-ig-bg-elevated text-ig-text dark:text-ig-text-light rounded-bl-md'
+                      ? 'bg-ag-primary text-white rounded-br-md'
+                      : 'bg-gray-100 dark:bg-ag-surface-container-high text-ig-text dark:text-ig-text-light rounded-bl-md'
                     }`}
                 >
                   {msg.text}
@@ -146,7 +146,7 @@ export default function ChatBot() {
             ))}
             {isLoading && (
               <div className="flex justify-start">
-                <div className="bg-gray-100 dark:bg-ig-bg-elevated px-4 py-3 rounded-2xl rounded-bl-md">
+                <div className="bg-gray-100 dark:bg-ag-surface-container-high px-4 py-3 rounded-2xl rounded-bl-md">
                   <div className="flex gap-1.5">
                     <span className="w-2 h-2 bg-ig-text-2 rounded-full animate-bounce [animation-delay:0ms]"></span>
                     <span className="w-2 h-2 bg-ig-text-2 rounded-full animate-bounce [animation-delay:150ms]"></span>
@@ -159,7 +159,7 @@ export default function ChatBot() {
           </div>
 
           {/* Input */}
-          <div className="px-3 py-3 border-t border-ig-separator dark:border-ig-separator-dark bg-ig-bg dark:bg-ig-bg-dark-2">
+          <div className="px-3 py-3 border-t border-ig-separator dark:border-ig-separator-dark/50 bg-ig-bg dark:bg-ag-surface-dim">
             <div className="flex items-center gap-2">
               <input
                 ref={inputRef}
@@ -168,13 +168,13 @@ export default function ChatBot() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Ask anything..."
-                className="flex-1 px-4 py-2.5 rounded-full border border-ig-separator dark:border-ig-separator-dark bg-ig-bg-2 dark:bg-ig-bg-dark text-sm text-ig-text dark:text-ig-text-light placeholder:text-ig-text-2 outline-none focus:ring-1 focus:ring-ig-primary focus:border-ig-primary transition-all"
+                className="flex-1 px-4 py-2.5 rounded-ag-pill border border-ig-separator dark:border-ig-separator-dark/50 bg-ig-bg-2 dark:bg-ag-surface-container text-sm text-ig-text dark:text-ig-text-light placeholder:text-ig-text-2 outline-none focus:ring-1 focus:ring-ag-primary focus:border-ag-primary transition-all"
                 disabled={isLoading}
               />
               <button
                 onClick={sendMessage}
                 disabled={!input.trim() || isLoading}
-                className="p-2.5 rounded-full bg-ig-primary hover:bg-ig-primary-hover text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-90"
+                className="p-2.5 rounded-full bg-ag-primary hover:bg-ag-primary-hover text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-90"
               >
                 <HiPaperAirplane className="w-5 h-5 rotate-90" />
               </button>

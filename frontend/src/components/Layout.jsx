@@ -253,11 +253,7 @@ export default function Layout() {
         </div>
 
         {/* Bottom section — always visible */}
-        <div className="px-3 py-2 space-y-0.5 border-t border-ig-separator/30 dark:border-ig-separator-dark/30">
-          <button onClick={handleLogout} className="nav-link w-full text-ig-error hover:text-ig-error">
-            <HiLogout className="w-6 h-6" />
-            <span className="hidden xl:inline">Log out</span>
-          </button>
+        <div className="px-3 py-2 space-y-0.5 border-t border-ig-separator/30 dark:border-ig-separator-dark/30 hidden">
         </div>
 
         {/* User info */}
@@ -278,6 +274,13 @@ export default function Layout() {
               <p className="font-semibold text-sm truncate text-ig-text dark:text-ig-text-light">{user?.name}</p>
               <p className="text-xs text-ig-text-2 truncate">{user?.school || 'Student'}</p>
             </div>
+            <button 
+              onClick={(e) => { e.stopPropagation(); handleLogout(); }} 
+              className="p-2 ml-auto text-ig-text-2 hover:text-ig-error hover:bg-ig-error/10 rounded-full transition-colors hidden xl:block"
+              title="Log out"
+            >
+              <HiLogout className="w-5 h-5" />
+            </button>
           </div>
         </div>
 
@@ -387,11 +390,6 @@ export default function Layout() {
                 <span>Get the App</span>
               </a>
 
-              {/* Logout */}
-              <button onClick={() => { handleLogout(); setMobileMenuOpen(false); }} className="flex items-center gap-3 px-3 py-2.5 rounded-ag-sm hover:bg-gray-100 dark:hover:bg-ag-surface-container-high text-ig-error w-full transition-colors">
-                <HiLogout className="w-5 h-5" />
-                <span>Log out</span>
-              </button>
             </div>
 
             {/* User info at bottom of menu */}
@@ -410,6 +408,12 @@ export default function Layout() {
                   <p className="font-semibold text-sm truncate text-ig-text dark:text-ig-text-light">{user?.name}</p>
                   <p className="text-xs text-ig-text-2 truncate">{user?.school || 'Student'}</p>
                 </div>
+                <button 
+                  onClick={(e) => { e.stopPropagation(); handleLogout(); setMobileMenuOpen(false); }} 
+                  className="p-2 ml-auto text-ig-text-2 hover:text-ig-error hover:bg-ig-error/10 rounded-full transition-colors"
+                >
+                  <HiLogout className="w-5 h-5" />
+                </button>
               </div>
             </div>
           </div>

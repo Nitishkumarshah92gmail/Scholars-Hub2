@@ -309,19 +309,24 @@ export default function Layout() {
             Scholars<span className="gradient-text">Hub</span>
           </span>
         </h1>
-        <NavLink
-          to="/dashboard/notifications"
-          className={({ isActive }) =>
-            `p-2 rounded-full transition-all relative ${isActive ? 'text-ig-text dark:text-ig-text-light bg-gray-100 dark:bg-ag-surface-container-high' : 'text-ig-text dark:text-ig-text-light opacity-70 hover:opacity-100'}`
-          }
-        >
-          <HiOutlineBell className="w-6 h-6" />
-          {unreadCount > 0 && (
-            <span className="absolute top-1 right-1 bg-ag-badge text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-              {unreadCount > 9 ? '9+' : unreadCount}
-            </span>
-          )}
-        </NavLink>
+        <div className="flex items-center gap-1">
+          <button onClick={toggleTheme} className="p-2 rounded-full text-ig-text dark:text-ig-text-light opacity-70 hover:opacity-100 hover:bg-gray-100 dark:hover:bg-ag-surface-container-high transition-colors">
+            {darkMode ? <HiSun className="w-6 h-6" /> : <HiMoon className="w-6 h-6" />}
+          </button>
+          <NavLink
+            to="/dashboard/notifications"
+            className={({ isActive }) =>
+              `p-2 rounded-full transition-all relative ${isActive ? 'text-ig-text dark:text-ig-text-light bg-gray-100 dark:bg-ag-surface-container-high' : 'text-ig-text dark:text-ig-text-light opacity-70 hover:opacity-100 hover:bg-gray-100 dark:hover:bg-ag-surface-container-high'}`
+            }
+          >
+            <HiOutlineBell className="w-6 h-6" />
+            {unreadCount > 0 && (
+              <span className="absolute top-1 right-1 bg-ag-badge text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                {unreadCount > 9 ? '9+' : unreadCount}
+              </span>
+            )}
+          </NavLink>
+        </div>
       </header>
 
       {/* Mobile More Menu — Overlay */}
@@ -429,6 +434,9 @@ export default function Layout() {
             <HiDownload className="w-4 h-4" />
             Get App
           </a>
+          <button onClick={toggleTheme} className="p-2.5 rounded-full text-ig-text dark:text-ig-text-light hover:bg-gray-100 dark:hover:bg-ag-surface-container-high transition-colors">
+            {darkMode ? <HiSun className="w-6 h-6" /> : <HiMoon className="w-6 h-6" />}
+          </button>
           <NavLink
             to="/dashboard/notifications"
             className={({ isActive }) =>

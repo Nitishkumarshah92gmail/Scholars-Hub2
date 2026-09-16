@@ -9,7 +9,7 @@ const router = express.Router();
 const SUPABASE_BUCKET = 'studyshare';
 const supabaseUrl = (process.env.SUPABASE_URL || '').trim();
 
-// All file types go to Google Drive (with Supabase as fallback)
+// All file types are uploaded to Supabase Storage
 const ALL_ALLOWED_MIMETYPES = [
     'application/pdf',
     'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml',
@@ -74,7 +74,7 @@ async function uploadToSupabase(buffer, originalName, mimetype, subfolder) {
 
 /**
  * GET /api/upload/presigned-url
- * Generate a presigned URL for direct client-to-R2 uploads.
+ * Generate a signed upload URL for direct client-to-Supabase uploads.
  */
 router.get('/presigned-url', auth, async (req, res) => {
     try {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createPost, validateYoutubeUrl, getPresignedUrl, uploadToR2 } from '../api';
+import { createPost, validateYoutubeUrl, getPresignedUrl, uploadDirect } from '../api';
 import imageCompression from 'browser-image-compression';
 import { SUBJECTS } from '../utils';
 import toast from 'react-hot-toast';
@@ -103,8 +103,8 @@ export default function Upload() {
       // 1. Get Presigned URL
       const { data: { uploadUrl, publicUrl } } = await getPresignedUrl(file.name, fileToUpload.type, subfolder);
       
-      // 2. Upload directly to R2
-      await uploadToR2(uploadUrl, fileToUpload);
+      // 2. Upload directly to Supabase Storage
+      await uploadDirect(uploadUrl, fileToUpload);
       
       uploadedUrls.push(publicUrl);
     }

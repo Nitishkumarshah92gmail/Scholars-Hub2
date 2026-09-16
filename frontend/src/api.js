@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { supabase } from './lib/supabase';
 
-const API = axios.create({ baseURL: 'https://scholars-hub2.onrender.com/api' });
+const API = axios.create({ baseURL: import.meta.env.VITE_API_URL || 'https://scholars-hub2.onrender.com/api' });
 
 // Cache the session to avoid calling getSession() on every single API request
 let _cachedSession = null;
@@ -74,14 +74,14 @@ export const searchUsers = (q) => API.get(`/users/search/find?q=${q}`);
 export const getNotifications = () => API.get('/notifications');
 export const markNotificationsRead = () => API.put('/notifications/read');
 
-// Cloudflare R2 Uploads
+// Supabase Storage Direct Uploads
 export const getPresignedUrl = (fileName, fileType, subfolder = 'images') =>
   API.get('/upload/presigned-url', {
     params: { fileName, fileType, subfolder }
   });
 
-export const uploadToR2 = async (presignedUrl, file) => {
-  return await axios.put(presignedUrl, file, {
+export const uploadDirect = async (signedUrl, file) => {
+  return await axios.put(signedUrl, file, {
     headers: {
       'Content-Type': file.type
     }

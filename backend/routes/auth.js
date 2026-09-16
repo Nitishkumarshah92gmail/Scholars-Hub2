@@ -1,6 +1,7 @@
 const express = require('express');
 const supabase = require('../config/supabase');
 const auth = require('../middleware/auth');
+const { transformUser } = require('../utils/transforms');
 
 const router = express.Router();
 
@@ -31,31 +32,7 @@ function buildUserFromAuth(user) {
   };
 }
 
-// Helper: transform profile to match frontend expectations
-function transformUser(profile, followers, following, bookmarkIds) {
-  return {
-    _id: profile.id,
-    name: profile.name,
-    email: profile.email,
-    avatar: profile.avatar,
-    bio: profile.bio,
-    school: profile.school,
-    subjects: profile.subjects || [],
-    followers: (followers || []).map((f) => ({
-      _id: f.follower?.id || f.follower_id,
-      name: f.follower?.name,
-      avatar: f.follower?.avatar,
-    })),
-    following: (following || []).map((f) => ({
-      _id: f.following?.id || f.following_id,
-      name: f.following?.name,
-      avatar: f.following?.avatar,
-    })),
-    bookmarks: bookmarkIds || [],
-    createdAt: profile.created_at,
-    updatedAt: profile.updated_at,
-  };
-}
+// transformUser is imported from ../utils/transforms
 
 // GET /api/auth/me — get current user profile
 router.get('/me', auth, async (req, res) => {
@@ -116,37 +93,24 @@ router.get('/me', auth, async (req, res) => {
   }
 });
 
-// POST /api/auth/forgot-password — generate a password reset link
+// POST /api/auth/forgot-password — send password reset email
 router.post('/forgot-password', async (req, res) => {
   try {
-    const { email, redirectTo } = req.body;
+    const { email } = req.body;
     if (!email) return res.status(400).json({ error: 'Email is required.' });
 
-    // Use admin API (service role) to generate the recovery link
-    const { data, error } = await supabase.auth.admin.generateLink({
-      type: 'recovery',
-      email: email.trim(),
-      options: {
-        redirectTo: redirectTo || undefined,
-      },
+    // Use Supabase's built-in email-based reset flow (never leak the link to the client)
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+      redirectTo: 'https://scholars-hub2.onrender.com/reset-password',
     });
 
     if (error) {
-      console.error('Generate recovery link error:', error);
-      // Common errors
-      if (error.message?.includes('User not found') || error.message?.includes('not found')) {
-        return res.status(404).json({ error: 'No account found with this email address.' });
-      }
-      return res.status(400).json({ error: error.message || 'Failed to generate reset link.' });
+      console.error('Password reset error:', error);
+      // Don't reveal whether the email exists — always return success
     }
 
-    // Return the action link to the frontend
-    const actionLink = data?.properties?.action_link;
-    if (!actionLink) {
-      return res.status(500).json({ error: 'Failed to generate reset link. Please try again.' });
-    }
-
-    res.json({ success: true, actionLink });
+    // Always return success to prevent email enumeration
+    res.json({ success: true, message: 'If that email exists, a reset link has been sent.' });
   } catch (err) {
     console.error('Forgot password error:', err);
     res.status(500).json({ error: 'Server error. Please try again later.' });

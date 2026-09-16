@@ -1,5 +1,17 @@
 const supabase = require('../config/supabase');
 
+// In-memory cache for verified tokens (avoids 2-3 DB calls per request)
+const tokenCache = new Map();
+const TOKEN_CACHE_TTL = 60_000; // 1 minute
+
+// Periodically clean expired entries to prevent memory leaks
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, value] of tokenCache) {
+    if (now - value.timestamp > TOKEN_CACHE_TTL) tokenCache.delete(key);
+  }
+}, 5 * 60_000); // every 5 minutes
+
 const auth = async (req, res, next) => {
   if (!supabase) {
     return res.status(503).json({ error: 'Database not configured.' });
@@ -10,25 +22,33 @@ const auth = async (req, res, next) => {
       return res.status(401).json({ error: 'Access denied. No token provided.' });
     }
 
+    // Check cache first
+    const cached = tokenCache.get(token);
+    if (cached && Date.now() - cached.timestamp < TOKEN_CACHE_TTL) {
+      req.user = cached.user;
+      return next();
+    }
+
     // Verify token with Supabase Auth
     const { data: { user }, error } = await supabase.auth.getUser(token);
     if (error || !user) {
       return res.status(401).json({ error: 'Invalid token.' });
     }
 
-    // Try to get profile from database first
+    // Try to get profile from database
     const { data: profile } = await supabase
       .from('profiles')
-      .select('*')
+      .select('id, name, email, avatar, bio, school, subjects, created_at, updated_at')
       .eq('id', user.id)
       .maybeSingle();
 
+    let userData;
     if (profile) {
-      req.user = profile;
+      userData = profile;
     } else {
       // Fallback: build profile from Supabase Auth metadata
       const meta = user.user_metadata || {};
-      req.user = {
+      userData = {
         id: user.id,
         name: meta.name || meta.full_name || 'User',
         email: user.email || '',
@@ -40,17 +60,21 @@ const auth = async (req, res, next) => {
         updated_at: user.updated_at || user.created_at,
       };
 
-      // Try to auto-create the profile row (best effort)
-      await supabase.from('profiles').upsert({
+      // Auto-create the profile row (fire and forget — no await)
+      supabase.from('profiles').upsert({
         id: user.id,
-        name: req.user.name,
-        email: req.user.email,
-        avatar: req.user.avatar,
-        bio: req.user.bio,
-        school: req.user.school,
-        subjects: req.user.subjects,
-      }, { onConflict: 'id' }).then(() => {}).catch(() => {});
+        name: userData.name,
+        email: userData.email,
+        avatar: userData.avatar,
+        bio: userData.bio,
+        school: userData.school,
+        subjects: userData.subjects,
+      }, { onConflict: 'id' }).catch(() => {});
     }
+
+    // Cache the result
+    tokenCache.set(token, { user: userData, timestamp: Date.now() });
+    req.user = userData;
 
     next();
   } catch (error) {

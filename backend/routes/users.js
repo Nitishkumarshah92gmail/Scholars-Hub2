@@ -1,65 +1,18 @@
 const express = require('express');
 const supabase = require('../config/supabase');
 const auth = require('../middleware/auth');
+const { transformUser, transformPost } = require('../utils/transforms');
 
 const router = express.Router();
 
-// Helper: transform user profile
-function transformUser(profile, followers, following, bookmarkIds) {
-  return {
-    _id: profile.id,
-    name: profile.name,
-    email: profile.email,
-    avatar: profile.avatar,
-    bio: profile.bio,
-    school: profile.school,
-    subjects: profile.subjects || [],
-    followers: (followers || []).map((f) => ({
-      _id: f.follower?.id || f.follower_id,
-      name: f.follower?.name,
-      avatar: f.follower?.avatar,
-    })),
-    following: (following || []).map((f) => ({
-      _id: f.following?.id || f.following_id,
-      name: f.following?.name,
-      avatar: f.following?.avatar,
-    })),
-    bookmarks: bookmarkIds || [],
-    createdAt: profile.created_at,
-    updatedAt: profile.updated_at,
-  };
-}
+// transformUser and transformPost are imported from ../utils/transforms
 
-// Helper: transform post
-function transformPost(post) {
-  return {
-    _id: post.id,
-    author: post.author
-      ? { _id: post.author.id, name: post.author.name, avatar: post.author.avatar, school: post.author.school }
-      : null,
-    type: post.type,
-    fileUrl: post.file_url,
-    fileUrls: post.file_urls || [],
-    youtubeId: post.youtube_id || '',
-    playlistId: post.playlist_id || '',
-    title: post.title,
-    description: post.description,
-    subject: post.subject,
-    likes: (post.likes || []).map((l) => l.user_id),
-    likeCount: (post.likes || []).length,
-    comments: (post.comments || []).map((c) => ({
-      _id: c.id,
-      text: c.text,
-      author: c.author
-        ? { _id: c.author.id, name: c.author.name, avatar: c.author.avatar }
-        : null,
-      createdAt: c.created_at,
-    })),
-    commentCount: (post.comments || []).length,
-    createdAt: post.created_at,
-    updatedAt: post.updated_at,
-  };
-}
+const POST_SELECT = `
+  *,
+  author:profiles!author_id(id, name, avatar, school),
+  comments(id, text, created_at, author:profiles!author_id(id, name, avatar)),
+  likes(user_id)
+`;
 
 // GET /api/users/search/find?q=query — search users (must be before /:id)
 
@@ -111,7 +64,8 @@ router.get('/search/find', auth, async (req, res) => {
     const { q } = req.query;
     if (!q) return res.json([]);
 
-    const sanitized = q.replace(/[%_,()]/g, '');
+    const sanitized = q.replace(/[^a-zA-Z0-9\s]/g, '').trim().slice(0, 100);
+    if (!sanitized) return res.json([]);
     const { data: users, error } = await supabase
       .from('profiles')
       .select('id, name, avatar, school, subjects')
@@ -247,41 +201,35 @@ router.get('/:id', auth, async (req, res) => {
 
     if (!profile) return res.status(404).json({ error: 'User not found.' });
 
-    // Get followers (graceful)
-    const { data: followers } = await supabase
-      .from('follows')
-      .select('follower_id, follower:profiles!follower_id(id, name, avatar)')
-      .eq('following_id', userId)
-      .then(r => r).catch(() => ({ data: [] }));
+    // Run all 4 queries in parallel for maximum speed
+    const [followersResult, followingResult, bookmarksResult, postsResult] = await Promise.all([
+      supabase
+        .from('follows')
+        .select('follower_id, follower:profiles!follower_id(id, name, avatar)')
+        .eq('following_id', userId)
+        .then(r => r).catch(() => ({ data: [] })),
+      supabase
+        .from('follows')
+        .select('following_id, following:profiles!following_id(id, name, avatar)')
+        .eq('follower_id', userId)
+        .then(r => r).catch(() => ({ data: [] })),
+      supabase
+        .from('bookmarks')
+        .select('post_id')
+        .eq('user_id', userId)
+        .then(r => r).catch(() => ({ data: [] })),
+      supabase
+        .from('posts')
+        .select(POST_SELECT)
+        .eq('author_id', userId)
+        .order('created_at', { ascending: false })
+        .then(r => r).catch(() => ({ data: [] })),
+    ]);
 
-    // Get following (graceful)
-    const { data: following } = await supabase
-      .from('follows')
-      .select('following_id, following:profiles!following_id(id, name, avatar)')
-      .eq('follower_id', userId)
-      .then(r => r).catch(() => ({ data: [] }));
-
-    // Get bookmarks (graceful)
-    const { data: bookmarks } = await supabase
-      .from('bookmarks')
-      .select('post_id')
-      .eq('user_id', userId)
-      .then(r => r).catch(() => ({ data: [] }));
-
-    const bookmarkIds = (bookmarks || []).map((b) => b.post_id);
-
-    // Get posts (graceful)
-    const { data: posts } = await supabase
-      .from('posts')
-      .select(`
-        *,
-        author:profiles!author_id(id, name, avatar, school),
-        comments(id, text, created_at, author:profiles!author_id(id, name, avatar)),
-        likes(user_id)
-      `)
-      .eq('author_id', userId)
-      .order('created_at', { ascending: false })
-      .then(r => r).catch(() => ({ data: [] }));
+    const followers = followersResult.data || [];
+    const following = followingResult.data || [];
+    const bookmarkIds = (bookmarksResult.data || []).map((b) => b.post_id);
+    const posts = postsResult.data || [];
 
     res.json({
       user: transformUser(profile, followers || [], following || [], bookmarkIds),

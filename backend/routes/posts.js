@@ -1,6 +1,7 @@
 const express = require('express');
 const supabase = require('../config/supabase');
 const auth = require('../middleware/auth');
+const { transformPost } = require('../utils/transforms');
 
 const router = express.Router();
 
@@ -90,38 +91,7 @@ function extractYoutubeId(url) {
   return null;
 }
 
-// Helper: transform post to match frontend expectations
-function transformPost(post) {
-  return {
-    _id: post.id,
-    author: post.author
-      ? { _id: post.author.id, name: post.author.name, avatar: post.author.avatar, school: post.author.school }
-      : null,
-    type: post.type,
-    fileUrl: post.file_url,
-    fileUrls: post.file_urls || [],
-    youtubeId: post.youtube_id || '',
-    playlistId: post.playlist_id || '',
-    title: post.title,
-    description: post.description,
-    subject: post.subject,
-    likes: (post.likes || []).map((l) => l.user_id),
-    likeCount: (post.likes || []).length,
-    comments: (post.comments || [])
-      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-      .map((c) => ({
-        _id: c.id,
-        text: c.text,
-        author: c.author
-          ? { _id: c.author.id, name: c.author.name, avatar: c.author.avatar }
-          : null,
-        createdAt: c.created_at,
-      })),
-    commentCount: (post.comments || []).length,
-    createdAt: post.created_at,
-    updatedAt: post.updated_at,
-  };
-}
+// transformPost is imported from ../utils/transforms
 
 const POST_SELECT = `
   *,
@@ -234,7 +204,8 @@ router.get('/explore', auth, async (req, res) => {
       query = query.eq('type', type);
     }
     if (search) {
-      const sanitized = search.replace(/[%_,()]/g, '');
+      const sanitized = search.replace(/[^a-zA-Z0-9\s]/g, '').trim().slice(0, 100);
+      if (!sanitized) return res.json({ posts: [], page: 1, totalPages: 0, hasMore: false, total: 0 });
       query = query.or(`title.ilike.%${sanitized}%,description.ilike.%${sanitized}%,subject.ilike.%${sanitized}%`);
     }
 
@@ -568,16 +539,12 @@ router.delete('/:id', auth, async (req, res) => {
       return res.status(403).json({ error: 'Not authorized to delete this post.' });
     }
 
-    // Delete related data — ignore errors for tables that may not exist
-    const tables = ['comments', 'likes', 'bookmarks', 'notifications', 'reports'];
-    for (const table of tables) {
-      try {
-        const { error: relErr } = await supabase.from(table).delete().eq('post_id', postId);
-        if (relErr) console.warn(`[DELETE] Warning deleting from ${table}:`, relErr.message);
-      } catch (e) {
-        // Table might not exist, skip
-      }
-    }
+    // Delete related data in parallel
+    await Promise.allSettled(
+      ['comments', 'likes', 'bookmarks', 'notifications', 'reports'].map(
+        table => supabase.from(table).delete().eq('post_id', postId)
+      )
+    );
 
     // Google Drive file deletion is no longer supported
 

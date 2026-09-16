@@ -74,15 +74,20 @@ export const searchUsers = (q) => API.get(`/users/search/find?q=${q}`);
 export const getNotifications = () => API.get('/notifications');
 export const markNotificationsRead = () => API.put('/notifications/read');
 
-// Google Drive Uploads
-export const uploadFiles = (formData) =>
-  API.post('/upload/files', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
+// Cloudflare R2 Uploads
+export const getPresignedUrl = (fileName, fileType, subfolder = 'images') =>
+  API.get('/upload/presigned-url', {
+    params: { fileName, fileType, subfolder }
   });
-export const uploadAvatar = (formData) =>
-  API.post('/upload/avatar', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
+
+export const uploadToR2 = async (presignedUrl, file) => {
+  return await axios.put(presignedUrl, file, {
+    headers: {
+      'Content-Type': file.type
+    }
   });
+};
+
 export const deleteFile = (fileId) => API.delete(`/upload/${fileId}`);
 
 export default API;

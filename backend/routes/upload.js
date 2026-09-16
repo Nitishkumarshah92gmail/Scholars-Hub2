@@ -4,6 +4,7 @@ const path = require('path');
 const auth = require('../middleware/auth');
 const supabase = require('../config/supabase');
 const googleDrive = require('../config/googleDrive');
+const { generatePresignedUrl } = require('../config/r2');
 
 const router = express.Router();
 
@@ -100,6 +101,25 @@ async function smartUpload(buffer, originalName, mimetype, subfolder) {
         return await uploadToSupabase(buffer, originalName, mimetype, subfolder);
     }
 }
+
+/**
+ * GET /api/upload/presigned-url
+ * Generate a presigned URL for direct client-to-R2 uploads.
+ */
+router.get('/presigned-url', auth, async (req, res) => {
+    try {
+        const { fileName, fileType, subfolder } = req.query;
+        if (!fileName || !fileType) {
+            return res.status(400).json({ error: 'fileName and fileType are required' });
+        }
+        
+        const result = await generatePresignedUrl(fileName, fileType, subfolder || 'images');
+        res.json(result);
+    } catch (err) {
+        console.error('Presigned URL error:', err);
+        res.status(500).json({ error: err.message || 'Failed to generate presigned URL.' });
+    }
+});
 
 /**
  * POST /api/upload/files

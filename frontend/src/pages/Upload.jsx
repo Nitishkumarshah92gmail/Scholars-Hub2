@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createPost, uploadFiles, validateYoutubeUrl } from '../api';
+import { createPost, validateYoutubeUrl, getPresignedUrl, uploadToR2 } from '../api';
+import imageCompression from 'browser-image-compression';
 import { SUBJECTS } from '../utils';
 import toast from 'react-hot-toast';
 import {
@@ -17,8 +18,7 @@ import {
 const TYPES = [
   { value: 'pdf', label: 'PDF', icon: HiDocumentText },
   { value: 'image', label: 'Images', icon: HiPhotograph },
-  { value: 'youtube_video', label: 'Video', icon: HiPlay },
-  { value: 'youtube_playlist', label: 'Playlist', icon: HiCollection },
+  { value: 'video_link', label: 'Video Link', icon: HiPlay },
   { value: 'drive_link', label: 'Drive Link', icon: HiCloudUpload },
 ];
 
@@ -36,29 +36,32 @@ export default function Upload() {
   const [ytValidation, setYtValidation] = useState(null); // { valid, error, title, thumbnail }
   const [ytValidating, setYtValidating] = useState(false);
 
-  // Debounced YouTube URL validation
+  // YouTube URL validation
   useEffect(() => {
-    if ((type !== 'youtube_video' && type !== 'youtube_playlist') || !youtubeUrl.trim()) {
+    if (type !== 'video_link' || !youtubeUrl.trim()) {
       setYtValidation(null);
       return;
     }
-    // Basic URL check before calling API
-    if (!youtubeUrl.match(/youtube\.com|youtu\.be/i)) {
-      setYtValidation(null);
-      return;
+    // Only call validate for YouTube links
+    if (youtubeUrl.match(/youtube\.com|youtu\.be/i)) {
+      const timer = setTimeout(async () => {
+        setYtValidating(true);
+        try {
+          const res = await validateYoutubeUrl(youtubeUrl.trim());
+          setYtValidation(res.data);
+        } catch (err) {
+          setYtValidation({ valid: false, error: err.response?.data?.error || 'Could not validate URL' });
+        } finally {
+          setYtValidating(false);
+        }
+      }, 800);
+      return () => clearTimeout(timer);
+    } else if (youtubeUrl.match(/tiktok\.com|instagram\.com/i)) {
+      // Basic client-side validation for TikTok/Instagram
+      setYtValidation({ valid: true, thumbnail: null, title: 'Valid Social Video Link' });
+    } else {
+      setYtValidation({ valid: false, error: 'Must be a YouTube, TikTok, or Instagram link' });
     }
-    const timer = setTimeout(async () => {
-      setYtValidating(true);
-      try {
-        const res = await validateYoutubeUrl(youtubeUrl.trim());
-        setYtValidation(res.data);
-      } catch (err) {
-        setYtValidation({ valid: false, error: err.response?.data?.error || 'Could not validate URL' });
-      } finally {
-        setYtValidating(false);
-      }
-    }, 800);
-    return () => clearTimeout(timer);
   }, [youtubeUrl, type]);
 
   const handleFileChange = (e) => {
@@ -74,15 +77,41 @@ export default function Upload() {
     setFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const uploadFilesToDrive = async () => {
-    setUploadProgress('Uploading to Google Drive...');
-    const formData = new FormData();
-    files.forEach((file) => formData.append('files', file));
-    formData.append('subfolder', type === 'pdf' ? 'pdfs' : 'images');
+  const uploadFilesToR2 = async () => {
+    setUploadProgress('Compressing and uploading...');
+    const uploadedUrls = [];
+    
+    for (const file of files) {
+      let fileToUpload = file;
+      
+      // Compress images before upload
+      if (type === 'image' && file.type.startsWith('image/')) {
+        const options = {
+          maxSizeMB: 0.2, // ~200KB
+          maxWidthOrHeight: 1080,
+          useWebWorker: true,
+        };
+        try {
+          fileToUpload = await imageCompression(file, options);
+          console.log(`Compressed ${file.name} from ${(file.size/1024/1024).toFixed(2)}MB to ${(fileToUpload.size/1024/1024).toFixed(2)}MB`);
+        } catch (error) {
+          console.error("Image compression failed", error);
+          // Fall back to original file if compression fails
+        }
+      }
+      
+      const subfolder = type === 'pdf' ? 'pdfs' : 'images';
+      // 1. Get Presigned URL
+      const { data: { uploadUrl, publicUrl } } = await getPresignedUrl(file.name, fileToUpload.type, subfolder);
+      
+      // 2. Upload directly to R2
+      await uploadToR2(uploadUrl, fileToUpload);
+      
+      uploadedUrls.push(publicUrl);
+    }
 
-    const res = await uploadFiles(formData);
     setUploadProgress('');
-    return res.data.urls;
+    return uploadedUrls;
   };
 
   /**
@@ -109,8 +138,8 @@ export default function Upload() {
     e.preventDefault();
     if (!title.trim()) return toast.error('Title is required.');
     if (!subject) return toast.error('Please select a subject.');
-    if ((type === 'youtube_video' || type === 'youtube_playlist') && !youtubeUrl) {
-      return toast.error('YouTube URL is required.');
+    if (type === 'video_link' && !youtubeUrl) {
+      return toast.error('Video URL is required.');
     }
     if (type === 'drive_link' && !driveUrl) {
       return toast.error('Google Drive link is required.');
@@ -125,13 +154,15 @@ export default function Upload() {
       let postType = type;
 
       if (type === 'pdf' || type === 'image') {
-        const driveResults = await uploadFilesToDrive();
-        fileUrl = driveResults[0]?.fileUrl || '';
-        fileUrls = driveResults.map((r) => r.fileUrl);
+        const r2Urls = await uploadFilesToR2();
+        fileUrl = r2Urls[0] || '';
+        fileUrls = r2Urls;
       } else if (type === 'drive_link') {
         fileUrl = normalizeDriveUrl(driveUrl.trim());
         fileUrls = [fileUrl];
         postType = 'drive_link'; // Keep as its own type for proper rendering
+      } else if (type === 'video_link') {
+        postType = 'video_link';
       }
 
       await createPost({
@@ -139,7 +170,7 @@ export default function Upload() {
         title: title.trim(),
         description: description.trim(),
         subject,
-        youtubeUrl: type === 'youtube_video' || type === 'youtube_playlist' ? youtubeUrl : undefined,
+        youtubeUrl: type === 'video_link' ? youtubeUrl : undefined,
         fileUrl,
         fileUrls,
       });
@@ -200,9 +231,9 @@ export default function Upload() {
                 💡 Make sure the file sharing is set to "Anyone with the link" in Google Drive
               </p>
             </div>
-          ) : (type === 'youtube_video' || type === 'youtube_playlist') ? (
+          ) : type === 'video_link' ? (
             <div>
-              <p className="text-sm font-semibold text-ig-text dark:text-ig-text-light mb-2">YouTube URL</p>
+              <p className="text-sm font-semibold text-ig-text dark:text-ig-text-light mb-2">Video Link</p>
               <div className="relative">
                 <HiLink className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ig-text-2" />
                 <input
@@ -210,7 +241,7 @@ export default function Upload() {
                   value={youtubeUrl}
                   onChange={(e) => setYoutubeUrl(e.target.value)}
                   className="input-field pl-10 text-sm"
-                  placeholder="https://youtube.com/watch?v=..."
+                  placeholder="Paste YouTube, TikTok, or Instagram link..."
                 />
               </div>
               {/* Validation status */}

@@ -209,105 +209,80 @@ export default memo(function PostCard({ post, onUpdate }) {
             </a>
           </div>
         );
-      case 'youtube_video': {
-        // Fallback: extract ID from fileUrl if youtubeId is missing
-        let videoId = post.youtubeId;
-        if (!videoId && post.fileUrl) {
-          const m = post.fileUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/live\/)([a-zA-Z0-9_-]{11})/);
-          if (m) videoId = m[1];
-        }
-        if (!videoId) return <div className="p-6 text-center text-ig-text-2">Invalid YouTube URL</div>;
-        return (
-          <div>
-            <div className="aspect-video">
-              <iframe
-                src={`https://www.youtube-nocookie.com/embed/${videoId}?rel=0`}
-                title={post.title}
-                className="w-full h-full"
-                frameBorder="0"
-                allowFullScreen
-                loading="lazy"
-                sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              />
-            </div>
-            <div className="px-4 py-2 flex justify-end">
-              <a
-                href={`https://www.youtube.com/watch?v=${videoId}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 text-xs font-medium text-ig-primary hover:text-ig-primary-dark transition-colors"
-              >
-                <HiDownload className="w-4 h-4" />
-                Watch on YouTube
-              </a>
-            </div>
-          </div>
-        );
-      }
-      case 'youtube_playlist': {
-        const plId = post.playlistId || '';
-        let vidId = post.youtubeId || '';
-        // Fallback: extract from fileUrl
-        if (!vidId && !plId && post.fileUrl) {
-          const vm = post.fileUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/live\/)([a-zA-Z0-9_-]{11})/);
-          if (vm) vidId = vm[1];
-          const pm = post.fileUrl.match(/[?&]list=([a-zA-Z0-9_-]+)/);
-          if (pm) {
-            const extractedPlId = pm[1];
-            const embedSrc = vidId
-              ? `https://www.youtube-nocookie.com/embed/${vidId}?list=${extractedPlId}&rel=0`
-              : `https://www.youtube-nocookie.com/embed/videoseries?list=${extractedPlId}&rel=0`;
-            const playlistUrl = `https://www.youtube.com/playlist?list=${extractedPlId}`;
-            return (
-              <div>
-                <div className="aspect-video">
-                  <iframe src={embedSrc} title={post.title} className="w-full h-full" frameBorder="0" allowFullScreen loading="lazy" sandbox="allow-scripts allow-same-origin allow-presentation allow-popups" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" />
-                </div>
-                <div className="px-4 py-2 flex justify-end">
-                  <a href={playlistUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-xs font-medium text-ig-primary hover:text-ig-primary-dark transition-colors">
-                    <HiDownload className="w-4 h-4" />
-                    Watch on YouTube
-                  </a>
-                </div>
+      case 'video_link': {
+        const url = post.youtubeUrl || post.fileUrl || '';
+        if (!url) return <div className="p-6 text-center text-ig-text-2">Invalid Video URL</div>;
+
+        // 1. YouTube
+        let ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/live\/)([a-zA-Z0-9_-]{11})/);
+        if (ytMatch) {
+          const videoId = ytMatch[1];
+          const plMatch = url.match(/[?&]list=([a-zA-Z0-9_-]+)/);
+          const embedSrc = plMatch 
+            ? `https://www.youtube-nocookie.com/embed/${videoId}?list=${plMatch[1]}&rel=0`
+            : `https://www.youtube-nocookie.com/embed/${videoId}?rel=0`;
+          
+          return (
+            <div>
+              <div className="aspect-video">
+                <iframe src={embedSrc} title={post.title} className="w-full h-full" frameBorder="0" allowFullScreen loading="lazy" sandbox="allow-scripts allow-same-origin allow-presentation allow-popups" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" />
               </div>
-            );
-          }
+              <div className="px-4 py-2 flex justify-end">
+                <a href={url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-xs font-medium text-ig-primary hover:text-ig-primary-dark transition-colors">
+                  <HiDownload className="w-4 h-4" /> Watch on YouTube
+                </a>
+              </div>
+            </div>
+          );
         }
-        const embedSrc = vidId
-          ? `https://www.youtube-nocookie.com/embed/${vidId}?list=${plId}&rel=0`
-          : `https://www.youtube-nocookie.com/embed/videoseries?list=${plId}&rel=0`;
-        const playlistYtUrl = plId
-          ? `https://www.youtube.com/playlist?list=${plId}`
-          : (post.fileUrl || '#');
-        return (
-          <div>
-            <div className="aspect-video">
-              <iframe
-                src={embedSrc}
-                title={post.title}
-                className="w-full h-full"
-                frameBorder="0"
-                allowFullScreen
-                loading="lazy"
-                sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              />
+
+        // 2. TikTok
+        if (url.includes('tiktok.com')) {
+          let tiktokId = url.split('/').pop()?.split('?')[0];
+          return (
+            <div>
+              <div className="flex justify-center bg-black">
+                <iframe 
+                  src={`https://www.tiktok.com/embed/v2/${tiktokId}`} 
+                  className="w-full max-w-[325px] h-[700px] border-none" 
+                  title={post.title} allowFullScreen allow="encrypted-media;" 
+                />
+              </div>
+              <div className="px-4 py-2 flex justify-end">
+                <a href={url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-xs font-medium text-ig-primary hover:text-ig-primary-dark transition-colors">
+                  <HiDownload className="w-4 h-4" /> Watch on TikTok
+                </a>
+              </div>
             </div>
-            <div className="px-4 py-2 flex justify-end">
-              <a
-                href={playlistYtUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 text-xs font-medium text-ig-primary hover:text-ig-primary-dark transition-colors"
-              >
-                <HiDownload className="w-4 h-4" />
-                Watch on YouTube
-              </a>
+          );
+        }
+
+        // 3. Instagram Reels/Posts
+        if (url.includes('instagram.com')) {
+          return (
+            <div>
+              <div className="flex justify-center bg-white dark:bg-black p-4">
+                <iframe 
+                  src={`${url.replace(/\/?$/, '')}/embed`} 
+                  className="w-full max-w-[400px] h-[480px] border border-ig-separator rounded-lg" 
+                  frameBorder="0" scrolling="no" allowTransparency allowFullScreen 
+                />
+              </div>
+              <div className="px-4 py-2 flex justify-end">
+                <a href={url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-xs font-medium text-ig-primary hover:text-ig-primary-dark transition-colors">
+                  <HiDownload className="w-4 h-4" /> Watch on Instagram
+                </a>
+              </div>
             </div>
-          </div>
-        );
+          );
+        }
+
+        return <div className="p-6 text-center text-ig-text-2">Unsupported Video Format</div>;
       }
+      case 'youtube_video':
+      case 'youtube_playlist':
+        return <div className="p-6 text-center text-ig-text-2">Please update to the new Video Link format.</div>;
+
       default:
         return null;
     }

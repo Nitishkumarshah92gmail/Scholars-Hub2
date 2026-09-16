@@ -231,15 +231,4 @@ html {
 .safe-area-pb {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
-
-/* ── Smooth image loading ── */
-img {
-  transition: opacity 0.3s ease;
-}
-img[loading="lazy"] {
-  opacity: 0;
-}
-img[loading="lazy"].loaded,
-img:not([loading="lazy"]) {
-  opacity: 1;
-}
+

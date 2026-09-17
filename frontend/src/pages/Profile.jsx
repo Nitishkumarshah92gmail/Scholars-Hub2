@@ -110,8 +110,12 @@ export default function Profile() {
 
   return (
     <div className="relative min-h-screen pb-24 bg-[var(--neu-bg)] font-body">
-      {/* Top Liquid Banner */}
-      <div className="absolute top-0 left-0 w-full h-72 bg-liquid-swirl rounded-b-[48px] shadow-lg"></div>
+      {/* Top Liquid Image Banner */}
+      <div className="absolute top-0 left-0 w-full h-72 rounded-b-[48px] shadow-lg overflow-hidden">
+        <img src="/profile-bg.jpg" alt="Profile Background" className="w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-[rgba(255,255,255,0.15)] backdrop-blur-[12px] saturate-[1.5]"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-[rgba(255,255,255,0.4)] to-transparent mix-blend-overlay"></div>
+      </div>
 
       {/* Top Header Nav (Back / Message) */}
       <div className="relative z-20 flex justify-between items-center px-6 pt-6 max-w-4xl mx-auto">

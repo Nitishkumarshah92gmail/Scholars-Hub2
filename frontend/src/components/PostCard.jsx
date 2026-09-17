@@ -209,6 +209,8 @@ export default memo(function PostCard({ post, onUpdate }) {
             </a>
           </div>
         );
+      case 'youtube_video':
+      case 'youtube_playlist':
       case 'video_link': {
         const url = post.youtubeUrl || post.fileUrl || '';
         if (!url) return <div className="p-6 text-center text-ig-text-2">Invalid Video URL</div>;
@@ -279,9 +281,6 @@ export default memo(function PostCard({ post, onUpdate }) {
 
         return <div className="p-6 text-center text-ig-text-2">Unsupported Video Format</div>;
       }
-      case 'youtube_video':
-      case 'youtube_playlist':
-        return <div className="p-6 text-center text-ig-text-2">Please update to the new Video Link format.</div>;
 
       default:
         return null;

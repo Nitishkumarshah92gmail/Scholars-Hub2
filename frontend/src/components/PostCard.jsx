@@ -289,202 +289,106 @@ export default memo(function PostCard({ post, onUpdate }) {
   };
 
   return (
-    <div className="relative overflow-hidden animate-fade-in mb-8 rounded-[32px] transition-all"
-        style={{
-          background: 'var(--glass-bg-strong)',
-          backdropFilter: 'blur(24px) saturate(200%)',
-          WebkitBackdropFilter: 'blur(24px) saturate(200%)',
-          border: '1px solid var(--glass-border)',
-          boxShadow: '10px 10px 30px var(--neu-shadow-dark), -10px -10px 30px var(--neu-shadow-light), inset 0 1px 0 var(--glass-highlight)',
-        }}
-    >
-      <ParticleCanvas />
-      <div className="relative z-10 flex flex-col w-full h-full">
-      {/* Header — Instagram style */}
-      <div className="px-5 py-4 flex items-center justify-between">
+    <div className="relative overflow-hidden mb-6 rounded-[32px] shadow-[6px_6px_14px_var(--neu-shadow-dark),-6px_-6px_14px_var(--neu-shadow-light)] bg-[var(--neu-bg)] transition-all">
+      
+      {/* Header */}
+      <div className="px-5 py-3 flex items-center justify-between">
         <Link to={`/dashboard/profile/${post.author?._id}`} className="flex items-center gap-3 group">
-          <div className="avatar-ring">
+          <div className="p-0.5 rounded-full shadow-[inset_2px_2px_5px_var(--neu-shadow-dark),inset_-2px_-2px_5px_var(--neu-shadow-light)]">
             <img
               src={post.author?.avatar || `https://ui-avatars.com/api/?name=${post.author?.name}`}
               onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${post.author?.name}&background=1e3a5f&color=fbbf24`; }}
               alt={post.author?.name}
               loading="lazy"
               decoding="async"
-              className="w-14 h-14 rounded-full object-cover shadow-sm border-2 border-white dark:border-gray-800"
+              className="w-10 h-10 rounded-full object-cover shadow-[2px_2px_5px_var(--neu-shadow-dark),-2px_-2px_5px_var(--neu-shadow-light)]"
             />
           </div>
           <div>
-            <p className="font-bold text-base text-ig-text dark:text-ig-text-light group-hover:opacity-60 transition-opacity">
+            <p className="font-bold text-sm text-ig-text dark:text-ig-text-light group-hover:opacity-60 transition-opacity">
               {post.author?.name}
             </p>
-            <p className="text-xs text-ig-text-2">
-              {post.author?.school || 'Student'} · {timeAgo(post.createdAt)}
+            <p className="text-[10px] font-semibold text-ig-text-2">
+              @{post.author?.name.replace(/\s+/g, '')}
             </p>
           </div>
         </Link>
+        <button onClick={() => setShowMenu(!showMenu)} className="p-2 text-ig-text hover:opacity-60">
+          <HiDotsHorizontal className="w-5 h-5" />
+        </button>
+      </div>
 
-        <div className="flex items-center gap-2">
-          <span className={`subject-badge text-[10px] ${getSubjectColor(post.subject)}`}>
-            {post.subject}
-          </span>
-          <div className="relative">
-            <button onClick={() => setShowMenu(!showMenu)} className="p-1 hover:opacity-60 transition-opacity">
-              <HiDotsHorizontal className="w-5 h-5 text-ig-text dark:text-ig-text-light" />
-            </button>
-            {showMenu && (
-              <div className="absolute right-0 top-8 rounded-ag-sm py-1 w-48 z-10 animate-scale-in" style={{ background: 'var(--glass-bg-strong)', backdropFilter: 'blur(24px) saturate(200%)', WebkitBackdropFilter: 'blur(24px) saturate(200%)', border: '1px solid var(--glass-border)', boxShadow: '6px 6px 14px var(--neu-shadow-dark), -6px -6px 14px var(--neu-shadow-light), inset 0 1px 0 var(--glass-highlight)' }}>
-                {isOwner && (
-                  <>
-                    <button
-                      onClick={handleDelete}
-                      className="w-full text-left px-4 py-3 text-sm text-ig-error hover:bg-ig-bg-2 dark:hover:bg-ag-surface-container flex items-center gap-3 font-semibold transition-colors"
-                    >
-                      <HiTrash className="w-5 h-5" />
-                      {confirmDelete ? 'Confirm Delete?' : 'Delete'}
-                    </button>
-                    {confirmDelete && (
-                      <button
-                        onClick={() => { setConfirmDelete(false); setShowMenu(false); }}
-                        className="w-full text-left px-4 py-3 text-sm text-ig-text-2 hover:bg-ig-bg-2 dark:hover:bg-ag-surface-container flex items-center gap-3 transition-colors"
-                      >
-                        Cancel
-                      </button>
-                    )}
-                  </>
-                )}
-                {!isOwner && (
-                  <button
-                    onClick={handleReport}
-                    className="w-full text-left px-4 py-3 text-sm text-ig-error hover:bg-ig-bg-2 dark:hover:bg-ag-surface-container flex items-center gap-3 font-semibold transition-colors"
-                  >
-                    <HiOutlineFlag className="w-5 h-5" />
-                    Report
-                  </button>
-                )}
-              </div>
-            )}
-          </div>
+      {/* Main Image / Content */}
+      <div className="relative w-full rounded-[24px] overflow-hidden px-2 pb-2">
+        <div className="relative w-full rounded-[24px] overflow-hidden shadow-[inset_3px_3px_8px_var(--neu-shadow-dark),inset_-3px_-3px_8px_var(--neu-shadow-light)]">
+           {post.type === 'image' ? (
+             <img src={toDriveImageUrl(post.fileUrls?.[0] || post.fileUrl)} alt="Post" className="w-full h-80 object-cover" loading="lazy" />
+           ) : (
+             <div className="min-h-[200px] flex items-center justify-center bg-[var(--neu-bg)]">
+                {renderContent()}
+             </div>
+           )}
+
+           {/* Liquid Glass Action Bar Overlay */}
+           <div className="absolute bottom-3 left-3 right-3 rounded-full flex justify-between items-center px-4 py-2" 
+                style={{
+                  background: 'rgba(255, 255, 255, 0.2)',
+                  backdropFilter: 'blur(16px)',
+                  WebkitBackdropFilter: 'blur(16px)',
+                  border: '1px solid rgba(255,255,255,0.4)',
+                  boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
+                }}>
+             <div className="flex items-center gap-4">
+                <button onClick={() => setShowComments(!showComments)} className="flex items-center gap-1.5 text-white drop-shadow-md font-semibold text-sm hover:opacity-80 transition">
+                   💬 {comments.length}
+                </button>
+                <button onClick={handleLike} className={`flex items-center gap-1.5 drop-shadow-md font-semibold text-sm transition hover:opacity-80 ${liked ? 'text-red-500' : 'text-white'}`}>
+                   {liked ? '❤️' : '🤍'} {likeCount}
+                </button>
+             </div>
+             <div className="flex items-center gap-3">
+                <button className="text-white drop-shadow-md hover:opacity-80 transition">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                </button>
+                <button onClick={handleBookmark} className={`drop-shadow-md transition hover:opacity-80 ${bookmarked ? 'text-white' : 'text-white'}`}>
+                  {bookmarked ? (
+                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"></path></svg>
+                  ) : (
+                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>
+                  )}
+                </button>
+             </div>
+           </div>
         </div>
       </div>
 
-      {/* Content */}
-      <div style={{ borderTop: '1px solid var(--glass-border)', borderBottom: '1px solid var(--glass-border)' }}>
-        {renderContent()}
-      </div>
-
-      {/* Actions — Instagram style */}
-      <div className="px-6 pt-5 pb-3">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={handleLike}
-              className={`transition-all ${likeAnimating ? 'like-animate' : ''} ${liked ? 'text-ig-error' : 'text-ig-text dark:text-ig-text-light hover:opacity-60'
-                }`}
-            >
-              {liked ? <HiHeart className="w-7 h-7" /> : <HiOutlineHeart className="w-7 h-7" />}
-            </button>
-
-            <button
-              onClick={() => setShowComments(!showComments)}
-              className="text-ig-text dark:text-ig-text-light hover:opacity-60 transition-opacity"
-            >
-              <HiOutlineChat className="w-7 h-7" />
-            </button>
-
-            <button className="text-ig-text dark:text-ig-text-light hover:opacity-60 transition-opacity">
-              <HiOutlineShare className="w-7 h-7" />
-            </button>
-          </div>
-
-          <button
-            onClick={handleBookmark}
-            className={`transition-all ${bookmarked ? 'text-ig-text dark:text-ig-text-light' : 'text-ig-text dark:text-ig-text-light hover:opacity-60'}`}
-          >
-            {bookmarked ? <HiBookmark className="w-7 h-7" /> : <HiOutlineBookmark className="w-7 h-7" />}
-          </button>
-        </div>
-
-        {/* Like count */}
-        <p className="font-semibold text-sm text-ig-text dark:text-ig-text-light mb-1">
-          {likeCount} {likeCount === 1 ? 'like' : 'likes'}
-        </p>
-
-        {/* Title & Description */}
-        <div className="mb-1">
-          <Link to={`/dashboard/post/${post._id}`}>
-            <span className="font-semibold text-sm text-ig-text dark:text-ig-text-light mr-1">
-              {post.author?.name}
-            </span>
-            <span className="text-sm text-ig-text dark:text-ig-text-light">
-              {post.title}
-            </span>
-          </Link>
-        </div>
-        {post.description && (
-          <p className="text-sm text-ig-text-2 line-clamp-2 mb-1">
-            {post.description}
+      {/* Description & Timestamp (Below image if desired, or hidden. I'll include briefly) */}
+      {(post.description || post.title) && (
+        <div className="px-5 pb-3">
+          <p className="text-sm text-ig-text dark:text-ig-text-light line-clamp-2">
+            <span className="font-bold mr-1">{post.author?.name}</span>
+            {post.description || post.title}
           </p>
-        )}
-
-        {/* View all comments link */}
-        {comments.length > 0 && !showComments && (
-          <button
-            onClick={() => setShowComments(true)}
-            className="text-sm text-ig-text-2 mb-1 block"
-          >
-            View all {comments.length} comments
-          </button>
-        )}
-
-        {/* Timestamp */}
-        <p className="text-[10px] text-ig-text-2 uppercase tracking-wider mt-1 mb-2">
-          {timeAgo(post.createdAt)}
-        </p>
-      </div>
+        </div>
+      )}
 
       {/* Comments Section */}
       {showComments && (
-        <div className="px-6 py-4 animate-fade-in" style={{ borderTop: '1px solid var(--glass-border)' }}>
+        <div className="px-5 py-4 animate-fade-in" style={{ borderTop: '1px solid var(--glass-border)' }}>
           {/* Comments List */}
-          <div className="mt-3 space-y-3 max-h-60 overflow-y-auto">
+          <div className="space-y-3 max-h-60 overflow-y-auto">
             {comments.map((comment, idx) => (
               <div key={comment._id || idx} className="flex gap-2">
-                <Link to={`/dashboard/profile/${comment.author?._id}`}>
-                  <img
-                    src={comment.author?.avatar || `https://ui-avatars.com/api/?name=${comment.author?.name}`}
-                    onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${comment.author?.name}&background=1e3a5f&color=fbbf24`; }}
-                    alt={comment.author?.name}
-                    loading="lazy"
-                    decoding="async"
-                    className="w-8 h-8 rounded-full object-cover shadow-sm"
-                  />
-                </Link>
-                <div className="flex-1">
-                  <p className="text-sm">
-                    <Link to={`/dashboard/profile/${comment.author?._id}`} className="font-semibold text-ig-text dark:text-ig-text-light mr-1 hover:opacity-60">
-                      {comment.author?.name}
-                    </Link>
-                    <span className="text-ig-text dark:text-ig-text-light">{comment.text}</span>
-                  </p>
-                  <span className="text-[11px] text-ig-text-2">{timeAgo(comment.createdAt)}</span>
+                <img src={comment.author?.avatar || `https://ui-avatars.com/api/?name=${comment.author?.name}`} className="w-8 h-8 rounded-full shadow-[2px_2px_5px_var(--neu-shadow-dark)]" alt="avatar" />
+                <div>
+                  <p className="text-sm text-ig-text"><span className="font-bold">{comment.author?.name}</span> {comment.text}</p>
+                  <span className="text-[10px] text-ig-text-2">{timeAgo(comment.createdAt)}</span>
                 </div>
               </div>
             ))}
-            {comments.length === 0 && (
-              <p className="text-center text-sm text-ig-text-2 py-2">No comments yet. Be the first!</p>
-            )}
           </div>
 
-          {/* Comment Form */}
           <form onSubmit={handleComment} className="flex items-center gap-2 mt-3 pt-3" style={{ borderTop: '1px solid var(--glass-border)' }}>
-            <img
-              src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.name}`}
-              onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${user?.name}&background=1e3a5f&color=fbbf24`; }}
-              alt=""
-              className="w-7 h-7 rounded-full object-cover flex-shrink-0 shadow-sm"
-              loading="lazy"
-              decoding="async"
-            />
             <input
               type="text"
               value={commentText}
@@ -495,14 +399,13 @@ export default memo(function PostCard({ post, onUpdate }) {
             <button
               type="submit"
               disabled={submitting || !commentText.trim()}
-              className="text-ig-primary font-semibold text-sm disabled:opacity-30 hover:text-ig-primary-dark transition-colors"
+              className="text-ig-primary font-semibold text-sm disabled:opacity-30"
             >
               Post
             </button>
           </form>
         </div>
       )}
-      </div>
     </div>
   );
 })

@@ -109,168 +109,106 @@ export default function Profile() {
   }
 
   return (
-    <div className="relative min-h-screen">
-      {/* Background ambient glowing orbs */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-ag-primary/10 dark:bg-ag-primary/20 rounded-full blur-[100px] pointer-events-none animate-pulse-glow" />
-      <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-purple-500/10 dark:bg-purple-500/10 rounded-full blur-[120px] pointer-events-none animate-float" style={{ animationDelay: '2s' }} />
+    <div className="relative min-h-screen pb-24 bg-[var(--neu-bg)] font-body">
+      {/* Top Liquid Banner */}
+      <div className="absolute top-0 left-0 w-full h-72 bg-liquid-swirl rounded-b-[48px] shadow-lg"></div>
 
-      <div className="relative z-10">
-      {/* Profile Header — Instagram-style */}
-      <div className="relative overflow-hidden flex items-start gap-6 sm:gap-12 mb-8 p-6 sm:p-8 rounded-[32px]"
-        style={{
-          background: 'var(--glass-bg-strong)',
-          backdropFilter: 'blur(24px) saturate(200%)',
-          WebkitBackdropFilter: 'blur(24px) saturate(200%)',
-          border: '1px solid var(--glass-border)',
-          boxShadow: '8px 8px 20px var(--neu-shadow-dark), -8px -8px 20px var(--neu-shadow-light), inset 0 1px 0 var(--glass-highlight)',
-        }}
-      >
-        <ParticleCanvas />
-        <div className="relative z-10 flex items-start gap-6 sm:gap-12 w-full">
-        {/* Avatar */}
-        <div className="flex-shrink-0">
-          <div className="relative">
-            <div className="avatar-ring p-[3px]">
-              <img
-                src={
-                  editForm?.avatarFile 
-                    ? URL.createObjectURL(editForm.avatarFile) 
-                    : (profile.avatar || `https://ui-avatars.com/api/?name=${profile.name}`)
-                }
-                onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${profile.name}&background=1e3a5f&color=fbbf24&size=200`; }}
-                alt={profile.name}
-                className="w-20 h-20 sm:w-36 sm:h-36 rounded-full object-cover shadow-sm"
-              />
+      {/* Top Header Nav (Back / Message) */}
+      <div className="relative z-20 flex justify-between items-center px-6 pt-6">
+        <button onClick={() => navigate(-1)} className="w-10 h-10 rounded-full bg-white/30 backdrop-blur-md flex items-center justify-center text-white shadow-sm border border-white/40">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+        </button>
+        <button className="w-10 h-10 rounded-full bg-[var(--neu-bg)] flex items-center justify-center text-ig-text shadow-[4px_4px_10px_var(--neu-shadow-dark),-4px_-4px_10px_var(--neu-shadow-light)]">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+        </button>
+      </div>
+
+      <div className="relative z-10 px-4 max-w-md mx-auto mt-16">
+        {/* Profile Card */}
+        <div className="relative p-6 pt-0 rounded-[40px] text-center"
+             style={{
+               background: 'var(--neu-bg)',
+               boxShadow: '0 -10px 40px rgba(0,0,0,0.05), 8px 8px 20px var(--neu-shadow-dark), -8px -8px 20px var(--neu-shadow-light)',
+             }}>
+          
+          {/* Avatar and Stats Row */}
+          <div className="flex justify-between items-end -mt-12 mb-6 px-4">
+            <div className="flex flex-col items-center pb-2">
+              <span className="text-xl font-bold text-ig-text dark:text-ig-text-light">1k</span>
+              <span className="text-[10px] font-semibold text-ig-text-2 uppercase tracking-wider">Followers</span>
             </div>
-            {isOwnProfile && editing && (
-              <label className="absolute bottom-1 right-1 bg-ag-primary text-white p-2 rounded-full cursor-pointer hover:bg-ag-primary-hover transition-colors shadow-lg">
-                <HiCamera className="w-4 h-4" />
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={(e) => setEditForm((prev) => ({ ...prev, avatarFile: e.target.files[0] }))}
+
+            <div className="relative z-20">
+              <div className="p-2 rounded-[32px] bg-[var(--neu-bg)] shadow-[inset_3px_3px_8px_var(--neu-shadow-dark),inset_-3px_-3px_8px_var(--neu-shadow-light)]">
+                <img
+                  src={
+                    editForm?.avatarFile 
+                      ? URL.createObjectURL(editForm.avatarFile) 
+                      : (profile.avatar || `https://ui-avatars.com/api/?name=${profile.name}`)
+                  }
+                  onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${profile.name}&background=1e3a5f&color=fbbf24&size=200`; }}
+                  alt={profile.name}
+                  className="w-24 h-24 rounded-[24px] object-cover shadow-[4px_4px_10px_var(--neu-shadow-dark),-4px_-4px_10px_var(--neu-shadow-light)]"
                 />
-              </label>
-            )}
-          </div>
-        </div>
-
-        {/* Info */}
-        <div className="flex-1 pt-2">
-          <div className="flex items-center gap-4 flex-wrap mb-4">
-            <h1 className="text-xl font-normal text-ig-text dark:text-ig-text-light">
-              {profile.name}
-            </h1>
-            {isOwnProfile && (
-              <button onClick={() => setEditing(!editing)} className="btn-outline text-sm flex items-center gap-1.5 py-1.5 px-4">
-                {editing ? <HiX className="w-4 h-4" /> : <HiPencil className="w-4 h-4" />}
-                {editing ? 'Cancel' : 'Edit profile'}
-              </button>
-            )}
-          </div>
-
-          {/* Stats */}
-          <div className="flex gap-8 mb-4">
-            <div><span className="font-semibold text-ig-text dark:text-ig-text-light">{posts.length}</span> <span className="text-ig-text-2 text-sm">posts</span></div>
-            <div className="flex items-center gap-1.5">
-              <HiUserGroup className="w-4 h-4 text-ig-primary" />
-              <span className="font-semibold text-ig-text dark:text-ig-text-light">{totalUsers}</span> <span className="text-ig-text-2 text-sm">scholars on platform</span>
-            </div>
-          </div>
-
-          {/* Bio */}
-          <div className="text-sm">
-            <p className="font-semibold text-ig-text dark:text-ig-text-light">{profile.name}</p>
-            {profile.school && <p className="text-ig-text-2">🏫 {profile.school}</p>}
-            {profile.bio && <p className="text-ig-text dark:text-ig-text-light mt-1 whitespace-pre-wrap">{profile.bio}</p>}
-          </div>
-
-          {/* Subject tags */}
-          {profile.subjects?.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mt-3">
-              {profile.subjects.map((s) => (
-                <span key={s} className={`subject-badge text-[10px] ${getSubjectColor(s)}`}>{s}</span>
-              ))}
-            </div>
-          )}
-        </div>
-        </div>
-      </div>
-
-      {/* Edit Form */}
-      {editing && (
-        <div className="card p-5 mb-6 animate-fade-in">
-          <form onSubmit={handleSaveProfile} className="space-y-3">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label className="block text-xs font-semibold text-ig-text dark:text-ig-text-light mb-1">Name</label>
-                <input type="text" value={editForm.name} onChange={(e) => setEditForm((prev) => ({ ...prev, name: e.target.value }))} className="input-field text-sm" />
               </div>
-              <div>
-                <label className="block text-xs font-semibold text-ig-text dark:text-ig-text-light mb-1">School</label>
-                <input type="text" value={editForm.school} onChange={(e) => setEditForm((prev) => ({ ...prev, school: e.target.value }))} className="input-field text-sm" />
-              </div>
+              {isOwnProfile && (
+                <button 
+                  onClick={() => setEditing(!editing)}
+                  className="absolute -bottom-2 -right-2 p-2 rounded-full bg-blue-500 text-white shadow-lg z-30 hover:bg-blue-600 transition"
+                >
+                  {editing ? <HiX className="w-3 h-3" /> : <HiPencil className="w-3 h-3" />}
+                </button>
+              )}
             </div>
-            <div>
-              <label className="block text-xs font-semibold text-ig-text dark:text-ig-text-light mb-1">Bio</label>
-              <textarea value={editForm.bio} onChange={(e) => setEditForm((prev) => ({ ...prev, bio: e.target.value }))} className="input-field min-h-[70px] text-sm" maxLength={300} />
+
+            <div className="flex flex-col items-center pb-2">
+              <span className="text-xl font-bold text-ig-text dark:text-ig-text-light">342</span>
+              <span className="text-[10px] font-semibold text-ig-text-2 uppercase tracking-wider">Following</span>
             </div>
-            <div>
-              <label className="block text-xs font-semibold text-ig-text dark:text-ig-text-light mb-2">Subjects</label>
-              <div className="flex flex-wrap gap-1.5">
-                {SUBJECTS.filter((s) => s.name !== 'Other').map((s) => (
-                  <button
-                    key={s.name}
-                    type="button"
-                    onClick={() => setEditForm((prev) => ({ ...prev, subjects: prev.subjects.includes(s.name) ? prev.subjects.filter((x) => x !== s.name) : [...prev.subjects, s.name] }))}
-                    className={`px-3 py-1 rounded-full text-xs font-medium transition-all`}
-                    style={editForm.subjects?.includes(s.name) ? {
-                      background: 'linear-gradient(135deg, #1a73e8, #4285f4)',
-                      color: 'white',
-                      boxShadow: 'inset 2px 2px 5px rgba(0,0,0,0.2), inset -2px -2px 5px rgba(255,255,255,0.1)',
-                    } : {
-                      background: 'var(--neu-bg)',
-                      color: '#9AA0A6',
-                      boxShadow: '2px 2px 5px var(--neu-shadow-dark), -2px -2px 5px var(--neu-shadow-light)',
-                    }}
-                  >
-                    {s.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <button type="submit" disabled={saving} className="btn-primary text-sm flex items-center gap-2">
-              {saving && <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}
-              Submit
+          </div>
+
+          {/* Info */}
+          <h1 className="text-lg font-bold text-ig-text dark:text-ig-text-light mb-2">
+            @{profile.name.replace(/\s+/g, '')}
+          </h1>
+          <p className="text-xs text-ig-text-2 mb-6 px-4 leading-relaxed">
+            {profile.bio || `My name is ${profile.name}. I like dancing in the rain and travelling all around the world.`}
+          </p>
+
+          {/* Buttons */}
+          <div className="flex justify-center gap-4 mb-8">
+            <button className="btn-primary w-32 py-3 !rounded-[20px] text-sm font-semibold shadow-[6px_6px_14px_var(--neu-shadow-dark),-6px_-6px_14px_var(--neu-shadow-light)]">
+              Follow
             </button>
-          </form>
-        </div>
-      )}
-
-      {/* Posts Grid divider — Instagram-style */}
-      <div className="pt-4" style={{ borderTop: '1px solid var(--glass-border)' }}>
-        <div className="flex justify-center gap-12 mb-4 text-xs font-semibold uppercase tracking-widest">
-          <span className="text-ig-text dark:text-ig-text-light pt-4 -mt-4" style={{ borderTop: '1px solid currentColor' }}>
-            Posts
-          </span>
-        </div>
-
-        {posts.length === 0 ? (
-          <div className="text-center py-12">
-            <HiCamera className="w-16 h-16 text-ig-text-2 mx-auto mb-4 opacity-30" />
-            <h3 className="text-2xl font-light text-ig-text dark:text-ig-text-light mb-2">
-              No Posts Yet
-            </h3>
+            <button className="w-32 py-3 rounded-[20px] text-sm font-bold bg-[var(--neu-bg)] text-ig-text dark:text-ig-text-light shadow-[6px_6px_14px_var(--neu-shadow-dark),-6px_-6px_14px_var(--neu-shadow-light)] border border-[rgba(255,255,255,0.1)] active:shadow-[inset_3px_3px_8px_var(--neu-shadow-dark),inset_-3px_-3px_8px_var(--neu-shadow-light)] transition-all">
+              Message
+            </button>
           </div>
-        ) : (
-          <div className="space-y-4">
-            {posts.map((post) => (
-              <PostCard key={post._id} post={post} />
-            ))}
+
+          {/* Tabs */}
+          <div className="flex justify-center gap-8 mb-6 relative">
+            <button className="text-sm font-bold text-ig-text dark:text-ig-text-light pb-1 relative">
+              All
+              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-ig-text dark:bg-ig-text-light"></div>
+            </button>
+            <button className="text-sm font-semibold text-ig-text-2 pb-1">Photos</button>
+            <button className="text-sm font-semibold text-ig-text-2 pb-1">Videos</button>
           </div>
-        )}
-      </div>
+
+          {/* Grid */}
+          <div className="grid grid-cols-2 gap-3" style={{ gridAutoRows: '140px' }}>
+             {/* Staggered Layout for images */}
+             <div className="col-span-1 row-span-2 rounded-[28px] overflow-hidden shadow-[inset_3px_3px_8px_var(--neu-shadow-dark),inset_-3px_-3px_8px_var(--neu-shadow-light)] p-1">
+                <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=400&q=80" className="w-full h-full object-cover rounded-[24px]" alt="post" />
+             </div>
+             <div className="col-span-1 row-span-1 rounded-[28px] overflow-hidden shadow-[inset_3px_3px_8px_var(--neu-shadow-dark),inset_-3px_-3px_8px_var(--neu-shadow-light)] p-1">
+                <img src="https://images.unsplash.com/photo-1518098268026-4e89f1a2cd8e?auto=format&fit=crop&w=400&q=80" className="w-full h-full object-cover rounded-[24px]" alt="post" />
+             </div>
+             <div className="col-span-1 row-span-1 rounded-[28px] overflow-hidden shadow-[inset_3px_3px_8px_var(--neu-shadow-dark),inset_-3px_-3px_8px_var(--neu-shadow-light)] p-1">
+                <img src="https://images.unsplash.com/photo-1506744626753-eda818c6cce5?auto=format&fit=crop&w=400&q=80" className="w-full h-full object-cover rounded-[24px]" alt="post" />
+             </div>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -114,25 +114,25 @@ export default function Profile() {
       <div className="absolute top-0 left-0 w-full h-72 bg-liquid-swirl rounded-b-[48px] shadow-lg"></div>
 
       {/* Top Header Nav (Back / Message) */}
-      <div className="relative z-20 flex justify-between items-center px-6 pt-6">
-        <button onClick={() => navigate(-1)} className="w-10 h-10 rounded-full bg-white/30 backdrop-blur-md flex items-center justify-center text-white shadow-sm border border-white/40">
+      <div className="relative z-20 flex justify-between items-center px-6 pt-6 max-w-4xl mx-auto">
+        <button onClick={() => navigate(-1)} className="w-10 h-10 rounded-full bg-white/30 backdrop-blur-md flex items-center justify-center text-white shadow-sm border border-white/40 hover:bg-white/40 transition">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
         </button>
-        <button className="w-10 h-10 rounded-full bg-[var(--neu-bg)] flex items-center justify-center text-ig-text shadow-[4px_4px_10px_var(--neu-shadow-dark),-4px_-4px_10px_var(--neu-shadow-light)]">
+        <button className="w-10 h-10 rounded-full bg-[var(--neu-bg)] flex items-center justify-center text-ig-text shadow-[4px_4px_10px_var(--neu-shadow-dark),-4px_-4px_10px_var(--neu-shadow-light)] hover:shadow-[2px_2px_5px_var(--neu-shadow-dark),-2px_-2px_5px_var(--neu-shadow-light)] transition">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
         </button>
       </div>
 
-      <div className="relative z-10 px-4 max-w-md mx-auto mt-16">
+      <div className="relative z-10 px-4 max-w-3xl mx-auto mt-16 w-full">
         {/* Profile Card */}
-        <div className="relative p-6 pt-0 rounded-[40px] text-center"
+        <div className="relative p-6 pt-0 sm:p-10 sm:pt-0 rounded-[40px] text-center w-full"
              style={{
                background: 'var(--neu-bg)',
                boxShadow: '0 -10px 40px rgba(0,0,0,0.05), 8px 8px 20px var(--neu-shadow-dark), -8px -8px 20px var(--neu-shadow-light)',
              }}>
           
           {/* Avatar and Stats Row */}
-          <div className="flex justify-between items-end -mt-12 mb-6 px-4">
+          <div className="flex justify-between items-end -mt-12 sm:-mt-16 mb-8 px-4 sm:px-12">
             <div className="flex flex-col items-center pb-2">
               <span className="text-xl font-bold text-ig-text dark:text-ig-text-light">{posts.length}</span>
               <span className="text-[10px] font-semibold text-ig-text-2 uppercase tracking-wider">Posts</span>

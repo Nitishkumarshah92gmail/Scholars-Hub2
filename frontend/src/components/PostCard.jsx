@@ -332,24 +332,24 @@ export default memo(function PostCard({ post, onUpdate }) {
       </div>
 
       {/* Action Bar */}
-      <div className="px-5 py-2 flex justify-between items-center">
-         <div className="flex items-center gap-5">
-            <button onClick={handleLike} className={`flex items-center gap-1.5 font-semibold text-sm transition hover:opacity-80 ${liked ? 'text-red-500' : 'text-ig-text dark:text-ig-text-light'}`}>
-               {liked ? '❤️' : '🤍'} {likeCount}
+      <div className="px-5 py-3 flex justify-between items-center">
+         <div className="flex items-center gap-6">
+            <button onClick={handleLike} className={`flex items-center gap-2 font-semibold text-base transition hover:opacity-80 ${liked ? 'text-red-500' : 'text-ig-text dark:text-ig-text-light'}`}>
+               <span className="text-xl">{liked ? '❤️' : '🤍'}</span> {likeCount}
             </button>
-            <button onClick={() => setShowComments(!showComments)} className="flex items-center gap-1.5 font-semibold text-sm text-ig-text dark:text-ig-text-light hover:opacity-80 transition">
-               💬 {comments.length}
+            <button onClick={() => setShowComments(!showComments)} className="flex items-center gap-2 font-semibold text-base text-ig-text dark:text-ig-text-light hover:opacity-80 transition">
+               <span className="text-xl">💬</span> {comments.length}
             </button>
          </div>
-         <div className="flex items-center gap-4">
+         <div className="flex items-center gap-5">
             <button className="text-ig-text dark:text-ig-text-light hover:opacity-80 transition">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
             </button>
             <button onClick={handleBookmark} className={`transition hover:opacity-80 ${bookmarked ? 'text-ig-text dark:text-ig-text-light' : 'text-ig-text dark:text-ig-text-light'}`}>
               {bookmarked ? (
-                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"></path></svg>
+                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"></path></svg>
               ) : (
-                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>
+                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>
               )}
             </button>
          </div>

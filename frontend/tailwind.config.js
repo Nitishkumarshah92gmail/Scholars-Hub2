@@ -88,6 +88,13 @@ export default {
           800: '#e98815',
           900: '#df660b',
         },
+        // Neumorphism surface colors
+        neu: {
+          'light': '#e0e5ec',
+          'light-2': '#d1d9e6',
+          'dark': '#0d0d12',
+          'dark-2': '#13131a',
+        },
       },
       fontFamily: {
         heading: ['"Outfit"', 'sans-serif'],
@@ -105,6 +112,14 @@ export default {
         'ag-gradient-hero': 'linear-gradient(135deg, #1a73e8 0%, #8AB4F8 50%, #81C995 100%)',
         'ag-gradient-accent': 'linear-gradient(135deg, #4285f4, #8AB4F8)',
         'ag-gradient-surface': 'linear-gradient(180deg, #000000 0%, #0a0a0a 100%)',
+        // Liquid glass gradients
+        'glass-specular': 'linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 40%)',
+        'glass-specular-dark': 'linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 40%)',
+        'glass-edge': 'linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05), rgba(120,180,255,0.1))',
+        'glass-edge-dark': 'linear-gradient(135deg, rgba(100,160,255,0.15), rgba(255,255,255,0.03), rgba(160,120,255,0.1))',
+        // Neumorphic body backgrounds
+        'neu-light-mesh': 'linear-gradient(135deg, #e0e5ec 0%, #d1d9e6 50%, #e0e5ec 100%)',
+        'neu-dark-mesh': 'radial-gradient(ellipse at 20% 50%, #0f1124 0%, #080810 50%, #0a0a14 100%)',
       },
       boxShadow: {
         'ig': '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08)',
@@ -114,6 +129,24 @@ export default {
         'ag-card': '0 1px 3px rgba(0,0,0,0.3), 0 4px 8px rgba(0,0,0,0.15)',
         'ag-card-hover': '0 4px 12px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.2)',
         'ag-glass': '0 8px 32px rgba(0,0,0,0.3)',
+        // Neumorphic shadows — Light mode
+        'neu-raised': '6px 6px 14px rgba(163,177,198,0.6), -6px -6px 14px rgba(255,255,255,0.8)',
+        'neu-raised-sm': '3px 3px 8px rgba(163,177,198,0.5), -3px -3px 8px rgba(255,255,255,0.7)',
+        'neu-raised-hover': '8px 8px 18px rgba(163,177,198,0.65), -8px -8px 18px rgba(255,255,255,0.85)',
+        'neu-inset': 'inset 3px 3px 8px rgba(163,177,198,0.5), inset -3px -3px 8px rgba(255,255,255,0.7)',
+        'neu-pressed': 'inset 4px 4px 10px rgba(163,177,198,0.6), inset -4px -4px 10px rgba(255,255,255,0.8)',
+        'neu-flat': '0 0 0 transparent',
+        // Neumorphic shadows — Dark mode
+        'neu-dark-raised': '6px 6px 16px rgba(0,0,0,0.5), -6px -6px 16px rgba(40,40,60,0.25)',
+        'neu-dark-raised-sm': '3px 3px 8px rgba(0,0,0,0.4), -3px -3px 8px rgba(40,40,60,0.2)',
+        'neu-dark-raised-hover': '8px 8px 20px rgba(0,0,0,0.55), -8px -8px 20px rgba(40,40,60,0.3)',
+        'neu-dark-inset': 'inset 3px 3px 8px rgba(0,0,0,0.45), inset -3px -3px 8px rgba(40,40,60,0.15)',
+        'neu-dark-pressed': 'inset 4px 4px 10px rgba(0,0,0,0.5), inset -4px -4px 10px rgba(40,40,60,0.2)',
+        // Liquid glass shadows
+        'liquid-glass': '0 8px 32px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.4)',
+        'liquid-glass-strong': '0 12px 48px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.5)',
+        'liquid-glass-dark': '0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)',
+        'liquid-glass-dark-strong': '0 12px 48px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08)',
       },
       animation: {
         'like-pop': 'likePop 0.3s ease-in-out',
@@ -129,6 +162,10 @@ export default {
         'typing-cursor': 'blink 1s step-end infinite',
         'scale-in': 'scaleIn 0.3s cubic-bezier(0.16,1,0.3,1)',
         'shimmer': 'shimmer 2s linear infinite',
+        // Liquid glass animations
+        'liquid-shimmer': 'liquidShimmer 4s ease-in-out infinite',
+        'glass-refract': 'glassRefract 8s ease-in-out infinite',
+        'neu-breathe': 'neuBreathe 4s ease-in-out infinite',
       },
       keyframes: {
         likePop: {
@@ -171,6 +208,19 @@ export default {
         shimmer: {
           '0%': { backgroundPosition: '-200% 0' },
           '100%': { backgroundPosition: '200% 0' },
+        },
+        // Liquid glass keyframes
+        liquidShimmer: {
+          '0%, 100%': { opacity: '0.3', transform: 'translateX(-100%)' },
+          '50%': { opacity: '0.6', transform: 'translateX(100%)' },
+        },
+        glassRefract: {
+          '0%, 100%': { opacity: '0.5' },
+          '50%': { opacity: '1' },
+        },
+        neuBreathe: {
+          '0%, 100%': { boxShadow: '6px 6px 14px rgba(163,177,198,0.6), -6px -6px 14px rgba(255,255,255,0.8)' },
+          '50%': { boxShadow: '8px 8px 18px rgba(163,177,198,0.65), -8px -8px 18px rgba(255,255,255,0.85)' },
         },
       },
       transitionTimingFunction: {

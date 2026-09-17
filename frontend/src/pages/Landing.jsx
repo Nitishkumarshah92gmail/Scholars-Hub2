@@ -100,13 +100,21 @@ export default function Landing() {
   ];
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black transition-colors duration-300">
-      {/* ── Glassmorphic Navbar ── */}
+    <div className="min-h-screen transition-colors duration-300">
+      {/* ── Liquid Glass Navbar ── */}
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         headerScrolled
-          ? 'glass-light dark:glass shadow-lg dark:shadow-ag-glass'
+          ? ''
           : 'bg-transparent'
-      }`}>
+      }`}
+        style={headerScrolled ? {
+          background: 'var(--glass-bg-strong)',
+          backdropFilter: 'blur(24px) saturate(200%)',
+          WebkitBackdropFilter: 'blur(24px) saturate(200%)',
+          borderBottom: '1px solid var(--glass-border)',
+          boxShadow: 'inset 0 1px 0 var(--glass-highlight), 0 4px 20px rgba(0,0,0,0.08)',
+        } : {}}
+      >
         <div className="max-w-[1200px] mx-auto px-6 h-[64px] flex items-center justify-between">
           <h1 className="text-xl font-heading font-bold text-ig-text dark:text-ig-text-light flex items-center gap-2.5">
             <img src={logoImg} alt="Scholars Hub" className="w-8 h-8 rounded-full object-cover" />
@@ -115,16 +123,17 @@ export default function Landing() {
 
           {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-2">
-            <a href="#features" className="px-4 py-2 text-sm text-ig-text-2 hover:text-ig-text dark:hover:text-white rounded-ag-pill hover:bg-black/5 dark:hover:bg-white/5 transition-all">
+            <a href="#features" className="px-4 py-2 text-sm text-ig-text-2 hover:text-ig-text dark:hover:text-white rounded-ag-pill hover:bg-white/10 transition-all">
               Features
             </a>
-            <a href="#community" className="px-4 py-2 text-sm text-ig-text-2 hover:text-ig-text dark:hover:text-white rounded-ag-pill hover:bg-black/5 dark:hover:bg-white/5 transition-all">
+            <a href="#community" className="px-4 py-2 text-sm text-ig-text-2 hover:text-ig-text dark:hover:text-white rounded-ag-pill hover:bg-white/10 transition-all">
               Community
             </a>
-            <div className="w-px h-6 bg-ig-separator dark:bg-ig-separator-dark mx-2" />
+            <div className="w-px h-6 bg-white/20 mx-2" />
             <button
               onClick={toggleTheme}
-              className="p-2.5 rounded-full text-ig-text-2 hover:text-ig-text dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all"
+              className="p-2.5 rounded-full text-ig-text-2 hover:text-ig-text dark:hover:text-white transition-all"
+              style={{ boxShadow: '2px 2px 5px var(--neu-shadow-dark), -2px -2px 5px var(--neu-shadow-light)' }}
               aria-label="Toggle theme"
             >
               {darkMode ? <HiSun className="w-5 h-5" /> : <HiMoon className="w-5 h-5" />}
@@ -137,7 +146,7 @@ export default function Landing() {
               <HiDownload className="w-4 h-4" />
               App
             </a>
-            <Link to="/login" className="text-sm text-ig-text-2 hover:text-ig-text dark:hover:text-white px-4 py-2 rounded-ag-pill hover:bg-black/5 dark:hover:bg-white/5 transition-all font-medium">
+            <Link to="/login" className="text-sm text-ig-text-2 hover:text-ig-text dark:hover:text-white px-4 py-2 rounded-ag-pill hover:bg-white/10 transition-all font-medium">
               Log in
             </Link>
             <Link to="/register" className="btn-primary text-sm px-5 py-2">
@@ -150,18 +159,25 @@ export default function Landing() {
             <button onClick={toggleTheme} className="p-2 rounded-full text-ig-text-2 hover:text-ig-text dark:hover:text-white transition-all">
               {darkMode ? <HiSun className="w-5 h-5" /> : <HiMoon className="w-5 h-5" />}
             </button>
-            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 rounded-full text-ig-text dark:text-ig-text-light hover:bg-black/5 dark:hover:bg-white/5 transition-all">
+            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 rounded-full text-ig-text dark:text-ig-text-light transition-all">
               {mobileMenuOpen ? <HiX className="w-6 h-6" /> : <HiMenuAlt3 className="w-6 h-6" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile dropdown */}
+        {/* Mobile dropdown — Liquid Glass */}
         {mobileMenuOpen && (
-          <div className="md:hidden glass-light dark:glass border-t border-ig-separator/30 dark:border-ig-separator-dark/30 animate-fade-in">
+          <div className="md:hidden animate-fade-in"
+            style={{
+              background: 'var(--glass-bg-strong)',
+              backdropFilter: 'blur(24px) saturate(200%)',
+              WebkitBackdropFilter: 'blur(24px) saturate(200%)',
+              borderTop: '1px solid var(--glass-border)',
+            }}
+          >
             <div className="px-6 py-4 space-y-2">
-              <a href="#features" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-2.5 text-sm text-ig-text dark:text-ig-text-light rounded-ag-sm hover:bg-black/5 dark:hover:bg-white/5 transition-all">Features</a>
-              <a href="#community" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-2.5 text-sm text-ig-text dark:text-ig-text-light rounded-ag-sm hover:bg-black/5 dark:hover:bg-white/5 transition-all">Community</a>
+              <a href="#features" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-2.5 text-sm text-ig-text dark:text-ig-text-light rounded-ag-sm hover:bg-white/10 transition-all">Features</a>
+              <a href="#community" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-2.5 text-sm text-ig-text dark:text-ig-text-light rounded-ag-sm hover:bg-white/10 transition-all">Community</a>
               <a href="/scholars-hub.apk" download className="block px-4 py-2.5 text-sm text-ag-primary font-semibold rounded-ag-sm hover:bg-blue-500/5 transition-all">
                 <HiDownload className="w-4 h-4 inline mr-2" />Download App
               </a>
@@ -179,7 +195,7 @@ export default function Landing() {
         {/* Particle background */}
         <ParticleCanvas />
 
-        {/* Gradient orbs */}
+        {/* Gradient orbs — visible through glass */}
         <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-ag-primary/10 rounded-full blur-[120px] animate-pulse-glow pointer-events-none" />
         <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-purple-500/10 rounded-full blur-[100px] animate-pulse-glow pointer-events-none" style={{ animationDelay: '1.5s' }} />
 
@@ -214,7 +230,7 @@ export default function Landing() {
             </a>
           </div>
 
-          {/* Subject pills */}
+          {/* Subject pills — Neumorphic */}
           <div className="animate-fade-in-up-delay-3 mt-12 flex flex-wrap gap-2 justify-center">
             {subjects.map((s) => (
               <span key={s.name} className={`subject-badge ${s.color}`}>
@@ -226,14 +242,19 @@ export default function Landing() {
 
         {/* Scroll indicator */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-float">
-          <div className="w-6 h-10 rounded-full border-2 border-ig-text-2/30 flex justify-center pt-2">
-            <div className="w-1 h-2 bg-ig-text-2/50 rounded-full animate-fade-in" />
+          <div className="w-6 h-10 rounded-full flex justify-center pt-2"
+            style={{
+              border: '2px solid var(--glass-border)',
+              boxShadow: '2px 2px 5px var(--neu-shadow-dark), -2px -2px 5px var(--neu-shadow-light)',
+            }}
+          >
+            <div className="w-1 h-2 rounded-full animate-fade-in" style={{ background: 'var(--glass-border)' }} />
           </div>
         </div>
       </section>
 
-      {/* ── Features Section ── */}
-      <section id="features" className="py-24 px-6 bg-ig-bg-2 dark:bg-ag-surface-dim border-t border-ig-separator/50 dark:border-ig-separator-dark/50">
+      {/* ── Features Section — Liquid Glass Cards ── */}
+      <section id="features" className="py-24 px-6" style={{ borderTop: '1px solid var(--glass-border)' }}>
         <div className="max-w-[1100px] mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-heading font-bold text-ig-text dark:text-white tracking-tight">
@@ -247,10 +268,12 @@ export default function Landing() {
             {features.map((f, i) => (
               <div
                 key={f.title}
-                className="group card p-6 text-center hover:shadow-ag-card-hover hover:-translate-y-1"
+                className="group card p-6 text-center hover:-translate-y-1"
                 style={{ animationDelay: `${i * 0.1}s` }}
               >
-                <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${f.color} flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:shadow-ag-glow`}>
+                <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${f.color} flex items-center justify-center transition-all duration-300 group-hover:scale-110`}
+                  style={{ boxShadow: '3px 3px 8px var(--neu-shadow-dark), -3px -3px 8px var(--neu-shadow-light)' }}
+                >
                   <f.icon className="w-7 h-7 text-ag-primary" />
                 </div>
                 <h3 className="font-heading font-semibold text-ig-text dark:text-white mb-2 text-[15px]">
@@ -265,7 +288,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ── Community / Social Features ── */}
+      {/* ── Community / Social Features — Glass Cards ── */}
       <section id="community" className="py-24 px-6">
         <div className="max-w-[1100px] mx-auto">
           <div className="text-center mb-16">
@@ -280,10 +303,15 @@ export default function Landing() {
             {socialFeatures.map((f, i) => (
               <div
                 key={f.title}
-                className="group card p-5 text-center hover:shadow-ag-card-hover hover:-translate-y-1"
+                className="group card p-5 text-center hover:-translate-y-1"
                 style={{ animationDelay: `${i * 0.08}s` }}
               >
-                <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-ag-primary/10 flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:bg-ag-primary/20">
+                <div className="w-12 h-12 mx-auto mb-3 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+                  style={{
+                    background: 'rgba(26,115,232,0.1)',
+                    boxShadow: '2px 2px 6px var(--neu-shadow-dark), -2px -2px 6px var(--neu-shadow-light)',
+                  }}
+                >
                   <f.icon className="w-6 h-6 text-ag-primary" />
                 </div>
                 <h3 className="font-heading font-semibold text-sm text-ig-text dark:text-white mb-1">
@@ -296,16 +324,29 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ── CTA Section — Dark inverted ── */}
+      {/* ── CTA Section — Neumorphic Dark Glass Panel ── */}
       <section className="py-24 px-6">
         <div className="max-w-[900px] mx-auto">
-          <div className="relative rounded-ag bg-black dark:bg-ag-surface-container overflow-hidden">
+          <div className="relative rounded-ag overflow-hidden"
+            style={{
+              background: 'rgba(0,0,0,0.7)',
+              backdropFilter: 'blur(20px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              boxShadow: '8px 8px 20px rgba(0,0,0,0.4), -8px -8px 20px rgba(40,40,60,0.15), inset 0 1px 0 rgba(255,255,255,0.08)',
+            }}
+          >
             {/* Glow effects */}
             <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-ag-primary/15 rounded-full blur-[80px] pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-[200px] h-[200px] bg-purple-500/10 rounded-full blur-[60px] pointer-events-none" />
 
             <div className="relative z-10 p-12 sm:p-16 text-center">
-              <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-ag-primary/15 flex items-center justify-center">
+              <div className="w-16 h-16 mx-auto mb-6 rounded-2xl flex items-center justify-center"
+                style={{
+                  background: 'rgba(26,115,232,0.15)',
+                  boxShadow: 'inset 3px 3px 8px rgba(0,0,0,0.3), inset -3px -3px 8px rgba(40,40,60,0.15)',
+                }}
+              >
                 <HiAcademicCap className="w-8 h-8 text-ag-primary-light" />
               </div>
               <h2 className="text-3xl sm:text-4xl font-heading font-bold text-white mb-4 tracking-tight">
@@ -328,8 +369,8 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ── Footer ── */}
-      <footer className="py-8 px-6 border-t border-ig-separator/50 dark:border-ig-separator-dark/50">
+      {/* ── Footer — Glass separator ── */}
+      <footer className="py-8 px-6" style={{ borderTop: '1px solid var(--glass-border)' }}>
         <div className="max-w-[1100px] mx-auto">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2.5">

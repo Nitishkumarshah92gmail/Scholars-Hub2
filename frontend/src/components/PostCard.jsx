@@ -135,7 +135,7 @@ export default memo(function PostCard({ post, onUpdate }) {
     switch (post.type) {
       case 'pdf':
         return (
-          <div className="bg-ig-bg-2 dark:bg-ag-surface-container-high p-6 flex items-center justify-between">
+          <div className="p-6 flex items-center justify-between" style={{ background: 'var(--glass-bg)', backdropFilter: 'blur(12px)' }}>
             <div className="flex items-center gap-3">
               <span className="text-4xl">📄</span>
               <div>
@@ -190,7 +190,7 @@ export default memo(function PostCard({ post, onUpdate }) {
       }
       case 'drive_link':
         return (
-          <div className="bg-ig-bg-2 dark:bg-ag-surface-container-high p-6 flex items-center justify-between">
+          <div className="p-6 flex items-center justify-between" style={{ background: 'var(--glass-bg)', backdropFilter: 'blur(12px)' }}>
             <div className="flex items-center gap-3">
               <span className="text-4xl">🔗</span>
               <div>
@@ -321,7 +321,7 @@ export default memo(function PostCard({ post, onUpdate }) {
               <HiDotsHorizontal className="w-5 h-5 text-ig-text dark:text-ig-text-light" />
             </button>
             {showMenu && (
-              <div className="absolute right-0 top-8 bg-ig-bg dark:bg-ag-surface-container-high rounded-ag-sm shadow-ag-glass border border-ig-separator dark:border-ig-separator-dark/50 py-1 w-48 z-10 animate-scale-in">
+              <div className="absolute right-0 top-8 rounded-ag-sm py-1 w-48 z-10 animate-scale-in" style={{ background: 'var(--glass-bg-strong)', backdropFilter: 'blur(24px) saturate(200%)', WebkitBackdropFilter: 'blur(24px) saturate(200%)', border: '1px solid var(--glass-border)', boxShadow: '6px 6px 14px var(--neu-shadow-dark), -6px -6px 14px var(--neu-shadow-light), inset 0 1px 0 var(--glass-highlight)' }}>
                 {isOwner && (
                   <>
                     <button
@@ -357,7 +357,7 @@ export default memo(function PostCard({ post, onUpdate }) {
       </div>
 
       {/* Content */}
-      <div className="border-t border-b border-ig-separator/30 dark:border-ig-separator-dark/30">
+      <div style={{ borderTop: '1px solid var(--glass-border)', borderBottom: '1px solid var(--glass-border)' }}>
         {renderContent()}
       </div>
 
@@ -433,7 +433,7 @@ export default memo(function PostCard({ post, onUpdate }) {
 
       {/* Comments Section */}
       {showComments && (
-        <div className="px-6 py-4 border-t border-ig-separator dark:border-ig-separator-dark animate-fade-in">
+        <div className="px-6 py-4 animate-fade-in" style={{ borderTop: '1px solid var(--glass-border)' }}>
           {/* Comments List */}
           <div className="mt-3 space-y-3 max-h-60 overflow-y-auto">
             {comments.map((comment, idx) => (
@@ -465,7 +465,7 @@ export default memo(function PostCard({ post, onUpdate }) {
           </div>
 
           {/* Comment Form */}
-          <form onSubmit={handleComment} className="flex items-center gap-2 mt-3 pt-3 border-t border-ig-separator dark:border-ig-separator-dark">
+          <form onSubmit={handleComment} className="flex items-center gap-2 mt-3 pt-3" style={{ borderTop: '1px solid var(--glass-border)' }}>
             <img
               src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.name}`}
               onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${user?.name}&background=1e3a5f&color=fbbf24`; }}

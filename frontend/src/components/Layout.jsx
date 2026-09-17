@@ -185,16 +185,28 @@ export default function Layout() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-ig-bg-2 dark:bg-black transition-colors duration-300 md:p-4">
-      {/* Desktop Sidebar - Floating Pill */}
-      <aside className="hidden md:flex flex-col w-[245px] xl:w-[320px] fixed h-[calc(100vh-32px)] bg-ig-bg dark:bg-ag-surface-dim border border-ig-separator dark:border-white/10 rounded-[32px] shadow-ag-glass z-30 transition-colors duration-300 overflow-hidden">
+    <div className="min-h-screen flex flex-col md:flex-row transition-colors duration-300 md:p-4">
+      {/* Desktop Sidebar - Liquid Glass Pill */}
+      <aside className="hidden md:flex flex-col w-[245px] xl:w-[320px] fixed h-[calc(100vh-32px)] z-30 transition-all duration-300 overflow-hidden"
+        style={{
+          background: 'var(--glass-bg-strong)',
+          backdropFilter: `blur(var(--glass-blur)) saturate(var(--glass-saturate))`,
+          WebkitBackdropFilter: `blur(var(--glass-blur)) saturate(var(--glass-saturate))`,
+          border: '1px solid var(--glass-border)',
+          borderRadius: '32px',
+          boxShadow: '8px 8px 20px var(--neu-shadow-dark), -8px -8px 20px var(--neu-shadow-light), inset 0 1px 0 var(--glass-highlight)',
+        }}
+      >
+        {/* Specular highlight edge */}
+        <div className="absolute top-0 left-0 right-0 h-[1px] pointer-events-none z-10" style={{ background: 'linear-gradient(90deg, transparent, var(--glass-highlight), transparent)' }} />
+        
         {/* Logo */}
         <div className="px-6 pt-5 pb-3">
           <h1
             className="text-2xl font-heading font-bold text-ig-text dark:text-ig-text-light flex items-center gap-2.5 cursor-pointer"
             onClick={() => navigate('/dashboard')}
           >
-            <img src={logoImg} alt="Scholars Hub" className="w-9 h-9 rounded-full object-cover" />
+            <img src={logoImg} alt="Scholars Hub" className="w-9 h-9 rounded-full object-cover" style={{ boxShadow: '3px 3px 6px var(--neu-shadow-dark), -3px -3px 6px var(--neu-shadow-light)' }} />
             <span>
               Scholars<span className="gradient-text">Hub</span>
             </span>
@@ -229,16 +241,18 @@ export default function Layout() {
           ))}
 
           {/* External Links */}
-          <div className="pt-2 mt-2 border-t border-ig-separator/30 dark:border-ig-separator-dark/30 space-y-0.5">
+          <div className="pt-2 mt-2 border-t border-white/10 space-y-0.5">
 
 
             <a href="https://nptel.ac.in/courses" target="_blank" rel="noopener noreferrer" 
-               className="group relative flex items-center gap-3 w-full p-3 my-2 rounded-[16px] overflow-hidden transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-ag-glow hover:shadow-ag-glow-strong border border-white/20 dark:border-white/10"
+               className="group relative flex items-center gap-3 w-full p-3 my-2 rounded-[16px] overflow-hidden transition-all duration-300 hover:scale-[1.02] active:scale-95"
+               style={{
+                 background: 'linear-gradient(135deg, #1a73e8, #4285f4, #8AB4F8)',
+                 boxShadow: '4px 4px 10px var(--neu-shadow-dark), -4px -4px 10px var(--neu-shadow-light), inset 0 1px 0 rgba(255,255,255,0.25)',
+               }}
             >
-              {/* Animated gradient background */}
-              <div className="absolute inset-0 bg-ig-gradient-vivid opacity-80 group-hover:opacity-100 transition-opacity duration-300 animate-shimmer" style={{ backgroundSize: '200% 200%' }} />
               {/* Glass overlay for depth */}
-              <div className="absolute inset-0 bg-black/10 dark:bg-black/20 backdrop-blur-[2px]" />
+              <div className="absolute inset-0 bg-black/10 backdrop-blur-[2px]" />
               
               <HiOutlineAcademicCap className="w-6 h-6 text-white relative z-10 drop-shadow-md" />
               <div className="hidden xl:flex flex-col relative z-10">
@@ -253,7 +267,7 @@ export default function Layout() {
         </div>
 
         {/* Bottom section — always visible */}
-        <div className="px-3 py-2 space-y-0.5 border-t border-ig-separator/30 dark:border-ig-separator-dark/30 hidden">
+        <div className="px-3 py-2 space-y-0.5 border-t border-white/10 hidden">
         </div>
 
         {/* User info */}
@@ -261,13 +275,28 @@ export default function Layout() {
           className="px-3 pb-2 cursor-pointer"
           onClick={() => navigate(`/dashboard/profile/${user?._id}`)}
         >
-          <div className="flex items-center gap-3 p-3 rounded-ag hover:bg-gray-100 dark:hover:bg-ag-surface-container-high transition-colors">
-            <div className="w-[46px] h-[46px] flex-shrink-0 rounded-full p-[2px] bg-gradient-to-br from-ig-primary via-purple-500 to-pink-500">
+          <div className="flex items-center gap-3 p-3 rounded-ag transition-all duration-200"
+            style={{
+              background: 'transparent',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'var(--glass-bg)';
+              e.currentTarget.style.boxShadow = '3px 3px 8px var(--neu-shadow-dark), -3px -3px 8px var(--neu-shadow-light)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'transparent';
+              e.currentTarget.style.boxShadow = 'none';
+            }}
+          >
+            <div className="w-[46px] h-[46px] flex-shrink-0 rounded-full p-[2px] bg-gradient-to-br from-ig-primary via-purple-500 to-pink-500"
+              style={{ boxShadow: '3px 3px 6px var(--neu-shadow-dark), -3px -3px 6px var(--neu-shadow-light)' }}
+            >
               <img
                 src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.name}`}
                 onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${user?.name}&background=1e3a5f&color=fbbf24`; }}
                 alt={user?.name}
-                className="w-full h-full rounded-full object-cover border-[2px] border-ig-bg dark:border-ag-surface-dim shadow-sm"
+                className="w-full h-full rounded-full object-cover border-[2px] shadow-sm"
+                style={{ borderColor: 'var(--neu-bg)' }}
               />
             </div>
             <div className="flex-1 min-w-0 hidden xl:block">
@@ -297,8 +326,16 @@ export default function Layout() {
         </div>
       </aside>
 
-      {/* Mobile Top Header */}
-      <header className="md:hidden fixed top-0 left-0 right-0 glass-light dark:glass z-30 flex items-center justify-between px-4 py-2.5 transition-colors duration-300">
+      {/* Mobile Top Header — Liquid Glass */}
+      <header className="md:hidden fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-4 py-2.5 transition-all duration-300"
+        style={{
+          background: 'var(--glass-bg-strong)',
+          backdropFilter: `blur(24px) saturate(200%)`,
+          WebkitBackdropFilter: `blur(24px) saturate(200%)`,
+          borderBottom: '1px solid var(--glass-border)',
+          boxShadow: 'inset 0 1px 0 var(--glass-highlight), 0 4px 16px rgba(0,0,0,0.08)',
+        }}
+      >
         <h1
           className="text-xl font-heading font-bold text-ig-text dark:text-ig-text-light flex items-center gap-2 cursor-pointer"
           onClick={() => navigate('/dashboard')}
@@ -309,13 +346,17 @@ export default function Layout() {
           </span>
         </h1>
         <div className="flex items-center gap-1">
-          <button onClick={toggleTheme} className="p-2 rounded-full text-ig-text dark:text-ig-text-light opacity-70 hover:opacity-100 hover:bg-gray-100 dark:hover:bg-ag-surface-container-high transition-colors">
+          <button onClick={toggleTheme} className="p-2 rounded-full text-ig-text dark:text-ig-text-light opacity-70 hover:opacity-100 transition-colors"
+            style={{ boxShadow: 'none' }}
+            onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '2px 2px 5px var(--neu-shadow-dark), -2px -2px 5px var(--neu-shadow-light)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.boxShadow = 'none'; }}
+          >
             {darkMode ? <HiSun className="w-6 h-6" /> : <HiMoon className="w-6 h-6" />}
           </button>
           <NavLink
             to="/dashboard/notifications"
             className={({ isActive }) =>
-              `p-2 rounded-full transition-all relative ${isActive ? 'text-ig-text dark:text-ig-text-light bg-gray-100 dark:bg-ag-surface-container-high' : 'text-ig-text dark:text-ig-text-light opacity-70 hover:opacity-100 hover:bg-gray-100 dark:hover:bg-ag-surface-container-high'}`
+              `p-2 rounded-full transition-all relative ${isActive ? 'text-ig-text dark:text-ig-text-light' : 'text-ig-text dark:text-ig-text-light opacity-70 hover:opacity-100'}`
             }
           >
             <HiOutlineBell className="w-6 h-6" />
@@ -328,16 +369,24 @@ export default function Layout() {
         </div>
       </header>
 
-      {/* Mobile More Menu — Overlay */}
+      {/* Mobile More Menu — Glass Overlay */}
       {mobileMenuOpen && (
         <div className="md:hidden fixed inset-0 z-50 flex">
           {/* Backdrop */}
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMobileMenuOpen(false)} />
-          {/* Slide-in panel */}
-          <div className="relative ml-auto w-72 h-full bg-ig-bg dark:bg-ag-surface-dim shadow-ag-glass flex flex-col animate-slide-in-right">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-ig-separator dark:border-ig-separator-dark/50">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setMobileMenuOpen(false)} />
+          {/* Slide-in panel — Liquid Glass */}
+          <div className="relative ml-auto w-72 h-full flex flex-col animate-slide-in-right"
+            style={{
+              background: 'var(--glass-bg-strong)',
+              backdropFilter: `blur(var(--glass-blur)) saturate(var(--glass-saturate))`,
+              WebkitBackdropFilter: `blur(var(--glass-blur)) saturate(var(--glass-saturate))`,
+              borderLeft: '1px solid var(--glass-border)',
+              boxShadow: '-8px 0 32px rgba(0,0,0,0.2), inset 1px 0 0 var(--glass-highlight)',
+            }}
+          >
+            <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: '1px solid var(--glass-border)' }}>
               <span className="font-heading font-semibold text-ig-text dark:text-ig-text-light">More</span>
-              <button onClick={() => setMobileMenuOpen(false)} className="p-1.5 rounded-full text-ig-text dark:text-ig-text-light hover:bg-gray-100 dark:hover:bg-ag-surface-container-high transition-colors">
+              <button onClick={() => setMobileMenuOpen(false)} className="p-1.5 rounded-full text-ig-text dark:text-ig-text-light hover:bg-white/10 transition-colors">
                 <HiX className="w-6 h-6" />
               </button>
             </div>
@@ -349,7 +398,11 @@ export default function Layout() {
                   to={item.to}
                   end={item.to === '/dashboard'}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={({ isActive }) => `flex items-center gap-3 px-3 py-2.5 rounded-ag-sm transition-all ${isActive ? 'bg-gray-100 dark:bg-ag-surface-container-high font-semibold' : 'hover:bg-gray-100 dark:hover:bg-ag-surface-container-high'} text-ig-text dark:text-ig-text-light`}
+                  className={({ isActive }) => `flex items-center gap-3 px-3 py-2.5 rounded-ag-sm transition-all ${isActive ? 'font-semibold' : ''} text-ig-text dark:text-ig-text-light`}
+                  style={({ isActive }) => isActive ? {
+                    background: 'var(--glass-bg)',
+                    boxShadow: 'inset 3px 3px 8px var(--neu-shadow-dark), inset -3px -3px 8px var(--neu-shadow-light)',
+                  } : {}}
                 >
                   {({ isActive }) => (
                     <>
@@ -365,14 +418,17 @@ export default function Layout() {
                 </NavLink>
               ))}
 
-              <div className="border-t border-ig-separator/30 dark:border-ig-separator-dark/30 my-2" />
+              <div style={{ borderTop: '1px solid var(--glass-border)', margin: '8px 0' }} />
 
               {/* External Links */}
 
 
               <a href="https://nptel.ac.in/courses" target="_blank" rel="noopener noreferrer" 
-                 className="relative overflow-hidden flex items-center gap-3 px-4 py-3 mt-4 rounded-xl shadow-ag-glow bg-ig-gradient-vivid animate-shimmer"
-                 style={{ backgroundSize: '200% 200%' }}
+                 className="relative overflow-hidden flex items-center gap-3 px-4 py-3 mt-4 rounded-xl"
+                 style={{
+                   background: 'linear-gradient(135deg, #1a73e8, #4285f4, #8AB4F8)',
+                   boxShadow: '4px 4px 10px var(--neu-shadow-dark), -4px -4px 10px var(--neu-shadow-light), inset 0 1px 0 rgba(255,255,255,0.25)',
+                 }}
               >
                 <div className="absolute inset-0 bg-black/10 backdrop-blur-[2px]" />
                 <HiOutlineAcademicCap className="w-6 h-6 text-white relative z-10" />
@@ -382,10 +438,10 @@ export default function Layout() {
                 </div>
               </a>
 
-              <div className="border-t border-ig-separator/30 dark:border-ig-separator-dark/30 my-2" />
+              <div style={{ borderTop: '1px solid var(--glass-border)', margin: '8px 0' }} />
 
               {/* Get the App */}
-              <a href="/scholars-hub.apk" download className="flex items-center gap-3 px-3 py-2.5 rounded-ag-sm hover:bg-gray-100 dark:hover:bg-ag-surface-container-high text-ag-primary font-bold w-full transition-colors">
+              <a href="/scholars-hub.apk" download className="flex items-center gap-3 px-3 py-2.5 rounded-ag-sm text-ag-primary font-bold w-full transition-colors hover:bg-white/5">
                 <HiDownload className="w-5 h-5" />
                 <span>Get the App</span>
               </a>
@@ -393,10 +449,13 @@ export default function Layout() {
             </div>
 
             {/* User info at bottom of menu */}
-            <div className="px-3 py-3 border-t border-ig-separator/30 dark:border-ig-separator-dark/30">
+            <div className="px-3 py-3" style={{ borderTop: '1px solid var(--glass-border)' }}>
               <div
-                className="flex items-center gap-3 p-3 rounded-ag hover:bg-gray-100 dark:hover:bg-ag-surface-container-high cursor-pointer transition-colors"
+                className="flex items-center gap-3 p-3 rounded-ag cursor-pointer transition-all"
                 onClick={() => { navigate(`/dashboard/profile/${user?._id}`); setMobileMenuOpen(false); }}
+                style={{ background: 'transparent' }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--glass-bg)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
               >
                 <img
                   src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.name}`}
@@ -420,22 +479,53 @@ export default function Layout() {
         </div>
       )}
 
-      {/* Main Content - Floating Window */}
-      <main className="flex-1 md:ml-[260px] xl:ml-[340px] md:h-[calc(100vh-32px)] bg-ig-bg dark:bg-[#080808] md:border border-ig-separator dark:border-white/10 md:rounded-[32px] md:shadow-ag-glass overflow-y-auto overflow-x-hidden pb-16 md:pb-0 pt-14 md:pt-0 relative">
+      {/* Main Content - Liquid Glass Window */}
+      <main className="flex-1 md:ml-[260px] xl:ml-[340px] md:h-[calc(100vh-32px)] overflow-y-auto overflow-x-hidden pb-16 md:pb-0 pt-14 md:pt-0 relative"
+        style={{
+          background: 'var(--glass-bg)',
+          backdropFilter: `blur(16px) saturate(160%)`,
+          WebkitBackdropFilter: `blur(16px) saturate(160%)`,
+          border: 'none',
+          borderRadius: '0',
+          boxShadow: 'none',
+        }}
+        className="flex-1 md:ml-[260px] xl:ml-[340px] md:h-[calc(100vh-32px)] overflow-y-auto overflow-x-hidden pb-16 md:pb-0 pt-14 md:pt-0 relative md:rounded-[32px]"
+      >
+        {/* Desktop: glass border + shadow only on md+ */}
+        <style>{`
+          @media (min-width: 768px) {
+            .main-glass-panel {
+              border: 1px solid var(--glass-border) !important;
+              box-shadow: 8px 8px 20px var(--neu-shadow-dark), -8px -8px 20px var(--neu-shadow-light), inset 0 1px 0 var(--glass-highlight) !important;
+            }
+          }
+        `}</style>
         {/* Desktop Top Right Actions */}
         <div className="hidden md:flex fixed top-8 right-10 z-40 items-center gap-4">
-          <a href="/scholars-hub.apk" download className="flex items-center gap-2 px-4 py-2 bg-ag-primary hover:bg-ag-primary-hover text-white text-sm font-bold rounded-ag-pill transition-all hover:shadow-ag-glow">
+          <a href="/scholars-hub.apk" download className="flex items-center gap-2 px-4 py-2 text-white text-sm font-bold rounded-ag-pill transition-all"
+            style={{
+              background: 'linear-gradient(135deg, #1a73e8 0%, #4285f4 100%)',
+              boxShadow: '4px 4px 10px var(--neu-shadow-dark), -4px -4px 10px var(--neu-shadow-light), inset 0 1px 0 rgba(255,255,255,0.25)',
+            }}
+          >
             <HiDownload className="w-4 h-4" />
             Get App
           </a>
-          <button onClick={toggleTheme} className="p-2.5 rounded-full text-ig-text dark:text-ig-text-light hover:bg-gray-100 dark:hover:bg-ag-surface-container-high transition-colors">
+          <button onClick={toggleTheme} className="p-2.5 rounded-full text-ig-text dark:text-ig-text-light transition-all"
+            style={{ boxShadow: '3px 3px 8px var(--neu-shadow-dark), -3px -3px 8px var(--neu-shadow-light)' }}
+          >
             {darkMode ? <HiSun className="w-6 h-6" /> : <HiMoon className="w-6 h-6" />}
           </button>
           <NavLink
             to="/dashboard/notifications"
             className={({ isActive }) =>
-              `relative p-2.5 rounded-full transition-all ${isActive ? 'bg-gray-100 dark:bg-ag-surface-container-high' : 'hover:bg-gray-100 dark:hover:bg-ag-surface-container-high'} text-ig-text dark:text-ig-text-light`
+              `relative p-2.5 rounded-full transition-all text-ig-text dark:text-ig-text-light`
             }
+            style={({ isActive }) => ({
+              boxShadow: isActive
+                ? 'inset 3px 3px 8px var(--neu-shadow-dark), inset -3px -3px 8px var(--neu-shadow-light)'
+                : '3px 3px 8px var(--neu-shadow-dark), -3px -3px 8px var(--neu-shadow-light)',
+            })}
           >
             {({ isActive }) => (
               <>
@@ -457,19 +547,31 @@ export default function Layout() {
 
 
 
-      {/* Mobile Bottom Nav */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 glass-light dark:glass z-30 flex justify-around py-2 px-1 safe-area-pb transition-colors duration-300">
+      {/* Mobile Bottom Nav — Liquid Glass */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-30 flex justify-around py-2 px-1 safe-area-pb transition-all duration-300"
+        style={{
+          background: 'var(--glass-bg-strong)',
+          backdropFilter: `blur(24px) saturate(200%)`,
+          WebkitBackdropFilter: `blur(24px) saturate(200%)`,
+          borderTop: '1px solid var(--glass-border)',
+          boxShadow: 'inset 0 1px 0 var(--glass-highlight), 0 -4px 16px rgba(0,0,0,0.06)',
+        }}
+      >
         {mobileBottomItems.map((item) => (
           <NavLink
             key={item.to}
             to={item.to}
             end={item.to === '/dashboard'}
             className={({ isActive }) =>
-              `flex flex-col items-center gap-0.5 px-3 py-1 transition-all ${isActive
+              `flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl transition-all ${isActive
                 ? 'text-ig-text dark:text-ig-text-light'
                 : 'text-ig-text dark:text-ig-text-light opacity-50 hover:opacity-80'
               }`
             }
+            style={({ isActive }) => isActive ? {
+              boxShadow: 'inset 2px 2px 5px var(--neu-shadow-dark), inset -2px -2px 5px var(--neu-shadow-light)',
+              background: 'var(--glass-bg)',
+            } : {}}
           >
             {({ isActive }) => (
               <div className="relative">

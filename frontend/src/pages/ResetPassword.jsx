@@ -100,7 +100,9 @@ export default function ResetPassword() {
       <div className="min-h-screen flex items-center justify-center bg-ig-bg-2 dark:bg-black px-4">
         <div className="relative z-10 w-full max-w-[380px] space-y-3 animate-fade-in-up">
           <div className="card px-10 py-10 text-center">
-            <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+              style={{ background: 'rgba(239,68,68,0.1)', boxShadow: 'inset 3px 3px 8px rgba(0,0,0,0.2), inset -3px -3px 8px rgba(255,255,255,0.1)' }}
+            >
               <HiLockClosed className="w-8 h-8 text-red-500" />
             </div>
             <h2 className="text-base font-heading font-semibold text-ig-text dark:text-ig-text-light mb-2">
@@ -137,7 +139,9 @@ export default function ResetPassword() {
         <div className="card px-10 pt-10 pb-6">
           {/* Header */}
           <div className="text-center mb-6">
-            <div className="w-20 h-20 rounded-full bg-ig-bg-2 dark:bg-ag-surface-container-high border-2 border-ig-separator dark:border-ig-separator-dark flex items-center justify-center mx-auto mb-4">
+            <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4"
+              style={{ boxShadow: '3px 3px 6px var(--neu-shadow-dark), -3px -3px 6px var(--neu-shadow-light)', border: '2px solid var(--glass-border)' }}
+            >
               {success ? (
                 <HiCheckCircle className="w-10 h-10 text-green-500" />
               ) : (

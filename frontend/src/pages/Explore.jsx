@@ -78,7 +78,7 @@ export default function Explore() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search"
-          className="input-field pl-10 !rounded-ag-pill !bg-ig-bg dark:!bg-ag-surface-container text-sm"
+          className="input-field pl-10 !rounded-ag-pill text-sm"
         />
       </div>
 
@@ -86,10 +86,18 @@ export default function Explore() {
       <div className="flex gap-2 overflow-x-auto pb-3 mb-4 scrollbar-hide">
         <button
           onClick={() => setSelectedSubject('All')}
-          className={`flex-shrink-0 px-4 py-1.5 rounded-ag-pill text-sm font-semibold transition-all duration-200 ${selectedSubject === 'All'
-              ? 'bg-ag-primary text-white shadow-ag-glow'
-              : 'bg-ig-bg dark:bg-ag-surface-container-high text-ig-text dark:text-ig-text-light border border-ig-separator dark:border-ig-separator-dark hover:bg-gray-50 dark:hover:bg-ag-tonal-hover'
-            }`}
+          className={`flex-shrink-0 px-4 py-1.5 rounded-ag-pill text-sm font-semibold transition-all duration-200`}
+          style={selectedSubject === 'All' ? {
+            background: 'linear-gradient(135deg, #1a73e8, #4285f4)',
+            color: 'white',
+            boxShadow: 'inset 3px 3px 8px rgba(0,0,0,0.2), inset -3px -3px 8px rgba(255,255,255,0.1)',
+          } : {
+            background: 'var(--glass-bg)',
+            backdropFilter: 'blur(8px)',
+            color: 'inherit',
+            border: '1px solid var(--glass-border)',
+            boxShadow: '3px 3px 8px var(--neu-shadow-dark), -3px -3px 8px var(--neu-shadow-light)',
+          }}
         >
           All
         </button>
@@ -97,10 +105,18 @@ export default function Explore() {
           <button
             key={subject.name}
             onClick={() => setSelectedSubject(subject.name)}
-            className={`flex-shrink-0 px-4 py-1.5 rounded-ag-pill text-sm font-semibold transition-all duration-200 ${selectedSubject === subject.name
-                ? 'bg-ag-primary text-white shadow-ag-glow'
-                : 'bg-ig-bg dark:bg-ag-surface-container-high text-ig-text dark:text-ig-text-light border border-ig-separator dark:border-ig-separator-dark hover:bg-gray-50 dark:hover:bg-ag-tonal-hover'
-              }`}
+            className={`flex-shrink-0 px-4 py-1.5 rounded-ag-pill text-sm font-semibold transition-all duration-200`}
+            style={selectedSubject === subject.name ? {
+              background: 'linear-gradient(135deg, #1a73e8, #4285f4)',
+              color: 'white',
+              boxShadow: 'inset 3px 3px 8px rgba(0,0,0,0.2), inset -3px -3px 8px rgba(255,255,255,0.1)',
+            } : {
+              background: 'var(--glass-bg)',
+              backdropFilter: 'blur(8px)',
+              color: 'inherit',
+              border: '1px solid var(--glass-border)',
+              boxShadow: '3px 3px 8px var(--neu-shadow-dark), -3px -3px 8px var(--neu-shadow-light)',
+            }}
           >
             {subject.name}
           </button>

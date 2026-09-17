@@ -81,8 +81,19 @@ export default function Notifications() {
             <Link
               key={notif._id}
               to={notif.type === 'follow' ? `/dashboard/profile/${notif.sender?._id}` : `/dashboard/post/${notif.post?._id}`}
-              className={`flex items-center gap-3 px-3 py-3 hover:bg-ig-bg-2 dark:hover:bg-ag-surface-container-high transition-all duration-200 rounded-ag-sm ${!notif.read ? 'bg-ag-primary/5' : ''
+              className={`flex items-center gap-3 px-3 py-3 transition-all duration-200 rounded-ag-sm ${!notif.read ? '' : ''
                 }`}
+              style={{
+                background: !notif.read ? 'var(--glass-bg-strong)' : 'transparent',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'var(--glass-bg)';
+                e.currentTarget.style.boxShadow = '3px 3px 8px var(--neu-shadow-dark), -3px -3px 8px var(--neu-shadow-light)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = !notif.read ? 'var(--glass-bg-strong)' : 'transparent';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
             >
               <img
                 src={notif.sender?.avatar || `https://ui-avatars.com/api/?name=${notif.sender?.name}`}

@@ -198,10 +198,18 @@ export default function Upload() {
                 key={t.value}
                 type="button"
                 onClick={() => { setType(t.value); setFiles([]); setYoutubeUrl(''); setDriveUrl(''); }}
-                className={`flex flex-col items-center gap-1.5 p-3 rounded-lg text-center transition-all ${type === t.value
-                    ? 'bg-ig-primary/10 border border-ig-primary text-ig-primary'
-                    : 'border border-ig-separator dark:border-ig-separator-dark text-ig-text-2 hover:border-ig-text-2'
-                  }`}
+                className={`flex flex-col items-center gap-1.5 p-3 rounded-lg text-center transition-all`}
+                style={type === t.value ? {
+                  background: 'rgba(26,115,232,0.1)',
+                  border: '1px solid rgba(26,115,232,0.5)',
+                  color: '#1a73e8',
+                  boxShadow: 'inset 3px 3px 8px var(--neu-shadow-dark), inset -3px -3px 8px var(--neu-shadow-light)',
+                } : {
+                  background: 'transparent',
+                  border: '1px solid var(--glass-border)',
+                  color: '#9AA0A6',
+                  boxShadow: '3px 3px 8px var(--neu-shadow-dark), -3px -3px 8px var(--neu-shadow-light)',
+                }}
               >
                 <t.icon className="w-5 h-5" />
                 <span className="text-[11px] font-medium">{t.label}</span>
@@ -273,7 +281,7 @@ export default function Upload() {
             </div>
           ) : (
             <div>
-              <div className="border border-dashed border-ig-separator dark:border-ig-separator-dark rounded-lg p-8 text-center hover:border-ig-primary transition-colors">
+              <div className="rounded-lg p-8 text-center transition-colors" style={{ border: '2px dashed var(--glass-border)', boxShadow: 'inset 3px 3px 8px var(--neu-shadow-dark), inset -3px -3px 8px var(--neu-shadow-light)' }}>
                 <HiUpload className="w-8 h-8 text-ig-text-2 mx-auto mb-2" />
                 <p className="text-sm text-ig-text-2 mb-2">
                   {type === 'pdf' ? 'Drop your PDF here' : 'Drop images here'}
@@ -295,7 +303,7 @@ export default function Upload() {
               {files.length > 0 && (
                 <div className="mt-3 space-y-1.5">
                   {files.map((file, index) => (
-                    <div key={index} className="flex items-center gap-2 bg-ig-bg-2 dark:bg-ag-surface-container-high rounded-lg p-2.5">
+                    <div key={index} className="flex items-center gap-2 rounded-lg p-2.5" style={{ background: 'var(--glass-bg)', backdropFilter: 'blur(8px)', boxShadow: '2px 2px 5px var(--neu-shadow-dark), -2px -2px 5px var(--neu-shadow-light)' }}>
                       <span className="text-lg">{type === 'pdf' ? '📄' : '🖼️'}</span>
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-medium truncate text-ig-text dark:text-ig-text-light">{file.name}</p>
@@ -341,10 +349,16 @@ export default function Upload() {
                   key={s.name}
                   type="button"
                   onClick={() => setSubject(s.name)}
-                  className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${subject === s.name
-                      ? 'bg-ag-primary text-white'
-                      : 'bg-ig-bg-2 dark:bg-ag-surface-container-high text-ig-text-2 hover:text-ig-text'
-                    }`}
+                  className={`px-3 py-1 rounded-full text-xs font-medium transition-all`}
+                  style={subject === s.name ? {
+                    background: 'linear-gradient(135deg, #1a73e8, #4285f4)',
+                    color: 'white',
+                    boxShadow: 'inset 2px 2px 5px rgba(0,0,0,0.2), inset -2px -2px 5px rgba(255,255,255,0.1)',
+                  } : {
+                    background: 'var(--neu-bg)',
+                    color: '#9AA0A6',
+                    boxShadow: '2px 2px 5px var(--neu-shadow-dark), -2px -2px 5px var(--neu-shadow-light)',
+                  }}
                 >
                   {s.name}
                 </button>

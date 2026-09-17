@@ -43,19 +43,22 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-ig-bg-2 dark:bg-black px-4">
-      {/* Background glow */}
+    <div className="min-h-screen flex items-center justify-center px-4">
+      {/* Background glow orbs — visible through glass */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[400px] h-[400px] bg-ag-primary/5 rounded-full blur-[100px]" />
+        <div className="absolute top-1/4 left-1/3 w-[400px] h-[400px] bg-ag-primary/8 rounded-full blur-[120px]" />
+        <div className="absolute bottom-1/3 right-1/4 w-[300px] h-[300px] bg-purple-500/6 rounded-full blur-[100px]" />
       </div>
 
       <div className="relative z-10 w-full max-w-[380px] space-y-3 animate-fade-in-up">
-        {/* Main Card */}
+        {/* Main Card — Liquid Glass */}
         <div className="card px-10 pt-10 pb-6">
           {/* Logo */}
           <div className="text-center mb-8">
             <h1 className="text-3xl font-heading font-bold text-ig-text dark:text-ig-text-light flex items-center justify-center gap-2">
-              <img src={logoImg} alt="Scholars Hub" className="w-10 h-10 rounded-full object-cover" />
+              <img src={logoImg} alt="Scholars Hub" className="w-10 h-10 rounded-full object-cover"
+                style={{ boxShadow: '3px 3px 6px var(--neu-shadow-dark), -3px -3px 6px var(--neu-shadow-light)' }}
+              />
               Scholars<span className="gradient-text">Hub</span>
             </h1>
           </div>
@@ -102,9 +105,9 @@ export default function Login() {
 
           {/* Divider */}
           <div className="flex items-center gap-4 my-5">
-            <div className="flex-1 h-px bg-ig-separator dark:bg-ig-separator-dark" />
+            <div className="flex-1 h-px" style={{ background: 'var(--glass-border)' }} />
             <span className="text-xs text-ig-text-2 font-semibold uppercase">Or</span>
-            <div className="flex-1 h-px bg-ig-separator dark:bg-ig-separator-dark" />
+            <div className="flex-1 h-px" style={{ background: 'var(--glass-border)' }} />
           </div>
 
           <Link to="/forgot-password" className="block text-center text-xs text-ag-primary font-semibold hover:text-ag-primary-hover transition-colors">
@@ -116,7 +119,7 @@ export default function Login() {
           </p>
         </div>
 
-        {/* Sign Up Card */}
+        {/* Sign Up Card — Liquid Glass */}
         <div className="card p-5 text-center">
           <p className="text-sm text-ig-text dark:text-ig-text-light mb-3">
             Don't have an account?{' '}

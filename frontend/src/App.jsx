@@ -81,12 +81,14 @@ export default function App() {
               duration: 3000,
               style: {
                 borderRadius: '999px',
-                background: '#121212',
+                background: 'var(--glass-bg-strong)',
+                backdropFilter: 'blur(24px) saturate(200%)',
+                WebkitBackdropFilter: 'blur(24px) saturate(200%)',
                 color: '#E8EAED',
-                border: '1px solid #3C4043',
+                border: '1px solid var(--glass-border)',
                 fontSize: '14px',
                 padding: '10px 16px',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+                boxShadow: '6px 6px 14px var(--neu-shadow-dark), -6px -6px 14px var(--neu-shadow-light), inset 0 1px 0 var(--glass-highlight)',
               },
               success: {
                 iconTheme: {

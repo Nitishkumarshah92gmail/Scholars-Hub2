@@ -94,7 +94,11 @@ export default function ChatBot() {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-50 w-14 h-14 rounded-full bg-ag-primary hover:bg-ag-primary-hover text-white shadow-ag-glow-strong flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95"
+          className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-50 w-14 h-14 rounded-full text-white flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95"
+          style={{
+            background: 'linear-gradient(135deg, #1a73e8 0%, #4285f4 100%)',
+            boxShadow: '6px 6px 14px var(--neu-shadow-dark), -6px -6px 14px var(--neu-shadow-light), inset 0 1px 0 rgba(255,255,255,0.25)',
+          }}
           title="Chat with AI"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -105,11 +109,20 @@ export default function ChatBot() {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-50 w-[340px] sm:w-[380px] h-[500px] flex flex-col rounded-ag shadow-ag-glass border border-ig-separator dark:border-ig-separator-dark/50 overflow-hidden bg-ig-bg dark:bg-ag-surface-dim animate-scale-in">
+        <div className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-50 w-[340px] sm:w-[380px] h-[500px] flex flex-col overflow-hidden animate-scale-in"
+          style={{
+            background: 'var(--glass-bg-strong)',
+            backdropFilter: 'blur(24px) saturate(200%)',
+            WebkitBackdropFilter: 'blur(24px) saturate(200%)',
+            border: '1px solid var(--glass-border)',
+            borderRadius: '28px',
+            boxShadow: '8px 8px 20px var(--neu-shadow-dark), -8px -8px 20px var(--neu-shadow-light), inset 0 1px 0 var(--glass-highlight)',
+          }}
+        >
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 bg-ag-primary text-white">
+          <div className="flex items-center justify-between px-4 py-3" style={{ background: 'linear-gradient(135deg, #1a73e8 0%, #4285f4 100%)' }}>
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.2)', boxShadow: 'inset 2px 2px 4px rgba(0,0,0,0.15)' }}>
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714a2.25 2.25 0 00.659 1.591L19 14.5M14.25 3.104c.251.023.501.05.75.082M5 14.5l-1.43 1.43a1.5 1.5 0 001.06 2.57h3.243a1.5 1.5 0 001.414-1l.707-2.12M19 14.5l1.43 1.43a1.5 1.5 0 01-1.06 2.57h-3.243a1.5 1.5 0 01-1.414-1l-.707-2.12" />
                 </svg>
@@ -136,9 +149,17 @@ export default function ChatBot() {
               >
                 <div
                   className={`max-w-[85%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ${msg.role === 'user'
-                      ? 'bg-ag-primary text-white rounded-br-md'
-                      : 'bg-gray-100 dark:bg-ag-surface-container-high text-ig-text dark:text-ig-text-light rounded-bl-md'
+                      ? 'text-white rounded-br-md'
+                      : 'text-ig-text dark:text-ig-text-light rounded-bl-md'
                     }`}
+                  style={msg.role === 'user' ? {
+                    background: 'linear-gradient(135deg, #1a73e8, #4285f4)',
+                    boxShadow: '3px 3px 8px var(--neu-shadow-dark), -3px -3px 8px var(--neu-shadow-light)',
+                  } : {
+                    background: 'var(--glass-bg)',
+                    backdropFilter: 'blur(8px)',
+                    boxShadow: '2px 2px 6px var(--neu-shadow-dark), -2px -2px 6px var(--neu-shadow-light)',
+                  }}
                 >
                   {msg.text}
                 </div>
@@ -159,7 +180,7 @@ export default function ChatBot() {
           </div>
 
           {/* Input */}
-          <div className="px-3 py-3 border-t border-ig-separator dark:border-ig-separator-dark/50 bg-ig-bg dark:bg-ag-surface-dim">
+          <div className="px-3 py-3" style={{ borderTop: '1px solid var(--glass-border)' }}>
             <div className="flex items-center gap-2">
               <input
                 ref={inputRef}
@@ -168,13 +189,22 @@ export default function ChatBot() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Ask anything..."
-                className="flex-1 px-4 py-2.5 rounded-ag-pill border border-ig-separator dark:border-ig-separator-dark/50 bg-ig-bg-2 dark:bg-ag-surface-container text-sm text-ig-text dark:text-ig-text-light placeholder:text-ig-text-2 outline-none focus:ring-1 focus:ring-ag-primary focus:border-ag-primary transition-all"
+                className="flex-1 px-4 py-2.5 rounded-ag-pill text-sm text-ig-text dark:text-ig-text-light placeholder:text-ig-text-2 outline-none transition-all"
+                style={{
+                  background: 'var(--neu-bg)',
+                  boxShadow: 'inset 3px 3px 8px var(--neu-shadow-dark), inset -3px -3px 8px var(--neu-shadow-light)',
+                  border: '1px solid transparent',
+                }}
                 disabled={isLoading}
               />
               <button
                 onClick={sendMessage}
                 disabled={!input.trim() || isLoading}
-                className="p-2.5 rounded-full bg-ag-primary hover:bg-ag-primary-hover text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-90"
+                className="p-2.5 rounded-full text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-90"
+                style={{
+                  background: 'linear-gradient(135deg, #1a73e8, #4285f4)',
+                  boxShadow: '3px 3px 8px var(--neu-shadow-dark), -3px -3px 8px var(--neu-shadow-light), inset 0 1px 0 rgba(255,255,255,0.2)',
+                }}
               >
                 <HiPaperAirplane className="w-5 h-5 rotate-90" />
               </button>

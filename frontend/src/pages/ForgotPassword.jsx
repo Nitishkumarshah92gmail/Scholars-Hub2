@@ -50,7 +50,9 @@ export default function ForgotPassword() {
         <div className="card px-10 pt-10 pb-6">
           {/* Logo */}
           <div className="text-center mb-6">
-            <div className="w-20 h-20 rounded-full bg-ig-bg-2 dark:bg-ag-surface-container-high border-2 border-ig-separator dark:border-ig-separator-dark flex items-center justify-center mx-auto mb-4">
+            <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4"
+              style={{ boxShadow: '3px 3px 6px var(--neu-shadow-dark), -3px -3px 6px var(--neu-shadow-light)', border: '2px solid var(--glass-border)' }}
+            >
               <HiLockClosed className="w-10 h-10 text-ig-text dark:text-ig-text-light" />
             </div>
             <h2 className="text-base font-heading font-semibold text-ig-text dark:text-ig-text-light">
@@ -115,9 +117,9 @@ export default function ForgotPassword() {
 
           {/* Divider */}
           <div className="flex items-center gap-4 my-5">
-            <div className="flex-1 h-px bg-ig-separator dark:bg-ig-separator-dark" />
+            <div className="flex-1 h-px" style={{ background: 'var(--glass-border)' }} />
             <span className="text-xs text-ig-text-2 font-semibold uppercase">Or</span>
-            <div className="flex-1 h-px bg-ig-separator dark:bg-ig-separator-dark" />
+            <div className="flex-1 h-px" style={{ background: 'var(--glass-border)' }} />
           </div>
 
           <Link to="/register" className="block text-center text-sm font-semibold text-ig-text dark:text-ig-text-light hover:opacity-70 transition-opacity">

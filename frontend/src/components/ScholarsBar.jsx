@@ -22,8 +22,8 @@ export default function ScholarsBar() {
         <div className="flex gap-4 overflow-hidden">
           {[...Array(6)].map((_, i) => (
             <div key={i} className="flex flex-col items-center gap-2 animate-pulse">
-              <div className="w-16 h-16 rounded-full bg-gray-200 dark:bg-ag-surface-container-high" />
-              <div className="w-12 h-3 rounded bg-gray-200 dark:bg-ag-surface-container-high" />
+              <div className="w-16 h-16 rounded-full" style={{ background: 'var(--neu-bg)', boxShadow: 'inset 3px 3px 8px var(--neu-shadow-dark), inset -3px -3px 8px var(--neu-shadow-light)' }} />
+              <div className="w-12 h-3 rounded" style={{ background: 'var(--neu-bg)', boxShadow: 'inset 2px 2px 5px var(--neu-shadow-dark), inset -2px -2px 5px var(--neu-shadow-light)' }} />
             </div>
           ))}
         </div>
@@ -62,7 +62,8 @@ export default function ScholarsBar() {
               className="flex flex-col items-center gap-1.5 min-w-[72px] max-w-[72px] group"
             >
               <div className="relative">
-                <div className="w-[62px] h-[62px] rounded-full p-[2.5px] bg-gradient-to-br from-ig-primary via-purple-500 to-pink-500 group-hover:scale-105 transition-transform">
+                <div className="w-[62px] h-[62px] rounded-full p-[2.5px] bg-gradient-to-br from-ig-primary via-purple-500 to-pink-500 group-hover:scale-105 transition-transform"
+                  style={{ boxShadow: '3px 3px 8px var(--neu-shadow-dark), -3px -3px 8px var(--neu-shadow-light)' }}>
                     <img
                       src={
                         scholar.avatar ||
@@ -110,9 +111,18 @@ export default function ScholarsBar() {
             className="absolute inset-0 bg-black/60"
             onClick={() => setShowAll(false)}
           />
-          <div className="relative bg-ig-bg dark:bg-ag-surface-dim rounded-ag border border-ig-separator dark:border-ig-separator-dark/50 w-full max-w-md max-h-[80vh] flex flex-col shadow-ag-glass overflow-hidden">
+          <div className="relative w-full max-w-md max-h-[80vh] flex flex-col overflow-hidden"
+            style={{
+              background: 'var(--glass-bg-strong)',
+              backdropFilter: 'blur(24px) saturate(200%)',
+              WebkitBackdropFilter: 'blur(24px) saturate(200%)',
+              border: '1px solid var(--glass-border)',
+              borderRadius: '28px',
+              boxShadow: '8px 8px 20px var(--neu-shadow-dark), -8px -8px 20px var(--neu-shadow-light), inset 0 1px 0 var(--glass-highlight)',
+            }}
+          >
             {/* Header */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-ig-separator dark:border-ig-separator-dark">
+            <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: '1px solid var(--glass-border)' }}>
               <h3 className="text-base font-semibold text-ig-text dark:text-ig-text-light">
                 All Scholars ({scholars.length})
               </h3>
@@ -138,7 +148,8 @@ export default function ScholarsBar() {
                   className="flex items-center gap-3 w-full px-3 py-2.5 rounded-ag-sm hover:bg-gray-100 dark:hover:bg-ag-surface-container-high transition-colors"
                 >
                   <div className="relative flex-shrink-0">
-                    <div className="w-12 h-12 rounded-full p-[2px] bg-gradient-to-br from-ig-primary via-purple-500 to-pink-500">
+                    <div className="w-12 h-12 rounded-full p-[2px] bg-gradient-to-br from-ig-primary via-purple-500 to-pink-500"
+                      style={{ boxShadow: '2px 2px 5px var(--neu-shadow-dark), -2px -2px 5px var(--neu-shadow-light)' }}>
                       <img
                         src={
                           scholar.avatar ||

@@ -82,7 +82,7 @@ export default function Profile() {
     return (
       <div>
         <div className="flex items-center gap-8 mb-8 animate-pulse">
-          <div className="w-20 h-20 sm:w-36 sm:h-36 rounded-full skeleton" />
+          <div className="w-20 h-20 sm:w-36 sm:h-36 rounded-full" style={{ background: 'var(--neu-bg)', boxShadow: 'inset 3px 3px 8px var(--neu-shadow-dark), inset -3px -3px 8px var(--neu-shadow-light)' }} />
           <div className="flex-1 space-y-3">
             <div className="h-5 w-32 skeleton" />
             <div className="h-4 w-48 skeleton" />
@@ -116,7 +116,15 @@ export default function Profile() {
 
       <div className="relative z-10">
       {/* Profile Header — Instagram-style */}
-      <div className="relative overflow-hidden flex items-start gap-6 sm:gap-12 mb-8 bg-ig-bg/50 dark:bg-[#0f0f13]/60 p-6 sm:p-8 rounded-[32px] border border-ig-separator dark:border-white/10 backdrop-blur-md shadow-ag-glass">
+      <div className="relative overflow-hidden flex items-start gap-6 sm:gap-12 mb-8 p-6 sm:p-8 rounded-[32px]"
+        style={{
+          background: 'var(--glass-bg-strong)',
+          backdropFilter: 'blur(24px) saturate(200%)',
+          WebkitBackdropFilter: 'blur(24px) saturate(200%)',
+          border: '1px solid var(--glass-border)',
+          boxShadow: '8px 8px 20px var(--neu-shadow-dark), -8px -8px 20px var(--neu-shadow-light), inset 0 1px 0 var(--glass-highlight)',
+        }}
+      >
         <ParticleCanvas />
         <div className="relative z-10 flex items-start gap-6 sm:gap-12 w-full">
         {/* Avatar */}
@@ -216,7 +224,16 @@ export default function Profile() {
                     key={s.name}
                     type="button"
                     onClick={() => setEditForm((prev) => ({ ...prev, subjects: prev.subjects.includes(s.name) ? prev.subjects.filter((x) => x !== s.name) : [...prev.subjects, s.name] }))}
-                    className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${editForm.subjects?.includes(s.name) ? 'bg-ag-primary text-white' : 'bg-ig-bg-2 dark:bg-ag-surface-container-high text-ig-text-2'}`}
+                    className={`px-3 py-1 rounded-full text-xs font-medium transition-all`}
+                    style={editForm.subjects?.includes(s.name) ? {
+                      background: 'linear-gradient(135deg, #1a73e8, #4285f4)',
+                      color: 'white',
+                      boxShadow: 'inset 2px 2px 5px rgba(0,0,0,0.2), inset -2px -2px 5px rgba(255,255,255,0.1)',
+                    } : {
+                      background: 'var(--neu-bg)',
+                      color: '#9AA0A6',
+                      boxShadow: '2px 2px 5px var(--neu-shadow-dark), -2px -2px 5px var(--neu-shadow-light)',
+                    }}
                   >
                     {s.name}
                   </button>
@@ -232,9 +249,9 @@ export default function Profile() {
       )}
 
       {/* Posts Grid divider — Instagram-style */}
-      <div className="border-t border-ig-separator dark:border-ig-separator-dark pt-4">
+      <div className="pt-4" style={{ borderTop: '1px solid var(--glass-border)' }}>
         <div className="flex justify-center gap-12 mb-4 text-xs font-semibold uppercase tracking-widest">
-          <span className="text-ig-text dark:text-ig-text-light border-t border-ig-text dark:border-ig-text-light pt-4 -mt-4">
+          <span className="text-ig-text dark:text-ig-text-light pt-4 -mt-4" style={{ borderTop: '1px solid currentColor' }}>
             Posts
           </span>
         </div>

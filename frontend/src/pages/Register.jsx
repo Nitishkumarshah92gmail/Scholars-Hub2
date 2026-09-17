@@ -64,19 +64,22 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-ig-bg-2 dark:bg-black px-4 py-8">
+    <div className="min-h-screen flex items-center justify-center px-4 py-8">
       {/* Background glow */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[400px] h-[400px] bg-ag-primary/5 rounded-full blur-[100px]" />
+        <div className="absolute top-1/4 left-1/3 w-[400px] h-[400px] bg-ag-primary/8 rounded-full blur-[120px]" />
+        <div className="absolute bottom-1/3 right-1/4 w-[300px] h-[300px] bg-purple-500/6 rounded-full blur-[100px]" />
       </div>
 
       <div className="relative z-10 w-full max-w-[380px] space-y-3 animate-fade-in-up">
-        {/* Main Card */}
+        {/* Main Card — Liquid Glass */}
         <div className="card px-10 pt-8 pb-6">
           {/* Logo */}
           <div className="text-center mb-6">
             <h1 className="text-3xl font-heading font-bold text-ig-text dark:text-ig-text-light flex items-center justify-center gap-2">
-              <img src={logoImg} alt="Scholars Hub" className="w-10 h-10 rounded-full object-cover" />
+              <img src={logoImg} alt="Scholars Hub" className="w-10 h-10 rounded-full object-cover"
+                style={{ boxShadow: '3px 3px 6px var(--neu-shadow-dark), -3px -3px 6px var(--neu-shadow-light)' }}
+              />
               Scholars<span className="gradient-text">Hub</span>
             </h1>
             <p className="text-ig-text-2 text-sm mt-2 font-semibold">
@@ -128,7 +131,7 @@ export default function Register() {
               placeholder="School / University (optional)"
             />
 
-            {/* Subject Selection */}
+            {/* Subject Selection — Neumorphic Pills */}
             <div className="pt-2">
               <p className="text-xs text-ig-text-2 mb-2 font-medium">Subjects you're interested in</p>
               <div className="flex flex-wrap gap-1.5">
@@ -137,10 +140,16 @@ export default function Register() {
                     key={subject.name}
                     type="button"
                     onClick={() => toggleSubject(subject.name)}
-                    className={`px-2.5 py-1 rounded-ag-pill text-[11px] font-medium transition-all duration-200 ${form.subjects.includes(subject.name)
-                      ? 'bg-ag-primary text-white shadow-ag-glow'
-                      : 'bg-ig-bg-2 dark:bg-ag-surface-container-high text-ig-text-2 hover:text-ig-text dark:hover:text-ig-text-light hover:bg-gray-100 dark:hover:bg-ag-tonal-hover'
-                      }`}
+                    className={`px-2.5 py-1 rounded-ag-pill text-[11px] font-medium transition-all duration-200`}
+                    style={form.subjects.includes(subject.name) ? {
+                      background: 'linear-gradient(135deg, #1a73e8, #4285f4)',
+                      color: 'white',
+                      boxShadow: 'inset 2px 2px 5px rgba(0,0,0,0.2), inset -2px -2px 5px rgba(255,255,255,0.1)',
+                    } : {
+                      background: 'var(--neu-bg)',
+                      color: '#9AA0A6',
+                      boxShadow: '2px 2px 5px var(--neu-shadow-dark), -2px -2px 5px var(--neu-shadow-light)',
+                    }}
                   >
                     {subject.name}
                   </button>
@@ -166,7 +175,7 @@ export default function Register() {
           </p>
         </div>
 
-        {/* Login Link Card */}
+        {/* Login Link Card — Liquid Glass */}
         <div className="card p-5 text-center">
           <p className="text-sm text-ig-text dark:text-ig-text-light mb-3">
             Already have an account?{' '}

@@ -1,5 +1,6 @@
 import { useState, memo } from 'react';
 import { Link } from 'react-router-dom';
+import ParticleCanvas from './ParticleCanvas';
 import { useAuth } from '../context/AuthContext';
 import { likePost, commentPost, bookmarkPost, reportPost, deletePost } from '../api';
 import { useNavigate } from 'react-router-dom';
@@ -288,9 +289,19 @@ export default memo(function PostCard({ post, onUpdate }) {
   };
 
   return (
-    <div className="card overflow-hidden animate-fade-in">
+    <div className="relative overflow-hidden animate-fade-in mb-8 rounded-[32px] transition-all"
+        style={{
+          background: 'var(--glass-bg-strong)',
+          backdropFilter: 'blur(24px) saturate(200%)',
+          WebkitBackdropFilter: 'blur(24px) saturate(200%)',
+          border: '1px solid var(--glass-border)',
+          boxShadow: '10px 10px 30px var(--neu-shadow-dark), -10px -10px 30px var(--neu-shadow-light), inset 0 1px 0 var(--glass-highlight)',
+        }}
+    >
+      <ParticleCanvas />
+      <div className="relative z-10 flex flex-col w-full h-full">
       {/* Header — Instagram style */}
-      <div className="px-4 py-3 flex items-center justify-between">
+      <div className="px-5 py-4 flex items-center justify-between">
         <Link to={`/dashboard/profile/${post.author?._id}`} className="flex items-center gap-3 group">
           <div className="avatar-ring">
             <img
@@ -299,11 +310,11 @@ export default memo(function PostCard({ post, onUpdate }) {
               alt={post.author?.name}
               loading="lazy"
               decoding="async"
-              className="w-10 h-10 rounded-full object-cover shadow-sm border border-ig-separator/10"
+              className="w-14 h-14 rounded-full object-cover shadow-sm border-2 border-white dark:border-gray-800"
             />
           </div>
           <div>
-            <p className="font-semibold text-sm text-ig-text dark:text-ig-text-light group-hover:opacity-60 transition-opacity">
+            <p className="font-bold text-base text-ig-text dark:text-ig-text-light group-hover:opacity-60 transition-opacity">
               {post.author?.name}
             </p>
             <p className="text-xs text-ig-text-2">
@@ -362,7 +373,7 @@ export default memo(function PostCard({ post, onUpdate }) {
       </div>
 
       {/* Actions — Instagram style */}
-      <div className="px-6 pt-4 pb-2">
+      <div className="px-6 pt-5 pb-3">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-4">
             <button
@@ -491,6 +502,7 @@ export default memo(function PostCard({ post, onUpdate }) {
           </form>
         </div>
       )}
+      </div>
     </div>
   );
 })

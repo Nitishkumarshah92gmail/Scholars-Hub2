@@ -132,14 +132,14 @@ export default function Profile() {
              }}>
           
           {/* Avatar and Stats Row */}
-          <div className="flex justify-between items-end -mt-16 sm:-mt-24 mb-8 px-4 sm:px-12">
-            <div className="flex flex-col items-center pb-2">
-              <span className="text-xl font-bold text-ig-text dark:text-ig-text-light">{posts.length}</span>
-              <span className="text-[10px] font-semibold text-ig-text-2 uppercase tracking-wider">Posts</span>
+          <div className="flex justify-between items-center -mt-16 sm:-mt-20 mb-4 px-2 sm:px-16">
+            <div className="flex flex-col items-center pt-10">
+              <span className="text-lg font-bold text-ig-text dark:text-ig-text-light">{posts.length}</span>
+              <span className="text-[11px] font-medium text-ig-text-2 tracking-wide">Posts</span>
             </div>
 
             <div className="relative z-20">
-              <div className="p-2 rounded-[32px] bg-[var(--neu-bg)] shadow-[inset_3px_3px_8px_var(--neu-shadow-dark),inset_-3px_-3px_8px_var(--neu-shadow-light)]">
+              <div className="p-1.5 rounded-full bg-white shadow-md">
                 <img
                   src={
                     editForm?.avatarFile 
@@ -148,30 +148,30 @@ export default function Profile() {
                   }
                   onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${profile.name}&background=1e3a5f&color=fbbf24&size=200`; }}
                   alt={profile.name}
-                  className="w-32 h-32 rounded-[24px] object-cover shadow-[4px_4px_10px_var(--neu-shadow-dark),-4px_-4px_10px_var(--neu-shadow-light)]"
+                  className="w-28 h-28 sm:w-32 sm:h-32 rounded-full object-cover"
                 />
               </div>
               {isOwnProfile && (
                 <button 
                   onClick={() => setEditing(!editing)}
-                  className="absolute -bottom-2 -right-2 p-2 rounded-full bg-blue-500 text-white shadow-lg z-30 hover:bg-blue-600 transition"
+                  className="absolute bottom-1 right-1 p-2 rounded-full bg-blue-500 text-white shadow-lg z-30 hover:bg-blue-600 transition"
                 >
                   {editing ? <HiX className="w-3 h-3" /> : <HiPencil className="w-3 h-3" />}
                 </button>
               )}
             </div>
 
-            <div className="flex flex-col items-center pb-2">
-              <span className="text-xl font-bold text-ig-text dark:text-ig-text-light">{totalUsers}</span>
-              <span className="text-[10px] font-semibold text-ig-text-2 uppercase tracking-wider">Scholars</span>
+            <div className="flex flex-col items-center pt-10">
+              <span className="text-lg font-bold text-ig-text dark:text-ig-text-light">{totalUsers}</span>
+              <span className="text-[11px] font-medium text-ig-text-2 tracking-wide">Scholars</span>
             </div>
           </div>
 
           {/* Info */}
-          <h1 className="text-lg font-bold text-ig-text dark:text-ig-text-light mb-2">
-            {profile.name}
+          <h1 className="text-lg font-bold text-ig-text dark:text-ig-text-light mb-1">
+            @{profile.name.replace(/\s+/g, '').toLowerCase()}
           </h1>
-          <p className="text-xs text-ig-text-2 mb-6 px-4 leading-relaxed">
+          <p className="text-sm text-ig-text-2 mb-6 px-4 leading-relaxed max-w-xl mx-auto">
             {profile.bio || (isOwnProfile ? "Click the edit button to add a bio." : "No bio available.")}
           </p>
 
@@ -187,15 +187,15 @@ export default function Profile() {
           {/* Buttons */}
           <div className="flex justify-center gap-4 mb-8">
             {isOwnProfile ? (
-              <button onClick={() => setEditing(!editing)} className="btn-primary w-32 py-3 !rounded-[20px] text-sm font-semibold shadow-[6px_6px_14px_var(--neu-shadow-dark),-6px_-6px_14px_var(--neu-shadow-light)]">
+              <button onClick={() => setEditing(!editing)} className="w-36 py-2.5 rounded-full text-sm font-semibold text-white bg-blue-500 shadow-[0_4px_14px_rgba(59,130,246,0.4)] hover:bg-blue-600 transition">
                 {editing ? 'Cancel' : 'Edit Profile'}
               </button>
             ) : (
               <>
-                <button className="btn-primary w-32 py-3 !rounded-[20px] text-sm font-semibold shadow-[6px_6px_14px_var(--neu-shadow-dark),-6px_-6px_14px_var(--neu-shadow-light)]">
+                <button className="w-36 py-2.5 rounded-full text-sm font-semibold text-white bg-blue-500 shadow-[0_4px_14px_rgba(59,130,246,0.4)] hover:bg-blue-600 transition">
                   Follow
                 </button>
-                <button className="w-32 py-3 rounded-[20px] text-sm font-bold bg-[var(--neu-bg)] text-ig-text dark:text-ig-text-light shadow-[6px_6px_14px_var(--neu-shadow-dark),-6px_-6px_14px_var(--neu-shadow-light)] border border-[rgba(255,255,255,0.1)] active:shadow-[inset_3px_3px_8px_var(--neu-shadow-dark),inset_-3px_-3px_8px_var(--neu-shadow-light)] transition-all">
+                <button className="w-36 py-2.5 rounded-full text-sm font-semibold bg-white text-ig-text shadow-[0_4px_14px_rgba(0,0,0,0.05)] hover:bg-gray-50 transition">
                   Message
                 </button>
               </>

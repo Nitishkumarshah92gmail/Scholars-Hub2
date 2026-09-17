@@ -70,43 +70,36 @@ export default function Explore() {
 
   return (
     <div className="pb-24 max-w-md mx-auto">
-      {/* Header */}
-      <div className="flex justify-between items-center px-4 py-4 mb-2">
-        <button className="w-10 h-10 rounded-full bg-[var(--neu-bg)] flex items-center justify-center text-ig-text shadow-[4px_4px_10px_var(--neu-shadow-dark),-4px_-4px_10px_var(--neu-shadow-light)]">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-        </button>
-        <h1 className="text-xl font-bold text-ig-text dark:text-ig-text-light">Explore</h1>
-        <button className="w-10 h-10 rounded-full bg-[var(--neu-bg)] flex items-center justify-center text-ig-text shadow-[4px_4px_10px_var(--neu-shadow-dark),-4px_-4px_10px_var(--neu-shadow-light)] relative">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
-          <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-blue-500 border border-[var(--neu-bg)]"></div>
-        </button>
+      {/* Header with Search */}
+      <div className="px-4 py-4 sticky top-0 z-20 bg-[var(--neu-bg)]/90 backdrop-blur-md">
+        <div className="relative flex items-center">
+          <div className="absolute left-4 text-ig-text-2">
+            <HiSearch className="w-5 h-5" />
+          </div>
+          <input
+            type="text"
+            placeholder="Search scholars, posts..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full bg-[var(--neu-bg)] text-ig-text dark:text-ig-text-light pl-11 pr-4 py-3 rounded-full outline-none shadow-[inset_4px_4px_10px_var(--neu-shadow-dark),inset_-4px_-4px_10px_var(--neu-shadow-light)] text-sm transition-all focus:shadow-[inset_6px_6px_12px_var(--neu-shadow-dark),inset_-6px_-6px_12px_var(--neu-shadow-light)]"
+          />
+        </div>
       </div>
 
-      {/* Stories/Users List */}
-      <div className="flex gap-4 overflow-x-auto px-4 pb-6 pt-2 mb-2 scrollbar-hide">
-        {/* 'You' Story */}
-        <div className="flex flex-col items-center gap-1.5 flex-shrink-0">
-          <div className="relative p-[3px] rounded-full bg-gradient-to-tr from-blue-400 to-purple-400 shadow-[4px_4px_10px_var(--neu-shadow-dark),-4px_-4px_10px_var(--neu-shadow-light)]">
-             <div className="p-0.5 bg-[var(--neu-bg)] rounded-full">
-               <img src="https://ui-avatars.com/api/?name=You&background=1e3a5f&color=fbbf24" className="w-14 h-14 rounded-full object-cover" alt="You" />
-             </div>
-             <div className="absolute bottom-0 right-0 w-5 h-5 bg-white text-blue-500 rounded-full flex items-center justify-center border border-[var(--neu-bg)]">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-             </div>
-          </div>
-          <span className="text-xs font-semibold text-ig-text dark:text-ig-text-light">You</span>
-        </div>
-
-        {/* Other stories mock */}
-        {['Benjamin', 'Farita', 'Marie', 'Claire'].map((name) => (
-          <div key={name} className="flex flex-col items-center gap-1.5 flex-shrink-0">
-            <div className="relative p-[3px] rounded-full bg-gradient-to-tr from-orange-400 to-pink-500 shadow-[4px_4px_10px_var(--neu-shadow-dark),-4px_-4px_10px_var(--neu-shadow-light)]">
-               <div className="p-0.5 bg-[var(--neu-bg)] rounded-full">
-                 <img src={`https://ui-avatars.com/api/?name=${name}&background=random`} className="w-14 h-14 rounded-full object-cover" alt={name} />
-               </div>
-            </div>
-            <span className="text-xs font-semibold text-ig-text dark:text-ig-text-light">{name}</span>
-          </div>
+      {/* Subjects Filter */}
+      <div className="flex gap-3 overflow-x-auto px-4 pb-4 scrollbar-hide z-10 relative bg-[var(--neu-bg)]">
+        {SUBJECTS.map((s) => (
+          <button
+            key={s.name}
+            onClick={() => setSelectedSubject(s.name)}
+            className={`flex-shrink-0 px-5 py-2 rounded-full text-sm font-semibold transition-all ${
+              selectedSubject === s.name
+                ? 'bg-blue-500 text-white shadow-[inset_2px_2px_5px_rgba(0,0,0,0.2)]'
+                : 'bg-[var(--neu-bg)] text-ig-text dark:text-ig-text-light shadow-[4px_4px_10px_var(--neu-shadow-dark),-4px_-4px_10px_var(--neu-shadow-light)] hover:shadow-[2px_2px_5px_var(--neu-shadow-dark),-2px_-2px_5px_var(--neu-shadow-light)] active:shadow-[inset_2px_2px_5px_var(--neu-shadow-dark),inset_-2px_-2px_5px_var(--neu-shadow-light)]'
+            }`}
+          >
+            {s.name}
+          </button>
         ))}
       </div>
 

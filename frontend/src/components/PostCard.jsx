@@ -319,50 +319,43 @@ export default memo(function PostCard({ post, onUpdate }) {
       </div>
 
       {/* Main Image / Content */}
-      <div className="relative w-full rounded-[24px] overflow-hidden px-2 pb-2">
-        <div className="relative w-full rounded-[24px] overflow-hidden shadow-[inset_3px_3px_8px_var(--neu-shadow-dark),inset_-3px_-3px_8px_var(--neu-shadow-light)]">
+      <div className="w-full px-4 mb-2">
+        <div className="w-full rounded-[24px] overflow-hidden shadow-[4px_4px_10px_var(--neu-shadow-dark),-4px_-4px_10px_var(--neu-shadow-light)] border border-[rgba(255,255,255,0.05)] bg-[var(--neu-bg)]">
            {post.type === 'image' ? (
              <img src={toDriveImageUrl(post.fileUrls?.[0] || post.fileUrl)} alt="Post" className="w-full h-80 object-cover" loading="lazy" />
            ) : (
-             <div className="min-h-[200px] flex items-center justify-center bg-[var(--neu-bg)]">
+             <div className="flex items-center justify-center bg-[var(--neu-bg)] w-full">
                 {renderContent()}
              </div>
            )}
-
-           {/* Liquid Glass Action Bar Overlay */}
-           <div className="absolute bottom-3 left-3 right-3 rounded-full flex justify-between items-center px-4 py-2" 
-                style={{
-                  background: 'rgba(255, 255, 255, 0.2)',
-                  backdropFilter: 'blur(16px)',
-                  WebkitBackdropFilter: 'blur(16px)',
-                  border: '1px solid rgba(255,255,255,0.4)',
-                  boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
-                }}>
-             <div className="flex items-center gap-4">
-                <button onClick={() => setShowComments(!showComments)} className="flex items-center gap-1.5 text-white drop-shadow-md font-semibold text-sm hover:opacity-80 transition">
-                   💬 {comments.length}
-                </button>
-                <button onClick={handleLike} className={`flex items-center gap-1.5 drop-shadow-md font-semibold text-sm transition hover:opacity-80 ${liked ? 'text-red-500' : 'text-white'}`}>
-                   {liked ? '❤️' : '🤍'} {likeCount}
-                </button>
-             </div>
-             <div className="flex items-center gap-3">
-                <button className="text-white drop-shadow-md hover:opacity-80 transition">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
-                </button>
-                <button onClick={handleBookmark} className={`drop-shadow-md transition hover:opacity-80 ${bookmarked ? 'text-white' : 'text-white'}`}>
-                  {bookmarked ? (
-                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"></path></svg>
-                  ) : (
-                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>
-                  )}
-                </button>
-             </div>
-           </div>
         </div>
       </div>
 
-      {/* Description & Timestamp (Below image if desired, or hidden. I'll include briefly) */}
+      {/* Action Bar */}
+      <div className="px-5 py-2 flex justify-between items-center">
+         <div className="flex items-center gap-5">
+            <button onClick={handleLike} className={`flex items-center gap-1.5 font-semibold text-sm transition hover:opacity-80 ${liked ? 'text-red-500' : 'text-ig-text dark:text-ig-text-light'}`}>
+               {liked ? '❤️' : '🤍'} {likeCount}
+            </button>
+            <button onClick={() => setShowComments(!showComments)} className="flex items-center gap-1.5 font-semibold text-sm text-ig-text dark:text-ig-text-light hover:opacity-80 transition">
+               💬 {comments.length}
+            </button>
+         </div>
+         <div className="flex items-center gap-4">
+            <button className="text-ig-text dark:text-ig-text-light hover:opacity-80 transition">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+            </button>
+            <button onClick={handleBookmark} className={`transition hover:opacity-80 ${bookmarked ? 'text-ig-text dark:text-ig-text-light' : 'text-ig-text dark:text-ig-text-light'}`}>
+              {bookmarked ? (
+                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"></path></svg>
+              ) : (
+                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>
+              )}
+            </button>
+         </div>
+      </div>
+
+      {/* Description & Timestamp */}
       {(post.description || post.title) && (
         <div className="px-5 pb-3">
           <p className="text-sm text-ig-text dark:text-ig-text-light line-clamp-2">

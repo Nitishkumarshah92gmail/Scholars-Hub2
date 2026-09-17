@@ -134,8 +134,8 @@ export default function Profile() {
           {/* Avatar and Stats Row */}
           <div className="flex justify-between items-end -mt-12 mb-6 px-4">
             <div className="flex flex-col items-center pb-2">
-              <span className="text-xl font-bold text-ig-text dark:text-ig-text-light">1k</span>
-              <span className="text-[10px] font-semibold text-ig-text-2 uppercase tracking-wider">Followers</span>
+              <span className="text-xl font-bold text-ig-text dark:text-ig-text-light">{posts.length}</span>
+              <span className="text-[10px] font-semibold text-ig-text-2 uppercase tracking-wider">Posts</span>
             </div>
 
             <div className="relative z-20">
@@ -162,51 +162,106 @@ export default function Profile() {
             </div>
 
             <div className="flex flex-col items-center pb-2">
-              <span className="text-xl font-bold text-ig-text dark:text-ig-text-light">342</span>
-              <span className="text-[10px] font-semibold text-ig-text-2 uppercase tracking-wider">Following</span>
+              <span className="text-xl font-bold text-ig-text dark:text-ig-text-light">{totalUsers}</span>
+              <span className="text-[10px] font-semibold text-ig-text-2 uppercase tracking-wider">Scholars</span>
             </div>
           </div>
 
           {/* Info */}
           <h1 className="text-lg font-bold text-ig-text dark:text-ig-text-light mb-2">
-            @{profile.name.replace(/\s+/g, '')}
+            {profile.name}
           </h1>
           <p className="text-xs text-ig-text-2 mb-6 px-4 leading-relaxed">
-            {profile.bio || `My name is ${profile.name}. I like dancing in the rain and travelling all around the world.`}
+            {profile.bio || (isOwnProfile ? "Click the edit button to add a bio." : "No bio available.")}
           </p>
+
+          {/* Subject tags */}
+          {profile.subjects?.length > 0 && (
+            <div className="flex flex-wrap justify-center gap-1.5 mb-6">
+              {profile.subjects.map((s) => (
+                <span key={s} className={`subject-badge text-[10px] ${getSubjectColor(s)}`}>{s}</span>
+              ))}
+            </div>
+          )}
 
           {/* Buttons */}
           <div className="flex justify-center gap-4 mb-8">
-            <button className="btn-primary w-32 py-3 !rounded-[20px] text-sm font-semibold shadow-[6px_6px_14px_var(--neu-shadow-dark),-6px_-6px_14px_var(--neu-shadow-light)]">
-              Follow
-            </button>
-            <button className="w-32 py-3 rounded-[20px] text-sm font-bold bg-[var(--neu-bg)] text-ig-text dark:text-ig-text-light shadow-[6px_6px_14px_var(--neu-shadow-dark),-6px_-6px_14px_var(--neu-shadow-light)] border border-[rgba(255,255,255,0.1)] active:shadow-[inset_3px_3px_8px_var(--neu-shadow-dark),inset_-3px_-3px_8px_var(--neu-shadow-light)] transition-all">
-              Message
-            </button>
+            {isOwnProfile ? (
+              <button onClick={() => setEditing(!editing)} className="btn-primary w-32 py-3 !rounded-[20px] text-sm font-semibold shadow-[6px_6px_14px_var(--neu-shadow-dark),-6px_-6px_14px_var(--neu-shadow-light)]">
+                {editing ? 'Cancel' : 'Edit Profile'}
+              </button>
+            ) : (
+              <>
+                <button className="btn-primary w-32 py-3 !rounded-[20px] text-sm font-semibold shadow-[6px_6px_14px_var(--neu-shadow-dark),-6px_-6px_14px_var(--neu-shadow-light)]">
+                  Follow
+                </button>
+                <button className="w-32 py-3 rounded-[20px] text-sm font-bold bg-[var(--neu-bg)] text-ig-text dark:text-ig-text-light shadow-[6px_6px_14px_var(--neu-shadow-dark),-6px_-6px_14px_var(--neu-shadow-light)] border border-[rgba(255,255,255,0.1)] active:shadow-[inset_3px_3px_8px_var(--neu-shadow-dark),inset_-3px_-3px_8px_var(--neu-shadow-light)] transition-all">
+                  Message
+                </button>
+              </>
+            )}
           </div>
+
+          {/* Edit Form */}
+          {editing && (
+            <div className="p-5 mb-6 text-left" style={{ background: 'var(--neu-bg)', borderRadius: '24px', boxShadow: 'inset 4px 4px 10px var(--neu-shadow-dark), inset -4px -4px 10px var(--neu-shadow-light)' }}>
+              <form onSubmit={handleSaveProfile} className="space-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-semibold text-ig-text dark:text-ig-text-light mb-1">Name</label>
+                    <input type="text" value={editForm.name} onChange={(e) => setEditForm((prev) => ({ ...prev, name: e.target.value }))} className="w-full bg-transparent border-none outline-none text-sm p-2 shadow-[inset_2px_2px_5px_var(--neu-shadow-dark),inset_-2px_-2px_5px_var(--neu-shadow-light)] rounded-[12px]" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-ig-text dark:text-ig-text-light mb-1">School</label>
+                    <input type="text" value={editForm.school} onChange={(e) => setEditForm((prev) => ({ ...prev, school: e.target.value }))} className="w-full bg-transparent border-none outline-none text-sm p-2 shadow-[inset_2px_2px_5px_var(--neu-shadow-dark),inset_-2px_-2px_5px_var(--neu-shadow-light)] rounded-[12px]" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-ig-text dark:text-ig-text-light mb-1">Bio</label>
+                  <textarea value={editForm.bio} onChange={(e) => setEditForm((prev) => ({ ...prev, bio: e.target.value }))} className="w-full bg-transparent border-none outline-none text-sm p-2 shadow-[inset_2px_2px_5px_var(--neu-shadow-dark),inset_-2px_-2px_5px_var(--neu-shadow-light)] rounded-[12px] min-h-[70px]" maxLength={300} />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-ig-text dark:text-ig-text-light mb-2">Subjects</label>
+                  <div className="flex flex-wrap gap-1.5">
+                    {SUBJECTS.filter((s) => s.name !== 'Other').map((s) => (
+                      <button
+                        key={s.name}
+                        type="button"
+                        onClick={() => setEditForm((prev) => ({ ...prev, subjects: prev.subjects.includes(s.name) ? prev.subjects.filter((x) => x !== s.name) : [...prev.subjects, s.name] }))}
+                        className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${editForm.subjects?.includes(s.name) ? 'bg-blue-500 text-white shadow-[inset_2px_2px_5px_rgba(0,0,0,0.2)]' : 'bg-transparent shadow-[2px_2px_5px_var(--neu-shadow-dark),-2px_-2px_5px_var(--neu-shadow-light)]'}`}
+                      >
+                        {s.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <button type="submit" disabled={saving} className="btn-primary text-sm flex items-center gap-2 mt-4">
+                  {saving && <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}
+                  Save Profile
+                </button>
+              </form>
+            </div>
+          )}
 
           {/* Tabs */}
           <div className="flex justify-center gap-8 mb-6 relative">
             <button className="text-sm font-bold text-ig-text dark:text-ig-text-light pb-1 relative">
-              All
+              All Posts
               <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-ig-text dark:bg-ig-text-light"></div>
             </button>
-            <button className="text-sm font-semibold text-ig-text-2 pb-1">Photos</button>
-            <button className="text-sm font-semibold text-ig-text-2 pb-1">Videos</button>
           </div>
 
-          {/* Grid */}
-          <div className="grid grid-cols-2 gap-3" style={{ gridAutoRows: '140px' }}>
-             {/* Staggered Layout for images */}
-             <div className="col-span-1 row-span-2 rounded-[28px] overflow-hidden shadow-[inset_3px_3px_8px_var(--neu-shadow-dark),inset_-3px_-3px_8px_var(--neu-shadow-light)] p-1">
-                <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=400&q=80" className="w-full h-full object-cover rounded-[24px]" alt="post" />
-             </div>
-             <div className="col-span-1 row-span-1 rounded-[28px] overflow-hidden shadow-[inset_3px_3px_8px_var(--neu-shadow-dark),inset_-3px_-3px_8px_var(--neu-shadow-light)] p-1">
-                <img src="https://images.unsplash.com/photo-1518098268026-4e89f1a2cd8e?auto=format&fit=crop&w=400&q=80" className="w-full h-full object-cover rounded-[24px]" alt="post" />
-             </div>
-             <div className="col-span-1 row-span-1 rounded-[28px] overflow-hidden shadow-[inset_3px_3px_8px_var(--neu-shadow-dark),inset_-3px_-3px_8px_var(--neu-shadow-light)] p-1">
-                <img src="https://images.unsplash.com/photo-1506744626753-eda818c6cce5?auto=format&fit=crop&w=400&q=80" className="w-full h-full object-cover rounded-[24px]" alt="post" />
-             </div>
+          {/* Grid / Posts list */}
+          <div className="text-left space-y-6">
+             {posts.length === 0 ? (
+               <div className="text-center py-8">
+                 <p className="text-ig-text-2 text-sm">No posts yet.</p>
+               </div>
+             ) : (
+               posts.map((post) => (
+                 <PostCard key={post._id} post={post} />
+               ))
+             )}
           </div>
         </div>
       </div>

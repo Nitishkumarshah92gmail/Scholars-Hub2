@@ -251,48 +251,39 @@ export default function Landing() {
                <span className="text-gray-400 text-sm mt-1">from 1,800+ stays</span>
              </div>
 
-             {/* Bottom Right Glass Card (Booking style widget) */}
-             <div className="bg-[#121c22]/50 backdrop-blur-3xl border border-white/5 rounded-[2rem] p-6 w-full lg:w-[400px] shadow-2xl animate-fade-in-up hover:-translate-y-2 transition-transform duration-500" style={{ animationDelay: '0.4s' }}>
+             {/* Bottom Right Glass Card (Study Hub Widget) */}
+             <div className="bg-[#121c22]/60 backdrop-blur-2xl border border-white/10 rounded-[2rem] p-6 w-full lg:w-[400px] shadow-2xl animate-fade-in-up hover:-translate-y-1 transition-transform duration-500" style={{ animationDelay: '0.4s' }}>
                <div className="flex justify-between items-start mb-6">
-                 <h3 className="text-[28px] font-light text-white leading-[1.1]">Evergreen<br/>Pine Family Lodge</h3>
-                 <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center animate-spin" style={{ animationDuration: '10s' }}>
-                   <svg className="w-4 h-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                 <h3 className="text-[26px] font-light text-white leading-[1.2]">Advanced Physics<br/>Study Hub</h3>
+                 <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center animate-spin-slow">
+                   <svg className="w-4 h-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
                  </div>
                </div>
 
-               <div className="flex gap-3 mb-6">
-                 <div className="flex-1 bg-black/40 rounded-xl p-3 border border-white/5 flex justify-between items-center text-sm text-gray-300 cursor-pointer hover:bg-black/60 transition-colors">
-                   <span className="flex items-center gap-2"><svg className="w-4 h-4 opacity-70 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg> Feb 11</span> 
-                   <span className="text-[10px] opacity-40">▼</span>
-                 </div>
-                 <div className="flex-1 bg-black/40 rounded-xl p-3 border border-white/5 flex justify-between items-center text-sm text-gray-300 cursor-pointer hover:bg-black/60 transition-colors">
-                   <span className="flex items-center gap-2"><svg className="w-4 h-4 opacity-70 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg> Mar 25</span> 
-                   <span className="text-[10px] opacity-40">▼</span>
-                 </div>
-               </div>
-
-               <div className="flex gap-4 mb-6">
+               <div className="flex gap-4 mb-6 border-b border-white/10 pb-6">
                  <div className="flex-1">
-                   <p className="text-[10px] text-gray-500 mb-0.5">Check-in</p>
-                   <p className="text-xs text-gray-300 font-medium">After 2:00 PM</p>
+                   <p className="text-[10px] text-gray-400 uppercase font-semibold mb-1 tracking-wider">Resources</p>
+                   <p className="text-sm text-gray-200 font-medium">1,240+ Notes</p>
                  </div>
                  <div className="w-px bg-white/10 h-8 self-center"></div>
                  <div className="flex-1 pl-2">
-                   <p className="text-[10px] text-gray-500 mb-0.5">Check-out</p>
-                   <p className="text-xs text-gray-300 font-medium">Until 12:00 PM</p>
+                   <p className="text-[10px] text-gray-400 uppercase font-semibold mb-1 tracking-wider">Members</p>
+                   <p className="text-sm text-gray-200 font-medium">850 Active</p>
                  </div>
                </div>
 
-               <div className="flex justify-between items-end mb-6 border-t border-white/5 pt-6">
+               <div className="flex justify-between items-end mb-6">
                  <div className="text-white flex items-end gap-1">
-                   <span className="text-3xl font-medium">$359</span>
-                   <span className="text-sm text-gray-500 pb-1">/night</span>
+                   <span className="text-3xl font-medium">Free</span>
+                   <span className="text-sm text-gray-500 pb-1">/ forever</span>
                  </div>
-                 <div className="text-[11px] text-gray-300 font-medium pb-1">2-5 guests</div>
+                 <div className="flex items-center gap-1 text-yellow-400">
+                   ★ <span className="text-xs text-white font-medium">4.9</span>
+                 </div>
                </div>
 
-               <button className="w-full bg-[#f4f4f4] hover:bg-white text-black font-semibold py-3.5 rounded-xl transition-all transform hover:scale-105 hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] text-sm">
-                 Reserve
+               <button className="w-full bg-[#f4f4f4] hover:bg-white text-black font-semibold py-3.5 rounded-xl transition-all transform hover:scale-[1.02] hover:shadow-[0_0_15px_rgba(255,255,255,0.2)] text-sm">
+                 Join Hub
                </button>
 
              </div>
@@ -315,7 +306,7 @@ export default function Landing() {
             {features.map((f, i) => (
               <div
                 key={f.title}
-                className="group p-6 text-center hover:-translate-y-1 reveal-on-scroll opacity-0 translate-y-10 transition-all duration-700 ease-out delay-[calc(var(--delay)*1ms)] bg-white/10 backdrop-blur-xl border border-white/20 rounded-[2rem] shadow-[0_8px_30px_rgba(0,0,0,0.12)] hover:bg-white/20"
+                className="group p-6 text-center hover:-translate-y-1 reveal-on-scroll opacity-0 translate-y-10 transition-all duration-700 ease-out delay-[calc(var(--delay)*1ms)] bg-black/40 backdrop-blur-md border border-white/10 rounded-[2rem] shadow-xl hover:bg-black/60"
                 style={{ '--delay': i * 150 }}
               >
                 <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${f.color} flex items-center justify-center transition-all duration-300 group-hover:scale-110 shadow-lg`}
@@ -349,7 +340,7 @@ export default function Landing() {
             {socialFeatures.map((f, i) => (
               <div
                 key={f.title}
-                className="group p-5 text-center hover:-translate-y-1 reveal-on-scroll opacity-0 translate-y-10 transition-all duration-700 ease-out delay-[calc(var(--delay)*1ms)] bg-white/10 backdrop-blur-xl border border-white/20 rounded-[1.5rem] shadow-[0_8px_30px_rgba(0,0,0,0.12)] hover:bg-white/20"
+                className="group p-5 text-center hover:-translate-y-1 reveal-on-scroll opacity-0 translate-y-10 transition-all duration-700 ease-out delay-[calc(var(--delay)*1ms)] bg-black/40 backdrop-blur-md border border-white/10 rounded-[1.5rem] shadow-xl hover:bg-black/60"
                 style={{ '--delay': i * 100 }}
               >
                 <div className="w-12 h-12 mx-auto mb-3 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"

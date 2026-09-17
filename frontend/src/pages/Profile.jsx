@@ -165,12 +165,16 @@ export default function Profile() {
           </div>
 
           {/* Info */}
-          <h1 className="text-lg font-bold text-ig-text dark:text-ig-text-light mb-1">
-            @{profile.name.replace(/\s+/g, '').toLowerCase()}
-          </h1>
-          <p className="text-sm text-ig-text-2 mb-6 px-4 leading-relaxed max-w-xl mx-auto">
-            {profile.bio || (isOwnProfile ? "Click the edit button to add a bio." : "No bio available.")}
-          </p>
+          <div className="flex flex-col items-center mb-6">
+            <div className="bg-white/40 dark:bg-black/40 backdrop-blur-md px-6 py-2.5 rounded-3xl shadow-[0_4px_12px_rgba(0,0,0,0.1)] border border-white/30">
+              <h1 className="text-xl font-black text-gray-900 dark:text-white mb-1 drop-shadow-sm">
+                @{profile.name.replace(/\s+/g, '').toLowerCase()}
+              </h1>
+              <p className="text-sm font-semibold text-gray-800 dark:text-gray-200 leading-relaxed max-w-xl mx-auto drop-shadow-sm">
+                {profile.bio || (isOwnProfile ? "Click the edit button to add a bio." : "No bio available.")}
+              </p>
+            </div>
+          </div>
 
           {/* Stats Row */}
           <div className="flex justify-center gap-12 sm:gap-24 mb-8">

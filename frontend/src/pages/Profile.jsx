@@ -123,7 +123,7 @@ export default function Profile() {
         </button>
       </div>
 
-      <div className="relative z-10 px-4 max-w-3xl mx-auto mt-16 w-full">
+      <div className="relative z-10 px-4 max-w-6xl mx-auto mt-20 w-full">
         {/* Profile Card */}
         <div className="relative p-6 pt-0 sm:p-10 sm:pt-0 rounded-[40px] text-center w-full"
              style={{
@@ -132,7 +132,7 @@ export default function Profile() {
              }}>
           
           {/* Avatar and Stats Row */}
-          <div className="flex justify-between items-end -mt-12 sm:-mt-16 mb-8 px-4 sm:px-12">
+          <div className="flex justify-between items-end -mt-16 sm:-mt-24 mb-8 px-4 sm:px-12">
             <div className="flex flex-col items-center pb-2">
               <span className="text-xl font-bold text-ig-text dark:text-ig-text-light">{posts.length}</span>
               <span className="text-[10px] font-semibold text-ig-text-2 uppercase tracking-wider">Posts</span>
@@ -148,7 +148,7 @@ export default function Profile() {
                   }
                   onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${profile.name}&background=1e3a5f&color=fbbf24&size=200`; }}
                   alt={profile.name}
-                  className="w-24 h-24 rounded-[24px] object-cover shadow-[4px_4px_10px_var(--neu-shadow-dark),-4px_-4px_10px_var(--neu-shadow-light)]"
+                  className="w-32 h-32 rounded-[24px] object-cover shadow-[4px_4px_10px_var(--neu-shadow-dark),-4px_-4px_10px_var(--neu-shadow-light)]"
                 />
               </div>
               {isOwnProfile && (

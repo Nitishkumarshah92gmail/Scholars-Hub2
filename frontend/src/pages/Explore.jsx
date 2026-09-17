@@ -69,7 +69,7 @@ export default function Explore() {
   );
 
   return (
-    <div className="pb-24 max-w-4xl mx-auto w-full">
+    <div className="pb-24 max-w-6xl mx-auto w-full">
       {/* Header with Search */}
       <div className="px-4 py-4 sticky top-0 z-20 bg-[var(--neu-bg)]/90 backdrop-blur-md">
         <div className="relative flex items-center">

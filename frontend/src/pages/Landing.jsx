@@ -154,14 +154,14 @@ export default function Landing() {
           {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-3">
             <a href="#features" className="px-5 py-2.5 text-sm font-medium text-gray-300 hover:text-white transition-all">
-              Locations
-            </a>
-            <a href="#features" className="px-5 py-2.5 text-sm font-medium text-gray-300 hover:text-white transition-all">
-              Rooms
+              Features
             </a>
             <a href="#community" className="px-5 py-2.5 text-sm font-medium text-gray-300 hover:text-white transition-all">
-              Experiences
+              Community
             </a>
+            <Link to="/feed" className="px-5 py-2.5 text-sm font-medium text-gray-300 hover:text-white transition-all">
+              Subjects
+            </Link>
             <div className="w-px h-4 bg-white/20 mx-4" />
             <button
               onClick={toggleTheme}
@@ -171,10 +171,10 @@ export default function Landing() {
               {darkMode ? <HiSun className="w-5 h-5" /> : <HiMoon className="w-5 h-5" />}
             </button>
             <Link to="/login" className="text-sm font-medium text-gray-300 hover:text-white px-5 py-2.5 transition-all">
-              Contact
+              Log In
             </Link>
             <Link to="/register" className="bg-white text-black text-sm px-6 py-2.5 rounded-full font-semibold hover:scale-105 transition-transform ml-2">
-              Book Now
+              Join Hub
             </Link>
           </div>
 
@@ -189,19 +189,13 @@ export default function Landing() {
           </div>
         </div>
 
-        {/* Mobile dropdown — Liquid Glass */}
+        {/* Mobile dropdown — Dark Glass */}
         {mobileMenuOpen && (
-          <div className="md:hidden animate-fade-in"
-            style={{
-              background: 'var(--glass-bg-strong)',
-              backdropFilter: 'blur(24px) saturate(200%)',
-              WebkitBackdropFilter: 'blur(24px) saturate(200%)',
-              borderTop: '1px solid var(--glass-border)',
-            }}
+          <div className="md:hidden animate-fade-in bg-black/60 backdrop-blur-2xl border-t border-white/10"
           >
             <div className="px-6 py-4 space-y-2">
-              <a href="#features" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-2.5 text-sm text-ig-text dark:text-ig-text-light rounded-ag-sm hover:bg-white/10 transition-all">Features</a>
-              <a href="#community" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-2.5 text-sm text-ig-text dark:text-ig-text-light rounded-ag-sm hover:bg-white/10 transition-all">Community</a>
+              <a href="#features" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-2.5 text-sm text-white rounded-ag-sm hover:bg-white/10 transition-all">Features</a>
+              <a href="#community" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-2.5 text-sm text-white rounded-ag-sm hover:bg-white/10 transition-all">Community</a>
               <a href="/scholars-hub.apk" download className="block px-4 py-2.5 text-sm text-ag-primary font-semibold rounded-ag-sm hover:bg-blue-500/5 transition-all">
                 <HiDownload className="w-4 h-4 inline mr-2" />Download App
               </a>
@@ -221,9 +215,9 @@ export default function Landing() {
           {/* Typography */}
           <div className="max-w-4xl animate-fade-in-up mt-10 lg:mt-20">
             <h1 className="text-[60px] sm:text-[90px] lg:text-[130px] font-sans font-light leading-[0.9] tracking-tight text-white/90" style={{ textShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
-              Knowledge's<br/>
+              Your<br/>
               <span className="text-white/60">Perfect</span><br/>
-              Hideaways
+              Study Hub
             </h1>
           </div>
 
@@ -232,7 +226,7 @@ export default function Landing() {
              
              {/* Bottom Left Info */}
              <div className="max-w-sm text-gray-300 font-light text-sm sm:text-base animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-               Discover handpicked study materials in breathtaking digital hubs. Unplug, unwind, and reconnect with what matters most.
+               Discover comprehensive study materials in collaborative digital hubs. Connect, learn, and excel together with your peers.
              </div>
 
              {/* Bottom Center Rating */}

@@ -56,6 +56,26 @@ function useTypingEffect(words, typingSpeed = 80, deletingSpeed = 40, pauseTime 
   return display;
 }
 
+function useScrollReveal() {
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-revealed');
+          entry.target.classList.remove('opacity-0', 'translate-y-10');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    const hiddenElements = document.querySelectorAll('.reveal-on-scroll');
+    hiddenElements.forEach((el) => observer.observe(el));
+
+    return () => {
+      hiddenElements.forEach((el) => observer.unobserve(el));
+    };
+  }, []);
+}
+
 export default function Landing() {
   const { darkMode, toggleTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -65,6 +85,8 @@ export default function Landing() {
     ['inspire learning', 'build communities', 'share knowledge', 'grow together'],
     70, 35, 2200
   );
+
+  useScrollReveal();
 
   useEffect(() => {
     const onScroll = () => setHeaderScrolled(window.scrollY > 20);
@@ -101,8 +123,23 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen transition-colors duration-300">
+      {/* ── Fixed Background (Always behind everything) ── */}
+      <div 
+         className="fixed inset-0 z-[-1] pointer-events-none"
+         style={{ 
+           backgroundImage: 'url(/atmospheric-study.jpg)', 
+           backgroundSize: 'cover', 
+           backgroundPosition: 'center',
+         }}
+      >
+        <div className="absolute inset-0 bg-[#0c1317]/40 bg-gradient-to-t from-[#0c1317]/90 via-transparent to-transparent"></div>
+      </div>
+
+      {/* ── Global Glass Frame (Always visible overlay) ── */}
+      <div className="fixed inset-3 sm:inset-4 lg:inset-6 z-40 pointer-events-none border-2 border-white/10 rounded-[2rem] sm:rounded-[3rem] mix-blend-overlay"></div>
+
       {/* ── Liquid Glass Navbar ── */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 pt-6 lg:pt-8 ${
         headerScrolled
           ? ''
           : 'bg-transparent'
@@ -113,53 +150,48 @@ export default function Landing() {
           WebkitBackdropFilter: 'blur(24px) saturate(200%)',
           borderBottom: '1px solid var(--glass-border)',
           boxShadow: 'inset 0 1px 0 var(--glass-highlight), 0 4px 20px rgba(0,0,0,0.08)',
+          paddingTop: '0',
         } : {}}
       >
-        <div className="max-w-[1600px] mx-auto px-8 h-[88px] flex items-center justify-between">
+        <div className="max-w-[1600px] mx-auto px-10 sm:px-14 lg:px-20 h-[88px] flex items-center justify-between">
           <h1 className="text-2xl font-heading font-bold text-white flex items-center gap-3">
             <img src={logoImg} alt="Scholars Hub" className="w-10 h-10 rounded-full object-cover" />
-            Scholars<span className="text-white">Hub</span>
+            Scholars<span className="text-white/70">Hub</span>
           </h1>
 
           {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-3">
             <a href="#features" className="px-5 py-2.5 text-sm font-medium text-gray-300 hover:text-white transition-all">
-              Features
+              Locations
+            </a>
+            <a href="#features" className="px-5 py-2.5 text-sm font-medium text-gray-300 hover:text-white transition-all">
+              Rooms
             </a>
             <a href="#community" className="px-5 py-2.5 text-sm font-medium text-gray-300 hover:text-white transition-all">
-              Community
+              Experiences
             </a>
             <div className="w-px h-4 bg-white/20 mx-4" />
             <button
               onClick={toggleTheme}
-              className="p-2.5 rounded-full text-ig-text-2 hover:text-ig-text dark:hover:text-white transition-all"
-              style={{ boxShadow: '2px 2px 5px var(--neu-shadow-dark), -2px -2px 5px var(--neu-shadow-light)' }}
+              className="p-2.5 rounded-full text-gray-300 hover:text-white transition-all"
               aria-label="Toggle theme"
             >
               {darkMode ? <HiSun className="w-5 h-5" /> : <HiMoon className="w-5 h-5" />}
             </button>
-            <a
-              href="/scholars-hub.apk"
-              download
-              className="text-sm font-medium text-gray-300 hover:text-white px-5 py-2.5 flex items-center gap-2 transition-all"
-            >
-              <HiDownload className="w-4 h-4" />
-              App
-            </a>
             <Link to="/login" className="text-sm font-medium text-gray-300 hover:text-white px-5 py-2.5 transition-all">
-              Log in
+              Contact
             </Link>
             <Link to="/register" className="bg-white text-black text-sm px-6 py-2.5 rounded-full font-semibold hover:scale-105 transition-transform ml-2">
-              Sign up
+              Book Now
             </Link>
           </div>
 
           {/* Mobile menu button */}
           <div className="flex md:hidden items-center gap-2">
-            <button onClick={toggleTheme} className="p-2 rounded-full text-ig-text-2 hover:text-ig-text dark:hover:text-white transition-all">
+            <button onClick={toggleTheme} className="p-2 rounded-full text-gray-300 hover:text-white transition-all">
               {darkMode ? <HiSun className="w-5 h-5" /> : <HiMoon className="w-5 h-5" />}
             </button>
-            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 rounded-full text-ig-text dark:text-ig-text-light transition-all">
+            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 rounded-full text-white transition-all">
               {mobileMenuOpen ? <HiX className="w-6 h-6" /> : <HiMenuAlt3 className="w-6 h-6" />}
             </button>
           </div>
@@ -190,80 +222,88 @@ export default function Landing() {
         )}
       </nav>
 
-      {/* ── Cinematic Dark Hero Section ── */}
-      <section className="relative pt-40 pb-20 px-6 min-h-screen overflow-hidden bg-[#050505] flex flex-col items-center justify-start z-0 border-b border-white/5">
-        
-        {/* Starry Dust Background Effect */}
-        <div className="absolute inset-0 z-0 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at center, rgba(255,255,255,0.08) 1px, transparent 1px)', backgroundSize: '40px 40px', opacity: 0.4 }}></div>
-
-        {/* Radial Glow */}
-        <div className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[600px] sm:w-[800px] h-[800px] bg-blue-500/10 rounded-full blur-[100px] -z-10 pointer-events-none mix-blend-screen"></div>
-
-        <div className="relative z-10 max-w-[1000px] w-full mx-auto text-center flex flex-col items-center mt-8">
+      {/* ── Fixed Background Hero Section ── */}
+      <section className="relative min-h-screen w-full flex flex-col justify-center px-8 sm:px-14 lg:px-20 pt-40 pb-20">
+        <div className="relative z-10 w-full max-w-[1600px] mx-auto flex flex-col justify-between h-full flex-1">
           
-          {/* Main Title */}
-          <h1 className="text-5xl sm:text-7xl lg:text-[90px] font-sans font-medium text-white leading-[1.05] tracking-tight mb-8">
-            Elevate Your<br />Learning Experience
-          </h1>
-          
-          {/* Subtitle */}
-          <p className="text-base sm:text-lg text-gray-400 max-w-lg mx-auto font-light leading-relaxed mb-10">
-            Unlock your academic potential in a fully collaborative environment, powered by Scholars Hub.
-          </p>
+          {/* Typography */}
+          <div className="max-w-4xl animate-fade-in-up mt-10 lg:mt-20">
+            <h1 className="text-[60px] sm:text-[90px] lg:text-[130px] font-sans font-light leading-[0.9] tracking-tight text-white/90" style={{ textShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
+              Knowledge's<br/>
+              <span className="text-white/60">Perfect</span><br/>
+              Hideaways
+            </h1>
+          </div>
 
-          {/* CTA Button */}
-          <Link to="/register" className="bg-white text-black rounded-full px-8 py-3.5 text-sm sm:text-base font-semibold hover:scale-105 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] transition-all z-20">
-            Sign Up & Learn
-          </Link>
-
-        </div>
-
-        {/* 3D Liquid Orb Section */}
-        <div className="relative mt-16 lg:mt-8 w-full max-w-[1400px] mx-auto flex justify-center items-center z-10">
-           
-           {/* Left Floating Card */}
-           <div className="hidden md:block absolute left-4 lg:left-[10%] top-[20%] z-30 bg-[#111111]/80 backdrop-blur-3xl border border-white/10 rounded-3xl p-6 w-[280px] shadow-2xl animate-float" style={{ animationDelay: '0s' }}>
-              <div className="flex justify-between items-center mb-10">
-                 <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wider">Study Materials</p>
-                 <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center text-black font-bold text-xs">↗</div>
-              </div>
-              <p className="text-base font-medium text-white leading-tight mb-4">Unparalleled<br/>Resource Access</p>
-              <div className="flex justify-between items-end mt-6">
-                <div className="h-[2px] w-full bg-white/20 rounded-full overflow-hidden">
-                  <div className="h-full bg-white w-[46%] rounded-full"></div>
-                </div>
-                <span className="text-[10px] text-gray-400 ml-4 font-mono">46%</span>
-              </div>
-           </div>
-
-           {/* The Orb */}
-           <div className="relative w-full max-w-[800px] aspect-square z-20 overflow-visible flex items-center justify-center">
-             {/* Masked fading effect at bottom */}
-             <div className="absolute bottom-[-100px] left-0 right-0 h-[300px] bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent z-30 pointer-events-none"></div>
+          {/* Bottom Row */}
+          <div className="mt-16 sm:mt-auto flex flex-col lg:flex-row justify-between items-end gap-10">
              
-             {/* The Image */}
-             <img src="/liquid-orb.jpg" alt="Liquid Metal Orb" className="w-[120%] max-w-none h-auto object-contain rounded-full mix-blend-screen opacity-90 -translate-y-10 lg:-translate-y-20 z-10 animate-float" style={{ filter: 'contrast(1.2) saturate(1.1)', animationDuration: '8s' }} />
-           </div>
+             {/* Bottom Left Info */}
+             <div className="max-w-sm text-gray-300 font-light text-sm sm:text-base animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+               Discover handpicked study materials in breathtaking digital hubs. Unplug, unwind, and reconnect with what matters most.
+             </div>
 
-           {/* Right Floating Card */}
-           <div className="hidden md:block absolute right-4 lg:right-[10%] top-[35%] z-30 bg-[#111111]/80 backdrop-blur-3xl border border-white/10 rounded-3xl p-6 w-[280px] shadow-2xl animate-float" style={{ animationDelay: '1.5s' }}>
-              <div className="flex justify-between items-center mb-8">
-                 <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wider">Resource Library</p>
-                 <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center text-black font-bold text-xs">↗</div>
-              </div>
-              <p className="text-5xl font-medium text-white leading-tight mb-6">96%</p>
-              <div className="h-[2px] w-full bg-white/20 rounded-full overflow-hidden">
-                 <div className="h-full bg-white w-[96%] rounded-full"></div>
-              </div>
-           </div>
+             {/* Bottom Center Rating */}
+             <div className="flex flex-col items-center animate-fade-in-up mb-4 lg:mb-0" style={{ animationDelay: '0.3s' }}>
+               <div className="flex items-center gap-2 text-yellow-500">
+                  ★ <span className="text-white text-3xl font-medium">4.7</span>
+               </div>
+               <span className="text-gray-400 text-sm mt-1">from 1,800+ stays</span>
+             </div>
 
+             {/* Bottom Right Glass Card (Booking style widget) */}
+             <div className="bg-[#121c22]/50 backdrop-blur-3xl border border-white/5 rounded-[2rem] p-6 w-full lg:w-[400px] shadow-2xl animate-fade-in-up hover:-translate-y-2 transition-transform duration-500" style={{ animationDelay: '0.4s' }}>
+               <div className="flex justify-between items-start mb-6">
+                 <h3 className="text-[28px] font-light text-white leading-[1.1]">Evergreen<br/>Pine Family Lodge</h3>
+                 <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center animate-spin" style={{ animationDuration: '10s' }}>
+                   <svg className="w-4 h-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                 </div>
+               </div>
+
+               <div className="flex gap-3 mb-6">
+                 <div className="flex-1 bg-black/40 rounded-xl p-3 border border-white/5 flex justify-between items-center text-sm text-gray-300 cursor-pointer hover:bg-black/60 transition-colors">
+                   <span className="flex items-center gap-2"><svg className="w-4 h-4 opacity-70 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg> Feb 11</span> 
+                   <span className="text-[10px] opacity-40">▼</span>
+                 </div>
+                 <div className="flex-1 bg-black/40 rounded-xl p-3 border border-white/5 flex justify-between items-center text-sm text-gray-300 cursor-pointer hover:bg-black/60 transition-colors">
+                   <span className="flex items-center gap-2"><svg className="w-4 h-4 opacity-70 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg> Mar 25</span> 
+                   <span className="text-[10px] opacity-40">▼</span>
+                 </div>
+               </div>
+
+               <div className="flex gap-4 mb-6">
+                 <div className="flex-1">
+                   <p className="text-[10px] text-gray-500 mb-0.5">Check-in</p>
+                   <p className="text-xs text-gray-300 font-medium">After 2:00 PM</p>
+                 </div>
+                 <div className="w-px bg-white/10 h-8 self-center"></div>
+                 <div className="flex-1 pl-2">
+                   <p className="text-[10px] text-gray-500 mb-0.5">Check-out</p>
+                   <p className="text-xs text-gray-300 font-medium">Until 12:00 PM</p>
+                 </div>
+               </div>
+
+               <div className="flex justify-between items-end mb-6 border-t border-white/5 pt-6">
+                 <div className="text-white flex items-end gap-1">
+                   <span className="text-3xl font-medium">$359</span>
+                   <span className="text-sm text-gray-500 pb-1">/night</span>
+                 </div>
+                 <div className="text-[11px] text-gray-300 font-medium pb-1">2-5 guests</div>
+               </div>
+
+               <button className="w-full bg-[#f4f4f4] hover:bg-white text-black font-semibold py-3.5 rounded-xl transition-all transform hover:scale-105 hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] text-sm">
+                 Reserve
+               </button>
+
+             </div>
+          </div>
         </div>
       </section>
 
       {/* ── Features Section — Liquid Glass Cards ── */}
       <section id="features" className="py-24 px-6" style={{ borderTop: '1px solid var(--glass-border)' }}>
         <div className="max-w-[1100px] mx-auto">
-          <div className="text-center mb-16">
+          <div className="text-center mb-16 reveal-on-scroll opacity-0 translate-y-10 transition-all duration-1000 ease-out">
             <h2 className="text-3xl sm:text-4xl font-heading font-bold text-ig-text dark:text-white tracking-tight">
               4 Ways to Share Knowledge
             </h2>
@@ -275,8 +315,8 @@ export default function Landing() {
             {features.map((f, i) => (
               <div
                 key={f.title}
-                className="group card p-6 text-center hover:-translate-y-1"
-                style={{ animationDelay: `${i * 0.1}s` }}
+                className="group card p-6 text-center hover:-translate-y-1 reveal-on-scroll opacity-0 translate-y-10 transition-all duration-700 ease-out delay-[calc(var(--delay)*1ms)]"
+                style={{ '--delay': i * 150 }}
               >
                 <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${f.color} flex items-center justify-center transition-all duration-300 group-hover:scale-110`}
                   style={{ boxShadow: '3px 3px 8px var(--neu-shadow-dark), -3px -3px 8px var(--neu-shadow-light)' }}
@@ -298,7 +338,7 @@ export default function Landing() {
       {/* ── Community / Social Features — Glass Cards ── */}
       <section id="community" className="py-24 px-6">
         <div className="max-w-[1100px] mx-auto">
-          <div className="text-center mb-16">
+          <div className="text-center mb-16 reveal-on-scroll opacity-0 translate-y-10 transition-all duration-1000 ease-out">
             <h2 className="text-3xl sm:text-4xl font-heading font-bold text-ig-text dark:text-white tracking-tight">
               Built for Student Communities
             </h2>
@@ -310,8 +350,8 @@ export default function Landing() {
             {socialFeatures.map((f, i) => (
               <div
                 key={f.title}
-                className="group card p-5 text-center hover:-translate-y-1"
-                style={{ animationDelay: `${i * 0.08}s` }}
+                className="group card p-5 text-center hover:-translate-y-1 reveal-on-scroll opacity-0 translate-y-10 transition-all duration-700 ease-out delay-[calc(var(--delay)*1ms)]"
+                style={{ '--delay': i * 100 }}
               >
                 <div className="w-12 h-12 mx-auto mb-3 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"
                   style={{

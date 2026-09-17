@@ -116,20 +116,20 @@ export default function Landing() {
         } : {}}
       >
         <div className="max-w-[1600px] mx-auto px-8 h-[88px] flex items-center justify-between">
-          <h1 className="text-2xl font-heading font-bold text-ig-text dark:text-ig-text-light flex items-center gap-3">
+          <h1 className="text-2xl font-heading font-bold text-white flex items-center gap-3">
             <img src={logoImg} alt="Scholars Hub" className="w-10 h-10 rounded-full object-cover" />
-            Scholars<span className="gradient-text">Hub</span>
+            Scholars<span className="text-white">Hub</span>
           </h1>
 
           {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-3">
-            <a href="#features" className="px-5 py-2.5 text-base font-medium text-ig-text-2 hover:text-ig-text dark:hover:text-white rounded-ag-pill hover:bg-white/10 transition-all">
+            <a href="#features" className="px-5 py-2.5 text-sm font-medium text-gray-300 hover:text-white transition-all">
               Features
             </a>
-            <a href="#community" className="px-5 py-2.5 text-base font-medium text-ig-text-2 hover:text-ig-text dark:hover:text-white rounded-ag-pill hover:bg-white/10 transition-all">
+            <a href="#community" className="px-5 py-2.5 text-sm font-medium text-gray-300 hover:text-white transition-all">
               Community
             </a>
-            <div className="w-px h-6 bg-white/20 mx-2" />
+            <div className="w-px h-4 bg-white/20 mx-4" />
             <button
               onClick={toggleTheme}
               className="p-2.5 rounded-full text-ig-text-2 hover:text-ig-text dark:hover:text-white transition-all"
@@ -141,15 +141,15 @@ export default function Landing() {
             <a
               href="/scholars-hub.apk"
               download
-              className="btn-secondary text-base px-5 py-2.5 flex items-center gap-2"
+              className="text-sm font-medium text-gray-300 hover:text-white px-5 py-2.5 flex items-center gap-2 transition-all"
             >
-              <HiDownload className="w-5 h-5" />
+              <HiDownload className="w-4 h-4" />
               App
             </a>
-            <Link to="/login" className="text-base text-ig-text-2 hover:text-ig-text dark:hover:text-white px-5 py-2.5 rounded-ag-pill hover:bg-white/10 transition-all font-medium">
+            <Link to="/login" className="text-sm font-medium text-gray-300 hover:text-white px-5 py-2.5 transition-all">
               Log in
             </Link>
-            <Link to="/register" className="btn-primary text-base px-6 py-2.5 font-bold shadow-lg">
+            <Link to="/register" className="bg-white text-black text-sm px-6 py-2.5 rounded-full font-semibold hover:scale-105 transition-transform ml-2">
               Sign up
             </Link>
           </div>
@@ -190,125 +190,73 @@ export default function Landing() {
         )}
       </nav>
 
-      {/* ── Hero Section (Grow+ Style) ── */}
-      <section className="relative pt-32 pb-12 px-4 sm:px-6 lg:px-8 bg-white dark:bg-[#0a0a0a] transition-colors duration-300">
-        <div className="max-w-[1600px] w-full mx-auto">
-          {/* Main Hero Card */}
-          <div className="relative bg-[#e0e2e5] dark:bg-[#1a1b1e] rounded-[40px] lg:rounded-[60px] p-8 sm:p-12 lg:p-16 overflow-hidden flex flex-col lg:flex-row items-center gap-12 lg:gap-8">
-            
-            {/* Left Column (Text) */}
-            <div className="flex-1 w-full relative z-10 text-left pt-4 lg:pt-0">
-              
-              {/* Badge */}
-              <div className="flex items-center gap-4 mb-10">
-                 <div className="flex -space-x-2">
-                   <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center text-white font-bold text-xs border-2 border-[#e0e2e5] dark:border-[#1a1b1e]">🎓</div>
-                   <div className="w-10 h-10 rounded-full bg-blue-500 border-2 border-[#e0e2e5] dark:border-[#1a1b1e]"></div>
-                 </div>
-                 <div>
-                   <p className="font-bold text-gray-900 dark:text-white leading-tight">20K+ Students</p>
-                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Read Our <a href="#" className="underline font-bold text-gray-900 dark:text-white">Success Stories</a></p>
-                 </div>
-              </div>
+      {/* ── Cinematic Dark Hero Section ── */}
+      <section className="relative pt-40 pb-20 px-6 min-h-screen overflow-hidden bg-[#050505] flex flex-col items-center justify-start z-0 border-b border-white/5">
+        
+        {/* Starry Dust Background Effect */}
+        <div className="absolute inset-0 z-0 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at center, rgba(255,255,255,0.08) 1px, transparent 1px)', backgroundSize: '40px 40px', opacity: 0.4 }}></div>
 
-              {/* Massive Heading */}
-              <h1 className="text-[100px] sm:text-[140px] lg:text-[180px] font-heading font-medium text-gray-900 dark:text-white leading-[0.85] tracking-tighter mb-10">
-                Learn<span className="text-5xl sm:text-7xl lg:text-[100px] relative -top-10 lg:-top-16">+</span>
-              </h1>
-              
-              <div className="h-[2px] w-full max-w-[400px] bg-gray-300 dark:bg-gray-700 mb-10"></div>
+        {/* Radial Glow */}
+        <div className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[600px] sm:w-[800px] h-[800px] bg-blue-500/10 rounded-full blur-[100px] -z-10 pointer-events-none mix-blend-screen"></div>
 
-              {/* Subtitle */}
-              <p className="text-lg sm:text-xl text-gray-700 dark:text-gray-300 max-w-md leading-relaxed mb-10 font-medium">
-                Drive Academic Growth, And Harness Community-Powered Study Content — Up To 10× Faster.
-              </p>
-
-              {/* Testimonial & Buttons Row */}
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-8">
-                <div className="flex flex-col gap-6 w-full max-w-sm">
-                   <div className="flex items-center justify-between w-full">
-                     <div className="flex items-center gap-3">
-                       <img src="https://ui-avatars.com/api/?name=Sarah&background=random" alt="Reviewer" className="w-8 h-8 rounded-full" />
-                       <div>
-                         <p className="text-sm font-bold text-gray-900 dark:text-white">Loved the platform</p>
-                         <p className="text-xs text-gray-600 dark:text-gray-400 font-medium">100% Satisfied</p>
-                       </div>
-                     </div>
-                     <p className="text-sm font-bold text-gray-900 dark:text-white"><span className="text-gray-400 font-normal mr-2">/</span> ★ 4.9</p>
-                   </div>
-                   <div className="h-[2px] w-full bg-gray-300 dark:bg-gray-700"></div>
-                   
-                   <div className="flex items-center gap-6 mt-2">
-                     <Link to="/register" className="bg-black dark:bg-white text-white dark:text-black rounded-full px-6 py-3 text-sm font-bold hover:scale-105 transition-transform flex items-center gap-2">
-                       Get Started — It's Free
-                     </Link>
-                     <a href="#features" className="text-sm font-bold text-gray-900 dark:text-white hover:underline flex items-center gap-1">
-                       Explore Features ↗
-                     </a>
-                   </div>
-                </div>
-              </div>
-
-            </div>
-
-            {/* Right Column (Visuals) */}
-            <div className="flex-1 w-full relative min-h-[500px] lg:min-h-[700px] flex justify-center lg:justify-end items-center mt-10 lg:mt-0 z-20">
-               
-               {/* Orange Background Pill */}
-               <div className="absolute right-0 lg:right-10 w-full max-w-[360px] h-[500px] lg:h-[700px] rounded-[60px] lg:rounded-[100px] bg-gradient-to-br from-[#ff7a45] to-[#ff500b] overflow-hidden shadow-xl">
-                 <img src="/hero-portrait.jpg" alt="Student" className="w-full h-full object-cover opacity-90 mix-blend-multiply" />
-               </div>
-
-               {/* Floating Elements (Absolute positioned relative to this right column) */}
-               
-               {/* Top Chat Bubble */}
-               <div className="absolute top-[20%] left-0 lg:left-10 bg-white/90 backdrop-blur-md px-5 py-3 rounded-full shadow-lg flex items-center gap-3 animate-float z-30" style={{ animationDelay: '0s' }}>
-                  <div className="w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 text-xs font-bold">✓</div>
-                  <span className="text-sm font-bold text-gray-800">Are these notes good?</span>
-               </div>
-               
-               {/* Bottom Chat Bubble */}
-               <div className="absolute top-[32%] -left-8 lg:left-0 bg-white/90 backdrop-blur-md px-5 py-3 rounded-full shadow-lg flex items-center gap-3 animate-float z-30" style={{ animationDelay: '1s' }}>
-                  <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-bold">✓</div>
-                  <span className="text-sm font-bold text-gray-800">Helped me ace the exam!</span>
-               </div>
-
-               {/* Play Button */}
-               <div className="absolute top-1/2 left-1/4 lg:left-1/3 -translate-y-1/2 w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-xl cursor-pointer hover:scale-110 transition-transform z-30">
-                  <div className="w-0 h-0 border-t-[10px] border-t-transparent border-l-[16px] border-l-black border-b-[10px] border-b-transparent ml-2"></div>
-               </div>
-
-               {/* Top Stat Card (Glass) */}
-               <div className="absolute top-10 -right-4 lg:-right-8 bg-white/30 dark:bg-black/30 backdrop-blur-xl border border-white/50 p-6 rounded-[32px] shadow-2xl w-48 animate-float z-30" style={{ animationDelay: '0.5s' }}>
-                 <p className="text-[10px] font-bold text-gray-800 dark:text-gray-200 mb-1 uppercase">— UP TO</p>
-                 <h3 className="text-5xl font-normal text-gray-900 dark:text-white mb-2">90%</h3>
-                 <p className="text-xs font-medium text-gray-800 dark:text-gray-300 leading-tight">Higher grades this semester</p>
-               </div>
-
-               {/* Bottom Asset Card (Glass) */}
-               <div className="absolute bottom-10 -left-6 lg:left-12 bg-white/30 dark:bg-black/30 backdrop-blur-xl border border-white/50 p-4 rounded-[32px] shadow-2xl flex items-center gap-5 w-[320px] animate-float z-30" style={{ animationDelay: '1.5s' }}>
-                  <div className="w-24 h-24 rounded-2xl overflow-hidden shrink-0 shadow-lg">
-                    <img src="/hero-asset.jpg" alt="Physics Textbook" className="w-full h-full object-cover" />
-                  </div>
-                  <div>
-                    <h4 className="text-base font-bold text-gray-900 dark:text-white leading-tight mb-1">Physics 101 Notes</h4>
-                    <p className="text-xl font-black text-gray-900 dark:text-white mb-2">Free</p>
-                    <div className="bg-white text-black text-[10px] font-bold px-3 py-1.5 rounded-full inline-flex items-center gap-1 shadow-sm">
-                      ★ 4.9
-                    </div>
-                  </div>
-               </div>
-            </div>
-          </div>
+        <div className="relative z-10 max-w-[1000px] w-full mx-auto text-center flex flex-col items-center mt-8">
           
-          {/* Trusted By Strip (Moved out of the card to bottom) */}
-          <div className="mt-12 flex flex-wrap justify-center sm:justify-between items-center gap-8 px-8 opacity-60 grayscale hover:grayscale-0 transition-all duration-500 pb-8">
-             <div className="text-2xl font-black tracking-tighter">Rakuten</div>
-             <div className="text-2xl font-black tracking-tighter flex items-center gap-1"><span className="text-3xl">∞</span>NCR</div>
-             <div className="text-2xl font-black tracking-tighter">monday.com</div>
-             <div className="text-2xl font-black tracking-tighter font-serif italic">Disney</div>
-             <div className="text-2xl font-black tracking-tighter">Dropbox</div>
-          </div>
+          {/* Main Title */}
+          <h1 className="text-5xl sm:text-7xl lg:text-[90px] font-sans font-medium text-white leading-[1.05] tracking-tight mb-8">
+            Elevate Your<br />Learning Experience
+          </h1>
+          
+          {/* Subtitle */}
+          <p className="text-base sm:text-lg text-gray-400 max-w-lg mx-auto font-light leading-relaxed mb-10">
+            Unlock your academic potential in a fully collaborative environment, powered by Scholars Hub.
+          </p>
+
+          {/* CTA Button */}
+          <Link to="/register" className="bg-white text-black rounded-full px-8 py-3.5 text-sm sm:text-base font-semibold hover:scale-105 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] transition-all z-20">
+            Sign Up & Learn
+          </Link>
+
+        </div>
+
+        {/* 3D Liquid Orb Section */}
+        <div className="relative mt-16 lg:mt-8 w-full max-w-[1400px] mx-auto flex justify-center items-center z-10">
+           
+           {/* Left Floating Card */}
+           <div className="hidden md:block absolute left-4 lg:left-[10%] top-[20%] z-30 bg-[#111111]/80 backdrop-blur-3xl border border-white/10 rounded-3xl p-6 w-[280px] shadow-2xl animate-float" style={{ animationDelay: '0s' }}>
+              <div className="flex justify-between items-center mb-10">
+                 <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wider">Study Materials</p>
+                 <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center text-black font-bold text-xs">↗</div>
+              </div>
+              <p className="text-base font-medium text-white leading-tight mb-4">Unparalleled<br/>Resource Access</p>
+              <div className="flex justify-between items-end mt-6">
+                <div className="h-[2px] w-full bg-white/20 rounded-full overflow-hidden">
+                  <div className="h-full bg-white w-[46%] rounded-full"></div>
+                </div>
+                <span className="text-[10px] text-gray-400 ml-4 font-mono">46%</span>
+              </div>
+           </div>
+
+           {/* The Orb */}
+           <div className="relative w-full max-w-[800px] aspect-square z-20 overflow-visible flex items-center justify-center">
+             {/* Masked fading effect at bottom */}
+             <div className="absolute bottom-[-100px] left-0 right-0 h-[300px] bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent z-30 pointer-events-none"></div>
+             
+             {/* The Image */}
+             <img src="/liquid-orb.jpg" alt="Liquid Metal Orb" className="w-[120%] max-w-none h-auto object-contain rounded-full mix-blend-screen opacity-90 -translate-y-10 lg:-translate-y-20 z-10 animate-float" style={{ filter: 'contrast(1.2) saturate(1.1)', animationDuration: '8s' }} />
+           </div>
+
+           {/* Right Floating Card */}
+           <div className="hidden md:block absolute right-4 lg:right-[10%] top-[35%] z-30 bg-[#111111]/80 backdrop-blur-3xl border border-white/10 rounded-3xl p-6 w-[280px] shadow-2xl animate-float" style={{ animationDelay: '1.5s' }}>
+              <div className="flex justify-between items-center mb-8">
+                 <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wider">Resource Library</p>
+                 <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center text-black font-bold text-xs">↗</div>
+              </div>
+              <p className="text-5xl font-medium text-white leading-tight mb-6">96%</p>
+              <div className="h-[2px] w-full bg-white/20 rounded-full overflow-hidden">
+                 <div className="h-full bg-white w-[96%] rounded-full"></div>
+              </div>
+           </div>
+
         </div>
       </section>
 

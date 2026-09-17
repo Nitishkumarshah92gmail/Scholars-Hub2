@@ -28,20 +28,22 @@
   --glass-highlight: rgba(255,255,255,0.9);
   --glass-blur: 20px;
   --glass-saturate: 180%;
+  --accent-glow: transparent;
 }
 
 .dark {
-  /* Neumorphism surface tokens — Dark */
-  --neu-bg: #0d0d14;
-  --neu-bg-2: #12121c;
-  --neu-shadow-light: rgba(40,40,65,0.25);
-  --neu-shadow-dark: rgba(0,0,0,0.5);
-  --neu-shadow-light-strong: rgba(40,40,65,0.3);
-  --neu-shadow-dark-strong: rgba(0,0,0,0.6);
+  /* Neumorphism surface tokens — Dark (Proper mid-dark base for shadow contrast) */
+  --neu-bg: #2b2f38;
+  --neu-bg-2: #21242c;
+  --neu-shadow-light: #363c48;
+  --neu-shadow-dark: #15171c;
+  --neu-shadow-light-strong: #3d4451;
+  --neu-shadow-dark-strong: #0d0f12;
+  --accent-glow: rgba(26, 115, 232, 0.25);
 
   /* Liquid glass tokens — Dark */
-  --glass-bg: rgba(15,15,25,0.55);
-  --glass-bg-strong: rgba(15,15,25,0.75);
+  --glass-bg: rgba(43,47,56,0.55);
+  --glass-bg-strong: rgba(43,47,56,0.75);
   --glass-border: rgba(255,255,255,0.08);
   --glass-highlight: rgba(255,255,255,0.12);
   --glass-blur: 24px;
@@ -61,7 +63,7 @@ html {
     transition: background-color var(--ag-transition), color var(--ag-transition);
   }
   .dark body {
-    background: #080810;
+    background: var(--neu-bg);
     color: #E8EAED;
   }
 
@@ -83,7 +85,7 @@ html {
       radial-gradient(ellipse at 20% 20%, rgba(26,115,232,0.08) 0%, transparent 50%),
       radial-gradient(ellipse at 80% 80%, rgba(130,100,255,0.06) 0%, transparent 50%),
       radial-gradient(ellipse at 50% 50%, rgba(129,201,149,0.04) 0%, transparent 50%),
-      #080810;
+      var(--neu-bg);
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -138,6 +140,7 @@ html {
     box-shadow:
       6px 6px 14px var(--neu-shadow-dark),
       -6px -6px 14px var(--neu-shadow-light),
+      0 0 20px var(--accent-glow),
       inset 0 1px 0 rgba(255,255,255,0.3);
     transform: translateY(-1px);
   }
@@ -261,6 +264,7 @@ html {
     box-shadow:
       8px 8px 18px var(--neu-shadow-dark),
       -8px -8px 18px var(--neu-shadow-light),
+      0 0 15px var(--accent-glow),
       inset 0 1px 0 var(--glass-highlight);
   }
 

@@ -194,19 +194,6 @@ export default function Landing() {
       <section className="relative pt-32 pb-16 px-6 overflow-hidden bg-white dark:bg-[#0a0a0a] transition-colors duration-300">
         <div className="relative z-10 max-w-[1200px] mx-auto text-center">
           
-          {/* Trust Badge */}
-          <div className="animate-fade-in-up inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 mb-8">
-            <div className="flex -space-x-1">
-              <div className="w-5 h-5 rounded-full bg-blue-500 border border-white flex items-center justify-center text-[8px] text-white font-bold">A+</div>
-              <div className="w-5 h-5 rounded-full bg-emerald-500 border border-white flex items-center justify-center text-[8px] text-white font-bold">100</div>
-              <div className="w-5 h-5 rounded-full bg-orange-500 border border-white flex items-center justify-center text-[8px] text-white font-bold">🎓</div>
-            </div>
-            <div className="flex text-yellow-400 text-[10px]">
-              <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
-            </div>
-            <span className="text-xs font-semibold text-gray-700 dark:text-gray-300 pr-1">10k+ students</span>
-          </div>
-
           {/* Heading */}
           <div className="animate-fade-in-up">
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-heading font-black text-gray-900 dark:text-white leading-[1.05] tracking-tight max-w-[900px] mx-auto">
@@ -234,85 +221,50 @@ export default function Landing() {
               
               {/* Column 1 */}
               <div className="flex flex-col gap-4 md:gap-6 mt-0 md:mt-12">
-                <div className="rounded-3xl overflow-hidden aspect-[4/5] shadow-xl relative group">
+                <div className="rounded-3xl overflow-hidden aspect-[4/5] shadow-xl relative group hover:-translate-y-2 transition-transform duration-500 cursor-pointer">
                   <img src="/collage-1.jpg" alt="Student Studying" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                  <div className="absolute bottom-4 left-4 right-4 bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl p-3 text-white text-left">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-6 h-6 rounded-full bg-blue-500 border border-white flex items-center justify-center text-[10px] font-bold">@</div>
-                      <span className="text-xs font-semibold shadow-sm">alex_studies</span>
-                    </div>
-                    <p className="text-sm font-bold leading-tight">Crushing this semester's finals with the squad! 🔥</p>
-                  </div>
                 </div>
-                <div className="rounded-3xl bg-blue-500 text-white p-6 shadow-xl aspect-square flex flex-col justify-end text-left relative overflow-hidden group">
+                <div className="rounded-3xl bg-blue-500 text-white p-6 shadow-xl aspect-square flex flex-col justify-end text-left relative overflow-hidden group hover:-translate-y-2 transition-transform duration-500 cursor-pointer">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10 transition-transform duration-500 group-hover:scale-150"></div>
-                  <h3 className="text-4xl lg:text-5xl font-black tracking-tight mb-2 relative z-10">10k+</h3>
-                  <p className="text-sm font-semibold text-blue-100 relative z-10">Study Notes shared by students</p>
+                  <HiDocumentText className="w-12 h-12 text-blue-200 mb-2 relative z-10" />
+                  <h3 className="text-2xl font-black tracking-tight mb-1 relative z-10">Study Notes</h3>
+                  <p className="text-xs font-semibold text-blue-100 relative z-10">Upload and share your PDFs</p>
                 </div>
               </div>
 
               {/* Column 2 */}
               <div className="flex flex-col gap-4 md:gap-6 mt-0 md:mt-0">
-                <div className="rounded-3xl overflow-hidden aspect-[9/16] shadow-2xl relative group">
+                <div className="rounded-3xl overflow-hidden aspect-[9/16] shadow-2xl relative group hover:-translate-y-2 transition-transform duration-500 cursor-pointer">
                   <img src="/collage-2.jpg" alt="Student Portrait" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                  <div className="absolute top-4 left-4 right-4 flex justify-between items-center text-white">
-                     <span className="bg-black/30 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold border border-white/20">Stories</span>
-                     <span className="bg-black/30 backdrop-blur-md w-8 h-8 rounded-full flex items-center justify-center border border-white/20">✕</span>
-                  </div>
-                  <div className="absolute bottom-6 left-4 right-4 flex gap-2 overflow-hidden">
-                    <div className="w-12 h-12 rounded-full border-2 border-orange-400 overflow-hidden"><img src="https://ui-avatars.com/api/?name=Sam&background=random" className="w-full h-full" /></div>
-                    <div className="w-12 h-12 rounded-full border-2 border-transparent opacity-60 overflow-hidden"><img src="https://ui-avatars.com/api/?name=Ali&background=random" className="w-full h-full" /></div>
-                    <div className="w-12 h-12 rounded-full border-2 border-transparent opacity-60 overflow-hidden"><img src="https://ui-avatars.com/api/?name=Jen&background=random" className="w-full h-full" /></div>
-                  </div>
                 </div>
               </div>
 
               {/* Column 3 */}
               <div className="flex flex-col gap-4 md:gap-6 mt-0 md:mt-8">
-                <div className="rounded-3xl bg-[#ff6b4a] text-white p-6 shadow-xl aspect-square flex flex-col justify-center text-left relative overflow-hidden group">
+                <div className="rounded-3xl bg-[#ff6b4a] text-white p-6 shadow-xl aspect-square flex flex-col justify-end text-left relative overflow-hidden group hover:-translate-y-2 transition-transform duration-500 cursor-pointer">
                   <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/20 rounded-full blur-2xl -ml-10 -mb-10 transition-transform duration-500 group-hover:scale-150"></div>
-                  <h3 className="text-4xl lg:text-5xl font-black tracking-tight mb-2 relative z-10">50+</h3>
-                  <p className="text-sm font-semibold text-orange-100 relative z-10">Universities represented</p>
+                  <HiGlobe className="w-12 h-12 text-orange-200 mb-2 relative z-10" />
+                  <h3 className="text-2xl font-black tracking-tight mb-1 relative z-10">Global Community</h3>
+                  <p className="text-xs font-semibold text-orange-100 relative z-10">Connect across universities</p>
                 </div>
-                <div className="rounded-3xl overflow-hidden aspect-[4/5] shadow-xl relative group">
+                <div className="rounded-3xl overflow-hidden aspect-[4/5] shadow-xl relative group hover:-translate-y-2 transition-transform duration-500 cursor-pointer">
                   <img src="/collage-3.jpg" alt="3D Books" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 </div>
               </div>
 
               {/* Column 4 */}
               <div className="flex flex-col gap-4 md:gap-6 mt-0 md:mt-24">
-                 <div className="rounded-3xl overflow-hidden aspect-[3/4] shadow-xl relative bg-emerald-500 group">
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/50 z-10"></div>
-                    <img src="/collage-2.jpg" alt="Portrait" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 mix-blend-overlay" />
-                    <div className="absolute bottom-4 left-4 right-4 z-20">
-                      <div className="bg-white/90 backdrop-blur-md rounded-xl p-3 shadow-lg">
-                         <div className="flex items-center gap-3">
-                           <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-400 to-blue-400 text-white flex items-center justify-center font-bold text-xs">AI</div>
-                           <div>
-                             <p className="text-xs font-bold text-gray-900 leading-none mb-1">Smart Summaries</p>
-                             <p className="text-[10px] font-semibold text-gray-500 leading-none">Auto-generated from notes</p>
-                           </div>
-                         </div>
-                      </div>
-                    </div>
+                 <div className="rounded-3xl overflow-hidden aspect-[3/4] shadow-xl relative bg-emerald-500 group hover:-translate-y-2 transition-transform duration-500 cursor-pointer">
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/30 z-10 transition-opacity duration-500 group-hover:opacity-0"></div>
+                    <img src="/collage-2.jpg" alt="Portrait" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-90 mix-blend-overlay" />
                  </div>
               </div>
 
             </div>
           </div>
 
-          {/* Trusted By Strip */}
-          <div className="animate-fade-in-up-delay-3 mt-32 border-t border-gray-200 dark:border-gray-800 pt-10">
-            <p className="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-8">Trusted by students to build better grades, together.</p>
-            <div className="flex flex-wrap justify-center gap-8 md:gap-16 opacity-40 grayscale hover:grayscale-0 transition-all duration-500">
-               <div className="text-xl font-black tracking-tighter">HARVARD</div>
-               <div className="text-xl font-black tracking-tighter">STANFORD</div>
-               <div className="text-xl font-black tracking-tighter">MIT</div>
-               <div className="text-xl font-black tracking-tighter">OXFORD</div>
-               <div className="text-xl font-black tracking-tighter">CAMBRIDGE</div>
-            </div>
-          </div>
+          {/* Spacing for bottom */}
+          <div className="mt-32 border-t border-gray-200 dark:border-gray-800"></div>
           
         </div>
       </section>

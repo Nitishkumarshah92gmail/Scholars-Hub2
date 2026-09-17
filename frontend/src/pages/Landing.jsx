@@ -127,7 +127,7 @@ export default function Landing() {
       <div 
          className="fixed inset-0 z-[-1] pointer-events-none"
          style={{ 
-           backgroundImage: 'url(/atmospheric-study.jpg)', 
+           backgroundImage: 'url(/campus-bg.jpg)', 
            backgroundSize: 'cover', 
            backgroundPosition: 'center',
          }}

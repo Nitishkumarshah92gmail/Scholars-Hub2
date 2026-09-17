@@ -16,15 +16,12 @@ const app = express();
 // Trust the reverse proxy (Render Load Balancer) so rate limiter gets the real client IP
 app.set('trust proxy', 1);
 
-// CORS: only allow requests from our own frontend
+// CORS: allow requests from frontend
 app.use(cors({
-  origin: [
-    'https://scholars-hub2.onrender.com',
-    'https://scholarshub.social',
-    'http://localhost:5173',
-    'http://localhost:5174',
-    'http://localhost:5000',
-  ],
+  origin: function (origin, callback) {
+    // Allow any origin for now to fix potential domain mismatch on Render
+    callback(null, true);
+  },
   credentials: true,
 }));
 

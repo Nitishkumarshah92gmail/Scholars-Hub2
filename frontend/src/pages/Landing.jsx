@@ -246,15 +246,18 @@ export default function Landing() {
              {/* Bottom Center Rating */}
              <div className="flex flex-col items-center animate-fade-in-up mb-4 lg:mb-0" style={{ animationDelay: '0.3s' }}>
                <div className="flex items-center gap-2 text-yellow-500">
-                  ★ <span className="text-white text-3xl font-medium">4.7</span>
+                  ★ <span className="text-white text-3xl font-medium">4.9</span>
                </div>
-               <span className="text-gray-400 text-sm mt-1">from 1,800+ stays</span>
+               <span className="text-gray-400 text-sm mt-1">from 20,000+ students</span>
              </div>
 
              {/* Bottom Right Glass Card (Study Hub Widget) */}
              <div className="bg-[#121c22]/60 backdrop-blur-2xl border border-white/10 rounded-[2rem] p-6 w-full lg:w-[400px] shadow-2xl animate-fade-in-up hover:-translate-y-1 transition-transform duration-500" style={{ animationDelay: '0.4s' }}>
                <div className="flex justify-between items-start mb-6">
-                 <h3 className="text-[26px] font-light text-white leading-[1.2]">Advanced Physics<br/>Study Hub</h3>
+                 <div>
+                   <span className="inline-block bg-blue-500/20 text-blue-300 text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md mb-2">Promoted</span>
+                   <h3 className="text-[26px] font-light text-white leading-[1.2]">Advanced Physics<br/>Study Hub</h3>
+                 </div>
                  <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center animate-spin-slow">
                    <svg className="w-4 h-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
                  </div>

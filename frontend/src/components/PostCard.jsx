@@ -313,10 +313,38 @@ export default memo(function PostCard({ post, onUpdate }) {
             </p>
           </div>
         </Link>
-        <button onClick={() => setShowMenu(!showMenu)} className="p-2 text-ig-text hover:opacity-60">
-          <HiDotsHorizontal className="w-5 h-5" />
-        </button>
+        <div className="relative">
+          <button onClick={() => setShowMenu(!showMenu)} className="p-2 text-ig-text hover:opacity-60 relative z-20">
+            <HiDotsHorizontal className="w-5 h-5" />
+          </button>
+          {showMenu && (
+            <div className="absolute right-0 top-full mt-1 w-40 rounded-[16px] bg-[var(--glass-bg)] backdrop-blur-md shadow-[4px_4px_10px_var(--neu-shadow-dark),-4px_-4px_10px_var(--neu-shadow-light)] border border-[rgba(255,255,255,0.1)] z-50 overflow-hidden">
+              {isOwner && (
+                <button 
+                  onClick={() => { setShowMenu(false); setConfirmDelete(true); }} 
+                  className="w-full text-left px-4 py-3 text-red-500 hover:bg-red-500/10 text-sm font-bold flex items-center gap-2 transition-colors"
+                >
+                  <HiTrash className="w-4 h-4" /> Delete Post
+                </button>
+              )}
+            </div>
+          )}
+        </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {confirmDelete && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm rounded-[40px]">
+           <div className="bg-[var(--glass-bg)] border border-[rgba(255,255,255,0.1)] p-6 rounded-3xl max-w-[280px] w-full text-center shadow-2xl mx-4">
+             <h3 className="text-lg font-bold text-ig-text dark:text-ig-text-light mb-2">Delete Post?</h3>
+             <p className="text-sm text-ig-text-2 mb-6">This action cannot be undone.</p>
+             <div className="flex gap-3 justify-center">
+                <button onClick={() => setConfirmDelete(false)} className="flex-1 py-2.5 rounded-full font-bold text-sm bg-gray-200 dark:bg-gray-700 text-ig-text dark:text-white hover:opacity-80 transition">Cancel</button>
+                <button onClick={handleDelete} className="flex-1 py-2.5 rounded-full font-bold text-sm bg-red-500 text-white shadow-[0_4px_14px_rgba(239,68,68,0.4)] hover:bg-red-600 transition">Delete</button>
+             </div>
+           </div>
+        </div>
+      )}
 
       {/* Main Image / Content */}
       <div className="w-full px-4 mb-2">
@@ -342,9 +370,6 @@ export default memo(function PostCard({ post, onUpdate }) {
             </button>
          </div>
          <div className="flex items-center gap-5">
-            <button className="text-ig-text dark:text-ig-text-light hover:opacity-80 transition">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
-            </button>
             <button onClick={handleBookmark} className={`transition hover:opacity-80 ${bookmarked ? 'text-ig-text dark:text-ig-text-light' : 'text-ig-text dark:text-ig-text-light'}`}>
               {bookmarked ? (
                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"></path></svg>

@@ -138,15 +138,10 @@ export default function Profile() {
                boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.05), 8px 8px 20px var(--neu-shadow-dark), -8px -8px 20px var(--neu-shadow-light)',
              }}>
           
-          {/* Avatar and Stats Row */}
-          <div className="flex justify-between items-center -mt-16 sm:-mt-20 mb-4 px-2 sm:px-16">
-            <div className="flex flex-col items-center pt-10">
-              <span className="text-lg font-bold text-ig-text dark:text-ig-text-light">{posts.length}</span>
-              <span className="text-[11px] font-medium text-ig-text-2 tracking-wide">Posts</span>
-            </div>
-
-            <div className="relative z-20">
-              <div className="p-1.5 rounded-full bg-white shadow-md">
+          {/* Avatar (centered and protruding) */}
+          <div className="relative z-20 flex justify-center -mt-16 sm:-mt-20 mb-4">
+            <div className="relative">
+              <div className="p-1.5 rounded-full bg-white shadow-md inline-block">
                 <img
                   src={
                     editForm?.avatarFile 
@@ -167,11 +162,6 @@ export default function Profile() {
                 </button>
               )}
             </div>
-
-            <div className="flex flex-col items-center pt-10">
-              <span className="text-lg font-bold text-ig-text dark:text-ig-text-light">{totalUsers}</span>
-              <span className="text-[11px] font-medium text-ig-text-2 tracking-wide">Scholars</span>
-            </div>
           </div>
 
           {/* Info */}
@@ -181,6 +171,18 @@ export default function Profile() {
           <p className="text-sm text-ig-text-2 mb-6 px-4 leading-relaxed max-w-xl mx-auto">
             {profile.bio || (isOwnProfile ? "Click the edit button to add a bio." : "No bio available.")}
           </p>
+
+          {/* Stats Row */}
+          <div className="flex justify-center gap-12 sm:gap-24 mb-8">
+            <div className="flex flex-col items-center">
+              <span className="text-xl font-bold text-ig-text dark:text-ig-text-light">{posts.length}</span>
+              <span className="text-[11px] font-medium text-ig-text-2 tracking-wide uppercase">Posts</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <span className="text-xl font-bold text-ig-text dark:text-ig-text-light">{totalUsers}</span>
+              <span className="text-[11px] font-medium text-ig-text-2 tracking-wide uppercase">Scholars</span>
+            </div>
+          </div>
 
           {/* Subject tags */}
           {profile.subjects?.length > 0 && (

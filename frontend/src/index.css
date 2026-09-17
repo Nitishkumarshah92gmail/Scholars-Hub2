@@ -32,20 +32,20 @@
 }
 
 .dark {
-  /* Neumorphism surface tokens — Dark (Proper mid-dark base for shadow contrast) */
-  --neu-bg: #2b2f38;
-  --neu-bg-2: #21242c;
-  --neu-shadow-light: #363c48;
-  --neu-shadow-dark: #15171c;
-  --neu-shadow-light-strong: #3d4451;
-  --neu-shadow-dark-strong: #0d0f12;
-  --accent-glow: rgba(26, 115, 232, 0.25);
+  /* Neumorphism surface tokens — Dark (Dark charcoal gray & bright black) */
+  --neu-bg: #2b2e36;
+  --neu-bg-2: #1e2026;
+  --neu-shadow-light: #383b45;
+  --neu-shadow-dark: #14161a;
+  --neu-shadow-light-strong: #414551;
+  --neu-shadow-dark-strong: #0c0d10;
+  --accent-glow: rgba(26, 115, 232, 0.15);
 
-  /* Liquid glass tokens — Dark */
-  --glass-bg: rgba(43,47,56,0.55);
-  --glass-bg-strong: rgba(43,47,56,0.75);
-  --glass-border: rgba(255,255,255,0.08);
-  --glass-highlight: rgba(255,255,255,0.12);
+  /* Liquid glass tokens — Dark (using bright black) */
+  --glass-bg: rgba(30,32,38,0.7);
+  --glass-bg-strong: rgba(30,32,38,0.9);
+  --glass-border: rgba(255,255,255,0.05);
+  --glass-highlight: rgba(255,255,255,0.08);
   --glass-blur: 24px;
   --glass-saturate: 200%;
 }

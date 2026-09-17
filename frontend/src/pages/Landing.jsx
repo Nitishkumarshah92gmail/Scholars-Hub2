@@ -304,10 +304,10 @@ export default function Landing() {
       <section id="features" className="py-24 px-6" style={{ borderTop: '1px solid var(--glass-border)' }}>
         <div className="max-w-[1100px] mx-auto">
           <div className="text-center mb-16 reveal-on-scroll opacity-0 translate-y-10 transition-all duration-1000 ease-out">
-            <h2 className="text-3xl sm:text-4xl font-heading font-bold text-ig-text dark:text-white tracking-tight">
+            <h2 className="text-3xl sm:text-4xl font-heading font-bold text-white tracking-tight drop-shadow-lg">
               4 Ways to Share Knowledge
             </h2>
-            <p className="mt-4 text-ig-text-2 max-w-xl mx-auto text-base leading-relaxed">
+            <p className="mt-4 text-white/80 max-w-xl mx-auto text-base leading-relaxed drop-shadow">
               Whether it's a PDF, an image, or a YouTube video — Scholars Hub makes sharing effortless.
             </p>
           </div>
@@ -315,18 +315,17 @@ export default function Landing() {
             {features.map((f, i) => (
               <div
                 key={f.title}
-                className="group card p-6 text-center hover:-translate-y-1 reveal-on-scroll opacity-0 translate-y-10 transition-all duration-700 ease-out delay-[calc(var(--delay)*1ms)]"
+                className="group p-6 text-center hover:-translate-y-1 reveal-on-scroll opacity-0 translate-y-10 transition-all duration-700 ease-out delay-[calc(var(--delay)*1ms)] bg-white/10 backdrop-blur-xl border border-white/20 rounded-[2rem] shadow-[0_8px_30px_rgba(0,0,0,0.12)] hover:bg-white/20"
                 style={{ '--delay': i * 150 }}
               >
-                <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${f.color} flex items-center justify-center transition-all duration-300 group-hover:scale-110`}
-                  style={{ boxShadow: '3px 3px 8px var(--neu-shadow-dark), -3px -3px 8px var(--neu-shadow-light)' }}
+                <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${f.color} flex items-center justify-center transition-all duration-300 group-hover:scale-110 shadow-lg`}
                 >
-                  <f.icon className="w-7 h-7 text-ag-primary" />
+                  <f.icon className="w-7 h-7 text-white" />
                 </div>
-                <h3 className="font-heading font-semibold text-ig-text dark:text-white mb-2 text-[15px]">
+                <h3 className="font-heading font-semibold text-white mb-2 text-[15px] drop-shadow-sm">
                   {f.title}
                 </h3>
-                <p className="text-sm text-ig-text-2 leading-relaxed">
+                <p className="text-sm text-white/70 leading-relaxed drop-shadow-sm">
                   {f.desc}
                 </p>
               </div>
@@ -339,10 +338,10 @@ export default function Landing() {
       <section id="community" className="py-24 px-6">
         <div className="max-w-[1100px] mx-auto">
           <div className="text-center mb-16 reveal-on-scroll opacity-0 translate-y-10 transition-all duration-1000 ease-out">
-            <h2 className="text-3xl sm:text-4xl font-heading font-bold text-ig-text dark:text-white tracking-tight">
+            <h2 className="text-3xl sm:text-4xl font-heading font-bold text-white tracking-tight drop-shadow-lg">
               Built for Student Communities
             </h2>
-            <p className="mt-4 text-ig-text-2 max-w-xl mx-auto text-base leading-relaxed">
+            <p className="mt-4 text-white/80 max-w-xl mx-auto text-base leading-relaxed drop-shadow">
               All the social features you need to connect, collaborate, and learn with peers.
             </p>
           </div>
@@ -350,21 +349,20 @@ export default function Landing() {
             {socialFeatures.map((f, i) => (
               <div
                 key={f.title}
-                className="group card p-5 text-center hover:-translate-y-1 reveal-on-scroll opacity-0 translate-y-10 transition-all duration-700 ease-out delay-[calc(var(--delay)*1ms)]"
+                className="group p-5 text-center hover:-translate-y-1 reveal-on-scroll opacity-0 translate-y-10 transition-all duration-700 ease-out delay-[calc(var(--delay)*1ms)] bg-white/10 backdrop-blur-xl border border-white/20 rounded-[1.5rem] shadow-[0_8px_30px_rgba(0,0,0,0.12)] hover:bg-white/20"
                 style={{ '--delay': i * 100 }}
               >
                 <div className="w-12 h-12 mx-auto mb-3 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"
                   style={{
-                    background: 'rgba(26,115,232,0.1)',
-                    boxShadow: '2px 2px 6px var(--neu-shadow-dark), -2px -2px 6px var(--neu-shadow-light)',
+                    background: 'rgba(255,255,255,0.1)',
                   }}
                 >
-                  <f.icon className="w-6 h-6 text-ag-primary" />
+                  <f.icon className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="font-heading font-semibold text-sm text-ig-text dark:text-white mb-1">
+                <h3 className="font-heading font-semibold text-sm text-white mb-1 drop-shadow-sm">
                   {f.title}
                 </h3>
-                <p className="text-xs text-ig-text-2 leading-relaxed">{f.desc}</p>
+                <p className="text-xs text-white/70 leading-relaxed drop-shadow-sm">{f.desc}</p>
               </div>
             ))}
           </div>

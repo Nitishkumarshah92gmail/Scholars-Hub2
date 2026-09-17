@@ -256,45 +256,56 @@ router.post('/', auth, async (req, res) => {
       playlist_id: '',
     };
 
-    if (type === 'youtube_video' || type === 'youtube_playlist') {
-      if (!youtubeUrl) {
-        return res.status(400).json({ error: 'YouTube URL is required.' });
+    if (type === 'youtube_video' || type === 'youtube_playlist' || type === 'video_link') {
+      const urlToParse = youtubeUrl || fileUrl;
+      if (!urlToParse) {
+        return res.status(400).json({ error: 'Video URL is required.' });
       }
-      const extracted = extractYoutubeId(youtubeUrl);
-      if (!extracted) {
-        return res.status(400).json({ error: 'Invalid YouTube URL.' });
-      }
-      postData.youtube_id = extracted.id || '';
-      postData.playlist_id = extracted.playlistId || '';
-      postData.file_url = youtubeUrl;
-      postData.type = extracted.type;
+      
+      const extracted = extractYoutubeId(urlToParse);
+      
+      if (extracted) {
+        // It's a YouTube video/playlist
+        postData.youtube_id = extracted.id || '';
+        postData.playlist_id = extracted.playlistId || '';
+        postData.file_url = urlToParse;
+        // Map back to legacy types to satisfy database CHECK constraints
+        postData.type = extracted.type; 
 
-      // Use YouTube Data API to validate and enrich
-      if (YOUTUBE_API_KEY) {
-        if (extracted.type === 'youtube_playlist' && extracted.playlistId) {
-          const plInfo = await fetchYoutubePlaylistInfo(extracted.playlistId);
-          if (plInfo) {
-            // If playlist has a first video, store it so embed works reliably
-            if (plInfo.firstVideoId && !postData.youtube_id) {
-              postData.youtube_id = plInfo.firstVideoId;
+        // Use YouTube Data API to validate and enrich
+        if (YOUTUBE_API_KEY) {
+          if (extracted.type === 'youtube_playlist' && extracted.playlistId) {
+            const plInfo = await fetchYoutubePlaylistInfo(extracted.playlistId);
+            if (plInfo) {
+              if (plInfo.firstVideoId && !postData.youtube_id) {
+                postData.youtube_id = plInfo.firstVideoId;
+              }
+              if (plInfo.privacyStatus === 'private') {
+                return res.status(400).json({ error: 'This playlist is private. Please make it Public or Unlisted on YouTube to embed it.' });
+              }
+            } else {
+              return res.status(400).json({ error: 'Could not access this playlist. Make sure it is Public or Unlisted.' });
             }
-            if (plInfo.privacyStatus === 'private') {
-              return res.status(400).json({ error: 'This playlist is private. Please make it Public or Unlisted on YouTube to embed it.' });
-            }
-          } else {
-            return res.status(400).json({ error: 'Could not access this playlist. Make sure it is Public or Unlisted.' });
-          }
-        } else if (extracted.type === 'youtube_video' && extracted.id) {
-          const vidInfo = await fetchYoutubeVideoInfo(extracted.id);
-          if (vidInfo) {
-            if (!vidInfo.embeddable) {
-              return res.status(400).json({ error: 'This video does not allow embedding. Please choose a different video.' });
-            }
-            if (vidInfo.privacyStatus === 'private') {
-              return res.status(400).json({ error: 'This video is private. Please make it Public or Unlisted on YouTube.' });
+          } else if (extracted.type === 'youtube_video' && extracted.id) {
+            const vidInfo = await fetchYoutubeVideoInfo(extracted.id);
+            if (vidInfo) {
+              if (!vidInfo.embeddable) {
+                return res.status(400).json({ error: 'This video does not allow embedding. Please choose a different video.' });
+              }
+              if (vidInfo.privacyStatus === 'private') {
+                return res.status(400).json({ error: 'This video is private. Please make it Public or Unlisted on YouTube.' });
+              }
             }
           }
         }
+      } else if (urlToParse.includes('tiktok.com') || urlToParse.includes('instagram.com')) {
+        // It's TikTok or Instagram. 
+        // To bypass potential legacy DB check constraints, we save it as youtube_video 
+        // but PostCard.jsx will render it correctly based on the URL.
+        postData.file_url = urlToParse;
+        postData.type = 'youtube_video'; 
+      } else {
+        return res.status(400).json({ error: 'Invalid Video URL. Please use YouTube, TikTok, or Instagram.' });
       }
     } else {
       postData.file_url = fileUrl || '';

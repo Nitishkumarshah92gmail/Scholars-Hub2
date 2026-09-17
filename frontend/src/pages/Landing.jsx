@@ -115,18 +115,18 @@ export default function Landing() {
           boxShadow: 'inset 0 1px 0 var(--glass-highlight), 0 4px 20px rgba(0,0,0,0.08)',
         } : {}}
       >
-        <div className="max-w-[1200px] mx-auto px-6 h-[64px] flex items-center justify-between">
-          <h1 className="text-xl font-heading font-bold text-ig-text dark:text-ig-text-light flex items-center gap-2.5">
-            <img src={logoImg} alt="Scholars Hub" className="w-8 h-8 rounded-full object-cover" />
+        <div className="max-w-[1600px] mx-auto px-8 h-[88px] flex items-center justify-between">
+          <h1 className="text-2xl font-heading font-bold text-ig-text dark:text-ig-text-light flex items-center gap-3">
+            <img src={logoImg} alt="Scholars Hub" className="w-10 h-10 rounded-full object-cover" />
             Scholars<span className="gradient-text">Hub</span>
           </h1>
 
           {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-2">
-            <a href="#features" className="px-4 py-2 text-sm text-ig-text-2 hover:text-ig-text dark:hover:text-white rounded-ag-pill hover:bg-white/10 transition-all">
+          <div className="hidden md:flex items-center gap-3">
+            <a href="#features" className="px-5 py-2.5 text-base font-medium text-ig-text-2 hover:text-ig-text dark:hover:text-white rounded-ag-pill hover:bg-white/10 transition-all">
               Features
             </a>
-            <a href="#community" className="px-4 py-2 text-sm text-ig-text-2 hover:text-ig-text dark:hover:text-white rounded-ag-pill hover:bg-white/10 transition-all">
+            <a href="#community" className="px-5 py-2.5 text-base font-medium text-ig-text-2 hover:text-ig-text dark:hover:text-white rounded-ag-pill hover:bg-white/10 transition-all">
               Community
             </a>
             <div className="w-px h-6 bg-white/20 mx-2" />
@@ -141,15 +141,15 @@ export default function Landing() {
             <a
               href="/scholars-hub.apk"
               download
-              className="btn-secondary text-sm px-4 py-2 flex items-center gap-1.5"
+              className="btn-secondary text-base px-5 py-2.5 flex items-center gap-2"
             >
-              <HiDownload className="w-4 h-4" />
+              <HiDownload className="w-5 h-5" />
               App
             </a>
-            <Link to="/login" className="text-sm text-ig-text-2 hover:text-ig-text dark:hover:text-white px-4 py-2 rounded-ag-pill hover:bg-white/10 transition-all font-medium">
+            <Link to="/login" className="text-base text-ig-text-2 hover:text-ig-text dark:hover:text-white px-5 py-2.5 rounded-ag-pill hover:bg-white/10 transition-all font-medium">
               Log in
             </Link>
-            <Link to="/register" className="btn-primary text-sm px-5 py-2">
+            <Link to="/register" className="btn-primary text-base px-6 py-2.5 font-bold shadow-lg">
               Sign up
             </Link>
           </div>
@@ -191,8 +191,8 @@ export default function Landing() {
       </nav>
 
       {/* ── Hero Section (Grow+ Style) ── */}
-      <section className="relative pt-24 pb-12 px-4 sm:px-6 lg:px-8 bg-white dark:bg-[#0a0a0a] transition-colors duration-300">
-        <div className="max-w-[1300px] mx-auto">
+      <section className="relative pt-32 pb-12 px-4 sm:px-6 lg:px-8 bg-white dark:bg-[#0a0a0a] transition-colors duration-300">
+        <div className="max-w-[1600px] w-full mx-auto">
           {/* Main Hero Card */}
           <div className="relative bg-[#e0e2e5] dark:bg-[#1a1b1e] rounded-[40px] lg:rounded-[60px] p-8 sm:p-12 lg:p-16 overflow-hidden flex flex-col lg:flex-row items-center gap-12 lg:gap-8">
             

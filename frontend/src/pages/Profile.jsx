@@ -131,10 +131,10 @@ export default function Profile() {
         {/* Profile Card */}
         <div className="relative p-6 pt-0 sm:p-10 sm:pt-0 rounded-[40px] text-center w-full"
              style={{
-               background: 'rgba(255, 255, 255, 0.3)',
-               backdropFilter: 'blur(24px)',
-               WebkitBackdropFilter: 'blur(24px)',
-               border: '1px solid rgba(255, 255, 255, 0.5)',
+               background: 'rgba(255, 255, 255, 0.1)',
+               backdropFilter: 'blur(8px)',
+               WebkitBackdropFilter: 'blur(8px)',
+               border: '1px solid rgba(255, 255, 255, 0.3)',
                boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.05), 8px 8px 20px var(--neu-shadow-dark), -8px -8px 20px var(--neu-shadow-light)',
              }}>
           

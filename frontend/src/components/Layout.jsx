@@ -480,16 +480,15 @@ export default function Layout() {
       )}
 
       {/* Main Content - Liquid Glass Window */}
-      <main className="flex-1 md:ml-[260px] xl:ml-[340px] md:h-[calc(100vh-32px)] overflow-y-auto overflow-x-hidden pb-16 md:pb-0 pt-14 md:pt-0 relative"
+      <main className="flex-1 md:ml-[260px] xl:ml-[340px] md:h-[calc(100vh-32px)] overflow-y-auto overflow-x-hidden pb-16 md:pb-0 pt-14 md:pt-0 relative md:rounded-[32px]"
         style={{
           background: 'var(--glass-bg)',
           backdropFilter: `blur(16px) saturate(160%)`,
           WebkitBackdropFilter: `blur(16px) saturate(160%)`,
           border: 'none',
-          borderRadius: '0',
+          borderRadius: undefined,
           boxShadow: 'none',
         }}
-        className="flex-1 md:ml-[260px] xl:ml-[340px] md:h-[calc(100vh-32px)] overflow-y-auto overflow-x-hidden pb-16 md:pb-0 pt-14 md:pt-0 relative md:rounded-[32px]"
       >
         {/* Desktop: glass border + shadow only on md+ */}
         <style>{`

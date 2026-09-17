@@ -313,23 +313,23 @@ export default memo(function PostCard({ post, onUpdate }) {
             </p>
           </div>
         </Link>
-        <div className="relative">
-          <button onClick={() => setShowMenu(!showMenu)} className="p-2 text-ig-text hover:opacity-60 relative z-20">
-            <HiDotsHorizontal className="w-5 h-5" />
-          </button>
-          {showMenu && (
-            <div className="absolute right-0 top-full mt-1 w-40 rounded-[16px] bg-[var(--glass-bg)] backdrop-blur-md shadow-[4px_4px_10px_var(--neu-shadow-dark),-4px_-4px_10px_var(--neu-shadow-light)] border border-[rgba(255,255,255,0.1)] z-50 overflow-hidden">
-              {isOwner && (
+        {isOwner && (
+          <div className="relative">
+            <button onClick={() => setShowMenu(!showMenu)} className="p-2 text-ig-text hover:opacity-60 relative z-20">
+              <HiDotsHorizontal className="w-5 h-5" />
+            </button>
+            {showMenu && (
+              <div className="absolute right-0 top-full mt-1 w-40 rounded-[16px] bg-[var(--glass-bg)] backdrop-blur-md shadow-[4px_4px_10px_var(--neu-shadow-dark),-4px_-4px_10px_var(--neu-shadow-light)] border border-[rgba(255,255,255,0.1)] z-50 overflow-hidden">
                 <button 
                   onClick={() => { setShowMenu(false); setConfirmDelete(true); }} 
                   className="w-full text-left px-4 py-3 text-red-500 hover:bg-red-500/10 text-sm font-bold flex items-center gap-2 transition-colors"
                 >
                   <HiTrash className="w-4 h-4" /> Delete Post
                 </button>
-              )}
-            </div>
-          )}
-        </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Delete Confirmation Modal */}

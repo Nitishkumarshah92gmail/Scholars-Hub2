@@ -139,19 +139,11 @@ export default function Landing() {
       <div className="fixed inset-3 sm:inset-4 lg:inset-6 z-40 pointer-events-none border-2 border-white/10 rounded-[2rem] sm:rounded-[3rem] mix-blend-overlay"></div>
 
       {/* ── Liquid Glass Navbar ── */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 pt-6 lg:pt-8 ${
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         headerScrolled
-          ? ''
-          : 'bg-transparent'
+          ? 'bg-black/40 backdrop-blur-2xl border-b border-white/10 shadow-lg'
+          : 'bg-transparent pt-6 lg:pt-8'
       }`}
-        style={headerScrolled ? {
-          background: 'var(--glass-bg-strong)',
-          backdropFilter: 'blur(24px) saturate(200%)',
-          WebkitBackdropFilter: 'blur(24px) saturate(200%)',
-          borderBottom: '1px solid var(--glass-border)',
-          boxShadow: 'inset 0 1px 0 var(--glass-highlight), 0 4px 20px rgba(0,0,0,0.08)',
-          paddingTop: '0',
-        } : {}}
       >
         <div className="max-w-[1600px] mx-auto px-10 sm:px-14 lg:px-20 h-[88px] flex items-center justify-between">
           <h1 className="text-2xl font-heading font-bold text-white flex items-center gap-3">

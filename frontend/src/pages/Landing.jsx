@@ -190,82 +190,125 @@ export default function Landing() {
         )}
       </nav>
 
-      {/* ── Hero Section ── */}
-      <section className="relative pt-32 pb-16 px-6 overflow-hidden bg-white dark:bg-[#0a0a0a] transition-colors duration-300">
-        <div className="relative z-10 max-w-[1200px] mx-auto text-center">
-          
-          {/* Heading */}
-          <div className="animate-fade-in-up">
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-heading font-black text-gray-900 dark:text-white leading-[1.05] tracking-tight max-w-[900px] mx-auto">
-              Your Study Community's Future, All in One Platform.
-            </h1>
-          </div>
-
-          <p className="animate-fade-in-up-delay-1 mt-6 text-lg sm:text-xl text-gray-600 dark:text-gray-400 max-w-[700px] mx-auto leading-relaxed font-medium">
-            Share notes, discuss topics, and grow your knowledge with Scholars Hub — your complete network for students, powered by collaborative tools.
-          </p>
-
-          <div className="animate-fade-in-up-delay-2 mt-8 flex flex-col items-center justify-center gap-2">
-            <Link to="/register" className="btn-primary rounded-full text-base font-bold px-10 py-4 shadow-[0_4px_14px_rgba(59,130,246,0.4)] hover:shadow-[0_6px_20px_rgba(59,130,246,0.6)] hover:-translate-y-0.5 transition-all w-full sm:w-auto">
-              Start Your Free Trial
-            </Link>
-            <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400 font-medium mt-2">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
-              No credit card required.
-            </div>
-          </div>
-
-          {/* Masonry Collage */}
-          <div className="animate-fade-in-up-delay-3 mt-20 max-w-[1100px] mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 items-start">
+      {/* ── Hero Section (Grow+ Style) ── */}
+      <section className="relative pt-24 pb-12 px-4 sm:px-6 lg:px-8 bg-white dark:bg-[#0a0a0a] transition-colors duration-300">
+        <div className="max-w-[1300px] mx-auto">
+          {/* Main Hero Card */}
+          <div className="relative bg-[#e0e2e5] dark:bg-[#1a1b1e] rounded-[40px] lg:rounded-[60px] p-8 sm:p-12 lg:p-16 overflow-hidden flex flex-col lg:flex-row items-center gap-12 lg:gap-8">
+            
+            {/* Left Column (Text) */}
+            <div className="flex-1 w-full relative z-10 text-left pt-4 lg:pt-0">
               
-              {/* Column 1 */}
-              <div className="flex flex-col gap-4 md:gap-6 mt-0 md:mt-12">
-                <div className="rounded-3xl overflow-hidden aspect-[4/5] shadow-xl relative group hover:-translate-y-2 transition-transform duration-500 cursor-pointer">
-                  <img src="/collage-1.jpg" alt="Student Studying" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                </div>
-                <div className="rounded-3xl bg-blue-500 text-white p-6 shadow-xl aspect-square flex flex-col justify-end text-left relative overflow-hidden group hover:-translate-y-2 transition-transform duration-500 cursor-pointer">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10 transition-transform duration-500 group-hover:scale-150"></div>
-                  <HiDocumentText className="w-12 h-12 text-blue-200 mb-2 relative z-10" />
-                  <h3 className="text-2xl font-black tracking-tight mb-1 relative z-10">Study Notes</h3>
-                  <p className="text-xs font-semibold text-blue-100 relative z-10">Upload and share your PDFs</p>
-                </div>
-              </div>
-
-              {/* Column 2 */}
-              <div className="flex flex-col gap-4 md:gap-6 mt-0 md:mt-0">
-                <div className="rounded-3xl overflow-hidden aspect-[9/16] shadow-2xl relative group hover:-translate-y-2 transition-transform duration-500 cursor-pointer">
-                  <img src="/collage-2.jpg" alt="Student Portrait" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                </div>
-              </div>
-
-              {/* Column 3 */}
-              <div className="flex flex-col gap-4 md:gap-6 mt-0 md:mt-8">
-                <div className="rounded-3xl bg-[#ff6b4a] text-white p-6 shadow-xl aspect-square flex flex-col justify-end text-left relative overflow-hidden group hover:-translate-y-2 transition-transform duration-500 cursor-pointer">
-                  <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/20 rounded-full blur-2xl -ml-10 -mb-10 transition-transform duration-500 group-hover:scale-150"></div>
-                  <HiGlobe className="w-12 h-12 text-orange-200 mb-2 relative z-10" />
-                  <h3 className="text-2xl font-black tracking-tight mb-1 relative z-10">Global Community</h3>
-                  <p className="text-xs font-semibold text-orange-100 relative z-10">Connect across universities</p>
-                </div>
-                <div className="rounded-3xl overflow-hidden aspect-[4/5] shadow-xl relative group hover:-translate-y-2 transition-transform duration-500 cursor-pointer">
-                  <img src="/collage-3.jpg" alt="3D Books" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                </div>
-              </div>
-
-              {/* Column 4 */}
-              <div className="flex flex-col gap-4 md:gap-6 mt-0 md:mt-24">
-                 <div className="rounded-3xl overflow-hidden aspect-[3/4] shadow-xl relative bg-emerald-500 group hover:-translate-y-2 transition-transform duration-500 cursor-pointer">
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/30 z-10 transition-opacity duration-500 group-hover:opacity-0"></div>
-                    <img src="/collage-2.jpg" alt="Portrait" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-90 mix-blend-overlay" />
+              {/* Badge */}
+              <div className="flex items-center gap-4 mb-10">
+                 <div className="flex -space-x-2">
+                   <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center text-white font-bold text-xs border-2 border-[#e0e2e5] dark:border-[#1a1b1e]">🎓</div>
+                   <div className="w-10 h-10 rounded-full bg-blue-500 border-2 border-[#e0e2e5] dark:border-[#1a1b1e]"></div>
+                 </div>
+                 <div>
+                   <p className="font-bold text-gray-900 dark:text-white leading-tight">20K+ Students</p>
+                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Read Our <a href="#" className="underline font-bold text-gray-900 dark:text-white">Success Stories</a></p>
                  </div>
               </div>
 
+              {/* Massive Heading */}
+              <h1 className="text-[100px] sm:text-[140px] lg:text-[180px] font-heading font-medium text-gray-900 dark:text-white leading-[0.85] tracking-tighter mb-10">
+                Learn<span className="text-5xl sm:text-7xl lg:text-[100px] relative -top-10 lg:-top-16">+</span>
+              </h1>
+              
+              <div className="h-[2px] w-full max-w-[400px] bg-gray-300 dark:bg-gray-700 mb-10"></div>
+
+              {/* Subtitle */}
+              <p className="text-lg sm:text-xl text-gray-700 dark:text-gray-300 max-w-md leading-relaxed mb-10 font-medium">
+                Drive Academic Growth, And Harness Community-Powered Study Content — Up To 10× Faster.
+              </p>
+
+              {/* Testimonial & Buttons Row */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-8">
+                <div className="flex flex-col gap-6 w-full max-w-sm">
+                   <div className="flex items-center justify-between w-full">
+                     <div className="flex items-center gap-3">
+                       <img src="https://ui-avatars.com/api/?name=Sarah&background=random" alt="Reviewer" className="w-8 h-8 rounded-full" />
+                       <div>
+                         <p className="text-sm font-bold text-gray-900 dark:text-white">Loved the platform</p>
+                         <p className="text-xs text-gray-600 dark:text-gray-400 font-medium">100% Satisfied</p>
+                       </div>
+                     </div>
+                     <p className="text-sm font-bold text-gray-900 dark:text-white"><span className="text-gray-400 font-normal mr-2">/</span> ★ 4.9</p>
+                   </div>
+                   <div className="h-[2px] w-full bg-gray-300 dark:bg-gray-700"></div>
+                   
+                   <div className="flex items-center gap-6 mt-2">
+                     <Link to="/register" className="bg-black dark:bg-white text-white dark:text-black rounded-full px-6 py-3 text-sm font-bold hover:scale-105 transition-transform flex items-center gap-2">
+                       Get Started — It's Free
+                     </Link>
+                     <a href="#features" className="text-sm font-bold text-gray-900 dark:text-white hover:underline flex items-center gap-1">
+                       Explore Features ↗
+                     </a>
+                   </div>
+                </div>
+              </div>
+
+            </div>
+
+            {/* Right Column (Visuals) */}
+            <div className="flex-1 w-full relative min-h-[500px] lg:min-h-[700px] flex justify-center lg:justify-end items-center mt-10 lg:mt-0 z-20">
+               
+               {/* Orange Background Pill */}
+               <div className="absolute right-0 lg:right-10 w-full max-w-[360px] h-[500px] lg:h-[700px] rounded-[60px] lg:rounded-[100px] bg-gradient-to-br from-[#ff7a45] to-[#ff500b] overflow-hidden shadow-xl">
+                 <img src="/hero-portrait.jpg" alt="Student" className="w-full h-full object-cover opacity-90 mix-blend-multiply" />
+               </div>
+
+               {/* Floating Elements (Absolute positioned relative to this right column) */}
+               
+               {/* Top Chat Bubble */}
+               <div className="absolute top-[20%] left-0 lg:left-10 bg-white/90 backdrop-blur-md px-5 py-3 rounded-full shadow-lg flex items-center gap-3 animate-float z-30" style={{ animationDelay: '0s' }}>
+                  <div className="w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 text-xs font-bold">✓</div>
+                  <span className="text-sm font-bold text-gray-800">Are these notes good?</span>
+               </div>
+               
+               {/* Bottom Chat Bubble */}
+               <div className="absolute top-[32%] -left-8 lg:left-0 bg-white/90 backdrop-blur-md px-5 py-3 rounded-full shadow-lg flex items-center gap-3 animate-float z-30" style={{ animationDelay: '1s' }}>
+                  <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-bold">✓</div>
+                  <span className="text-sm font-bold text-gray-800">Helped me ace the exam!</span>
+               </div>
+
+               {/* Play Button */}
+               <div className="absolute top-1/2 left-1/4 lg:left-1/3 -translate-y-1/2 w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-xl cursor-pointer hover:scale-110 transition-transform z-30">
+                  <div className="w-0 h-0 border-t-[10px] border-t-transparent border-l-[16px] border-l-black border-b-[10px] border-b-transparent ml-2"></div>
+               </div>
+
+               {/* Top Stat Card (Glass) */}
+               <div className="absolute top-10 -right-4 lg:-right-8 bg-white/30 dark:bg-black/30 backdrop-blur-xl border border-white/50 p-6 rounded-[32px] shadow-2xl w-48 animate-float z-30" style={{ animationDelay: '0.5s' }}>
+                 <p className="text-[10px] font-bold text-gray-800 dark:text-gray-200 mb-1 uppercase">— UP TO</p>
+                 <h3 className="text-5xl font-normal text-gray-900 dark:text-white mb-2">90%</h3>
+                 <p className="text-xs font-medium text-gray-800 dark:text-gray-300 leading-tight">Higher grades this semester</p>
+               </div>
+
+               {/* Bottom Asset Card (Glass) */}
+               <div className="absolute bottom-10 -left-6 lg:left-12 bg-white/30 dark:bg-black/30 backdrop-blur-xl border border-white/50 p-4 rounded-[32px] shadow-2xl flex items-center gap-5 w-[320px] animate-float z-30" style={{ animationDelay: '1.5s' }}>
+                  <div className="w-24 h-24 rounded-2xl overflow-hidden shrink-0 shadow-lg">
+                    <img src="/hero-asset.jpg" alt="Physics Textbook" className="w-full h-full object-cover" />
+                  </div>
+                  <div>
+                    <h4 className="text-base font-bold text-gray-900 dark:text-white leading-tight mb-1">Physics 101 Notes</h4>
+                    <p className="text-xl font-black text-gray-900 dark:text-white mb-2">Free</p>
+                    <div className="bg-white text-black text-[10px] font-bold px-3 py-1.5 rounded-full inline-flex items-center gap-1 shadow-sm">
+                      ★ 4.9
+                    </div>
+                  </div>
+               </div>
             </div>
           </div>
-
-          {/* Spacing for bottom */}
-          <div className="mt-32 border-t border-gray-200 dark:border-gray-800"></div>
           
+          {/* Trusted By Strip (Moved out of the card to bottom) */}
+          <div className="mt-12 flex flex-wrap justify-center sm:justify-between items-center gap-8 px-8 opacity-60 grayscale hover:grayscale-0 transition-all duration-500 pb-8">
+             <div className="text-2xl font-black tracking-tighter">Rakuten</div>
+             <div className="text-2xl font-black tracking-tighter flex items-center gap-1"><span className="text-3xl">∞</span>NCR</div>
+             <div className="text-2xl font-black tracking-tighter">monday.com</div>
+             <div className="text-2xl font-black tracking-tighter font-serif italic">Disney</div>
+             <div className="text-2xl font-black tracking-tighter">Dropbox</div>
+          </div>
         </div>
       </section>
 

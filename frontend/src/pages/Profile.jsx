@@ -127,7 +127,7 @@ export default function Profile() {
         </button>
       </div>
 
-      <div className="relative z-10 px-4 max-w-6xl mx-auto mt-20 w-full">
+      <div className="relative z-10 px-4 max-w-4xl mx-auto mt-20 w-full">
         {/* Profile Card */}
         <div className="relative p-6 pt-0 sm:p-10 sm:pt-0 rounded-[40px] text-center w-full"
              style={{

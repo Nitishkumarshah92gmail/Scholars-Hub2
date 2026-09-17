@@ -5,8 +5,9 @@ const ThemeContext = createContext(null);
 export function ThemeProvider({ children }) {
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem('Scholars Hub_theme');
-    return saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return saved ? saved === 'dark' : false; // Default to light (white) theme
   });
+
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', darkMode);

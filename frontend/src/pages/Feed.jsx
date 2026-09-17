@@ -57,7 +57,7 @@ export default function Feed() {
   );
 
   return (
-    <div>
+    <div className="pb-24 max-w-3xl mx-auto w-full">
       {/* Scholars on Platform */}
       <ScholarsBar />
 

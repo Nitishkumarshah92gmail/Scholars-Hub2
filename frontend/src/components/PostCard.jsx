@@ -136,7 +136,7 @@ export default memo(function PostCard({ post, onUpdate }) {
     switch (post.type) {
       case 'pdf':
         return (
-          <div className="p-6 flex items-center justify-between" style={{ background: 'var(--glass-bg)', backdropFilter: 'blur(12px)' }}>
+          <div className="p-6 flex items-center justify-between w-full" style={{ background: 'var(--glass-bg)', backdropFilter: 'blur(12px)' }}>
             <div className="flex items-center gap-3">
               <span className="text-4xl">📄</span>
               <div>
@@ -158,7 +158,7 @@ export default memo(function PostCard({ post, onUpdate }) {
       case 'image': {
         const imageUrls = post.fileUrls?.length > 0 ? post.fileUrls : [post.fileUrl];
         return (
-          <div>
+          <div className="w-full">
             <div className={`${imageUrls.length > 1 ? 'grid grid-cols-2 gap-0.5' : ''}`}>
               {imageUrls.map((url, i) => (
                 <img
@@ -191,7 +191,7 @@ export default memo(function PostCard({ post, onUpdate }) {
       }
       case 'drive_link':
         return (
-          <div className="p-6 flex items-center justify-between" style={{ background: 'var(--glass-bg)', backdropFilter: 'blur(12px)' }}>
+          <div className="p-6 flex items-center justify-between w-full" style={{ background: 'var(--glass-bg)', backdropFilter: 'blur(12px)' }}>
             <div className="flex items-center gap-3">
               <span className="text-4xl">🔗</span>
               <div>
@@ -226,8 +226,8 @@ export default memo(function PostCard({ post, onUpdate }) {
             : `https://www.youtube-nocookie.com/embed/${videoId}?rel=0`;
           
           return (
-            <div>
-              <div className="aspect-video">
+            <div className="w-full">
+              <div className="aspect-video w-full">
                 <iframe src={embedSrc} title={post.title} className="w-full h-full" frameBorder="0" allowFullScreen loading="lazy" sandbox="allow-scripts allow-same-origin allow-presentation allow-popups" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" />
               </div>
               <div className="px-4 py-2 flex justify-end">
@@ -243,11 +243,11 @@ export default memo(function PostCard({ post, onUpdate }) {
         if (url.includes('tiktok.com')) {
           let tiktokId = url.split('/').pop()?.split('?')[0];
           return (
-            <div>
-              <div className="flex justify-center bg-black">
+            <div className="w-full">
+              <div className="flex justify-center bg-black w-full">
                 <iframe 
                   src={`https://www.tiktok.com/embed/v2/${tiktokId}`} 
-                  className="w-full max-w-[325px] h-[700px] border-none" 
+                  className="w-full h-[700px] border-none" 
                   title={post.title} allowFullScreen allow="encrypted-media;" 
                 />
               </div>
@@ -263,11 +263,11 @@ export default memo(function PostCard({ post, onUpdate }) {
         // 3. Instagram Reels/Posts
         if (url.includes('instagram.com')) {
           return (
-            <div>
-              <div className="flex justify-center bg-white dark:bg-black p-4">
+            <div className="w-full">
+              <div className="flex justify-center bg-white dark:bg-black p-4 w-full">
                 <iframe 
                   src={`${url.replace(/\/?$/, '')}/embed`} 
-                  className="w-full max-w-[400px] h-[480px] border border-ig-separator rounded-lg" 
+                  className="w-full h-[480px] border border-ig-separator rounded-lg" 
                   frameBorder="0" scrolling="no" allowTransparency allowFullScreen 
                 />
               </div>

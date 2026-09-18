@@ -321,7 +321,7 @@ export default function Profile() {
           </div>
 
           {/* Grid / Posts list */}
-          <div className="text-left space-y-6">
+          <div className="text-left space-y-6 max-w-3xl mx-auto w-full">
              {posts.length === 0 ? (
                <div className="text-center py-8">
                  <p className="text-ig-text-2 text-sm">No posts yet.</p>

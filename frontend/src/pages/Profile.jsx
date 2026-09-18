@@ -134,9 +134,16 @@ export default function Profile() {
   return (
     <div className="relative min-h-screen pb-24 bg-[var(--neu-bg)] font-body">
       {/* Top Image Banner */}
-      <div className="absolute top-0 left-0 w-full h-72 rounded-b-[48px] shadow-lg overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700">
-        <div className="absolute inset-0 bg-black/10"></div>
-        <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent mix-blend-overlay"></div>
+      <div 
+        className="absolute top-0 left-0 w-full h-56 rounded-b-[48px] shadow-lg overflow-hidden"
+        style={{
+          backgroundImage: 'url(/campus-bg.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        <div className="absolute inset-0 bg-black/30"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--neu-bg)] to-transparent opacity-60"></div>
       </div>
 
       {/* Top Header Nav (Back / Message) */}

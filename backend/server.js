@@ -55,7 +55,18 @@ app.use('/api/upload', uploadRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'Scholars Hub API is running' });
+  const path = require('path');
+  const fs = require('fs');
+  const frontendDist = path.join(__dirname, '..', 'frontend', 'dist');
+  res.json({ 
+    status: 'ok', 
+    message: 'Scholars Hub API is running',
+    debug: {
+      dirname: __dirname,
+      expectedFrontendDist: frontendDist,
+      distExists: fs.existsSync(frontendDist)
+    }
+  });
 });
 
 // --- Serve frontend static build ---

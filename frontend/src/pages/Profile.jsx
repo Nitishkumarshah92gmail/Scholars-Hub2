@@ -25,6 +25,8 @@ export default function Profile() {
   const [followersCount, setFollowersCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
   const [followLoading, setFollowLoading] = useState(false);
+  const [showFollowers, setShowFollowers] = useState(false);
+  const [showFollowing, setShowFollowing] = useState(false);
 
   const isOwnProfile = currentUser?._id === id;
 
@@ -209,14 +211,20 @@ export default function Profile() {
               <span className="text-xl font-bold text-ig-text dark:text-ig-text-light">{posts.length}</span>
               <span className="text-[11px] font-medium text-ig-text-2 tracking-wide uppercase">Posts</span>
             </div>
-            <div className="flex flex-col items-center">
+            <button 
+              onClick={() => profile?.followers?.length > 0 && setShowFollowers(true)}
+              className={`flex flex-col items-center transition-opacity ${profile?.followers?.length > 0 ? 'hover:opacity-70 cursor-pointer' : 'opacity-80 cursor-default'}`}
+            >
               <span className="text-xl font-bold text-ig-text dark:text-ig-text-light">{followersCount}</span>
               <span className="text-[11px] font-medium text-ig-text-2 tracking-wide uppercase">Followers</span>
-            </div>
-            <div className="flex flex-col items-center">
+            </button>
+            <button 
+              onClick={() => profile?.following?.length > 0 && setShowFollowing(true)}
+              className={`flex flex-col items-center transition-opacity ${profile?.following?.length > 0 ? 'hover:opacity-70 cursor-pointer' : 'opacity-80 cursor-default'}`}
+            >
               <span className="text-xl font-bold text-ig-text dark:text-ig-text-light">{followingCount}</span>
               <span className="text-[11px] font-medium text-ig-text-2 tracking-wide uppercase">Following</span>
-            </div>
+            </button>
           </div>
 
           {/* Subject tags */}
@@ -334,6 +342,54 @@ export default function Profile() {
           </div>
         </div>
       </div>
+
+      {/* Followers Modal */}
+      {showFollowers && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setShowFollowers(false)}>
+          <div className="bg-white dark:bg-[#1a1b1e] rounded-2xl w-full max-w-sm max-h-[80vh] overflow-hidden flex flex-col shadow-2xl border border-gray-100 dark:border-white/10" onClick={e => e.stopPropagation()}>
+            <div className="p-4 border-b border-gray-100 dark:border-white/10 flex items-center justify-between">
+              <h3 className="font-bold text-lg text-ig-text dark:text-ig-text-light">Followers</h3>
+              <button onClick={() => setShowFollowers(false)} className="p-1.5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors">
+                <HiX className="w-5 h-5 text-gray-500" />
+              </button>
+            </div>
+            <div className="overflow-y-auto p-4 flex-1 space-y-2">
+              {profile?.followers?.length > 0 ? profile.followers.map(f => (
+                <Link key={f._id} to={`/profile/${f._id}`} onClick={() => setShowFollowers(false)} className="flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-white/5 p-2 rounded-xl transition-colors">
+                  <img src={f.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(f.name || 'User')}&background=random`} alt={f.name} className="w-10 h-10 rounded-full object-cover shadow-sm" />
+                  <span className="font-semibold text-sm text-ig-text dark:text-ig-text-light">{f.name}</span>
+                </Link>
+              )) : (
+                <p className="text-center text-gray-500 dark:text-gray-400 text-sm py-8">No followers yet.</p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Following Modal */}
+      {showFollowing && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setShowFollowing(false)}>
+          <div className="bg-white dark:bg-[#1a1b1e] rounded-2xl w-full max-w-sm max-h-[80vh] overflow-hidden flex flex-col shadow-2xl border border-gray-100 dark:border-white/10" onClick={e => e.stopPropagation()}>
+            <div className="p-4 border-b border-gray-100 dark:border-white/10 flex items-center justify-between">
+              <h3 className="font-bold text-lg text-ig-text dark:text-ig-text-light">Following</h3>
+              <button onClick={() => setShowFollowing(false)} className="p-1.5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors">
+                <HiX className="w-5 h-5 text-gray-500" />
+              </button>
+            </div>
+            <div className="overflow-y-auto p-4 flex-1 space-y-2">
+              {profile?.following?.length > 0 ? profile.following.map(f => (
+                <Link key={f._id} to={`/profile/${f._id}`} onClick={() => setShowFollowing(false)} className="flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-white/5 p-2 rounded-xl transition-colors">
+                  <img src={f.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(f.name || 'User')}&background=random`} alt={f.name} className="w-10 h-10 rounded-full object-cover shadow-sm" />
+                  <span className="font-semibold text-sm text-ig-text dark:text-ig-text-light">{f.name}</span>
+                </Link>
+              )) : (
+                <p className="text-center text-gray-500 dark:text-gray-400 text-sm py-8">Not following anyone.</p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

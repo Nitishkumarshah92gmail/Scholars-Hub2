@@ -125,13 +125,15 @@ export default function Landing() {
     <div className="min-h-screen transition-colors duration-300">
       {/* ── Fixed Background (Always behind everything) ── */}
       <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none bg-black">
-        <iframe
-          src="https://www.youtube.com/embed/n61ULEU7CO0?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&loop=1&playlist=n61ULEU7CO0"
-          frameBorder="0"
-          allow="autoplay; encrypted-media"
-          className="absolute top-1/2 left-1/2 w-[150vw] h-[150vh] min-w-[1920px] min-h-[1080px] -translate-x-1/2 -translate-y-1/2 opacity-60 pointer-events-none"
-          title="Background Video"
-        />
+        <video 
+          autoPlay 
+          loop 
+          muted 
+          playsInline 
+          className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto -translate-x-1/2 -translate-y-1/2 opacity-60 object-cover"
+        >
+          <source src="https://cdn.coverr.co/videos/coverr-a-woman-reading-a-book-2259/1080p.mp4" type="video/mp4" />
+        </video>
         <div className="absolute inset-0 bg-[#0c1317]/60 bg-gradient-to-t from-[#0c1317]/90 via-transparent to-transparent"></div>
       </div>
 

@@ -127,7 +127,7 @@ export default function Landing() {
       <div 
          className="fixed inset-0 z-[-1] pointer-events-none"
          style={{ 
-           backgroundImage: 'url(https://media.giphy.com/media/M3a51DMeWvYqs/giphy.gif)', 
+           backgroundImage: 'url(https://media.giphy.com/media/W3QKEujo8vztC/giphy.gif)', 
            backgroundSize: 'cover', 
            backgroundPosition: 'center',
          }}

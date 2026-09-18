@@ -73,7 +73,24 @@ export default function Login() {
             </h1>
           </div>
 
-          {/* Form */}
+          {/* Google Login (Primary) */}
+          <button
+            type="button"
+            onClick={handleGoogleLogin}
+            className="w-full flex items-center justify-center gap-2 bg-white text-black font-semibold text-sm py-2.5 rounded-[12px] shadow-[0_2px_10px_rgba(0,0,0,0.1)] hover:bg-gray-50 transition-colors mb-5"
+          >
+            <FcGoogle className="w-5 h-5" />
+            Continue with Google
+          </button>
+
+          {/* Divider */}
+          <div className="flex items-center gap-4 my-5">
+            <div className="flex-1 h-px" style={{ background: 'var(--glass-border)' }} />
+            <span className="text-xs text-ig-text-2 font-semibold uppercase">Or continue with email</span>
+            <div className="flex-1 h-px" style={{ background: 'var(--glass-border)' }} />
+          </div>
+
+          {/* Email/Password Form */}
           <form onSubmit={handleSubmit} className="space-y-2.5">
             <input
               type="email"
@@ -112,22 +129,6 @@ export default function Login() {
               )}
             </button>
           </form>
-
-          {/* Divider */}
-          <div className="flex items-center gap-4 my-5">
-            <div className="flex-1 h-px" style={{ background: 'var(--glass-border)' }} />
-            <span className="text-xs text-ig-text-2 font-semibold uppercase">Or</span>
-            <div className="flex-1 h-px" style={{ background: 'var(--glass-border)' }} />
-          </div>
-
-          <button
-            type="button"
-            onClick={handleGoogleLogin}
-            className="w-full flex items-center justify-center gap-2 bg-white text-black font-semibold text-sm py-2.5 rounded-[12px] shadow-[0_2px_10px_rgba(0,0,0,0.1)] hover:bg-gray-50 transition-colors mb-4"
-          >
-            <FcGoogle className="w-5 h-5" />
-            Continue with Google
-          </button>
 
           <Link to="/forgot-password" className="block text-center text-xs text-ag-primary font-semibold hover:text-ag-primary-hover transition-colors">
             Forgot password?

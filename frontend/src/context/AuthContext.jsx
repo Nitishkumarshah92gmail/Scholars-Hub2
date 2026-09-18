@@ -173,8 +173,7 @@ export function AuthProvider({ children }) {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        // Automatically redirects back to where they started from,
-        // or uses the default site URL configured in Supabase.
+        redirectTo: window.location.origin,
       },
     });
     if (error) throw error;

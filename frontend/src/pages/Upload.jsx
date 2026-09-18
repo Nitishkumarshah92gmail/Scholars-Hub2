@@ -192,7 +192,7 @@ export default function Upload() {
         {/* Content Type */}
         <div className="card p-4">
           <p className="text-sm font-semibold text-ig-text dark:text-ig-text-light mb-3">Content type</p>
-          <div className="grid grid-cols-5 gap-2">
+          <div className="grid grid-cols-4 gap-2">
             {TYPES.map((t) => (
               <button
                 key={t.value}

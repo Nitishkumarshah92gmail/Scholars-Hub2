@@ -7,6 +7,7 @@ import { supabase } from '../lib/supabase';
 import toast from 'react-hot-toast';
 import logoImg from '../assets/logo.png';
 import { LocalNotifications } from '@capacitor/local-notifications';
+import { Capacitor } from '@capacitor/core';
 
 
 import {
@@ -65,27 +66,33 @@ export default function Layout() {
     }, 300000);
 
     const requestPushPermissions = async () => {
-      try {
-        const { display } = await LocalNotifications.requestPermissions();
-        console.log('LocalNotifications permission:', display);
-      } catch (err) {
-        console.error('Failed to request notification permissions', err);
+      if (Capacitor.isNativePlatform()) {
+        try {
+          const { display } = await LocalNotifications.requestPermissions();
+          console.log('LocalNotifications permission:', display);
+        } catch (err) {
+          console.error('Failed to request notification permissions', err);
+        }
       }
     };
     requestPushPermissions();
 
     // Listen for notification taps
-    LocalNotifications.addListener('localNotificationActionPerformed', (notificationAction) => {
-      const data = notificationAction.notification.extra?.data;
-      if (data) {
-        navigate(data);
-      }
-    });
+    if (Capacitor.isNativePlatform()) {
+      LocalNotifications.addListener('localNotificationActionPerformed', (notificationAction) => {
+        const data = notificationAction.notification.extra?.data;
+        if (data) {
+          navigate(data);
+        }
+      });
+    }
 
     return () => { 
       clearInterval(notifInterval); 
       clearInterval(usersInterval); 
-      LocalNotifications.removeAllListeners();
+      if (Capacitor.isNativePlatform()) {
+        LocalNotifications.removeAllListeners();
+      }
     };
   }, [navigate]);
 
@@ -93,12 +100,23 @@ export default function Layout() {
     if (!user) return;
     
     const fetchUnreadMessagesCount = async () => {
-      const { count } = await supabase
-        .from('messages')
-        .select('*', { count: 'exact', head: true })
-        .eq('read', false)
-        .neq('sender_id', user._id);
-      if (count !== null) setUnreadMessagesCount(count);
+      const { data: convos } = await supabase
+        .from('conversation_participants')
+        .select('conversation_id')
+        .eq('user_id', user._id);
+        
+      if (convos && convos.length > 0) {
+        const convoIds = convos.map(c => c.conversation_id);
+        const { count } = await supabase
+          .from('messages')
+          .select('*', { count: 'exact', head: true })
+          .eq('read', false)
+          .neq('sender_id', user._id)
+          .in('conversation_id', convoIds);
+        if (count !== null) setUnreadMessagesCount(count);
+      } else {
+        setUnreadMessagesCount(0);
+      }
     };
     
     fetchUnreadMessagesCount();
@@ -132,23 +150,25 @@ export default function Layout() {
                   ), { duration: 5000 });
                   
                   // Trigger local push notification for Android
-                  try {
-                    LocalNotifications.schedule({
-                      notifications: [
-                        {
-                          title: `${sender.name} sent a message`,
-                          body: newMsg.content,
-                          id: Math.floor(Math.random() * 2147483647),
-                          schedule: { at: new Date(Date.now() + 100) }, // Trigger immediately
-                          actionTypeId: '',
-                          extra: {
-                            data: '/dashboard/messages'
+                  if (Capacitor.isNativePlatform()) {
+                    try {
+                      LocalNotifications.schedule({
+                        notifications: [
+                          {
+                            title: `${sender.name} sent a message`,
+                            body: newMsg.content,
+                            id: Math.floor(Math.random() * 2147483647),
+                            schedule: { at: new Date(Date.now() + 100) }, // Trigger immediately
+                            actionTypeId: '',
+                            extra: {
+                              data: '/dashboard/messages'
+                            }
                           }
-                        }
-                      ]
-                    });
-                  } catch (err) {
-                    console.error('Failed to schedule local notification', err);
+                        ]
+                      });
+                    } catch (err) {
+                      console.error('Failed to schedule local notification', err);
+                    }
                   }
                }
             }

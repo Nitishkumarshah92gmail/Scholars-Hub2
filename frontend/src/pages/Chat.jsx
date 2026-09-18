@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -535,16 +536,18 @@ export default function Chat() {
                   >
                     <HiArrowLeft className="w-4 h-4" />
                   </button>
-                  <img 
-                    src={activeConversation.otherUser.avatar || `https://ui-avatars.com/api/?name=${activeConversation.otherUser.name}`} 
-                    onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${activeConversation.otherUser.name}&background=1e3a5f&color=fbbf24`; }}
-                    alt={activeConversation.otherUser.name} 
-                    className="w-12 h-12 rounded-full object-cover shadow-[2px_2px_5px_var(--neu-shadow-dark),-2px_-2px_5px_var(--neu-shadow-light)]" 
-                  />
-                  <div>
-                    <h3 className="font-bold text-ig-text dark:text-ig-text-light">{activeConversation.otherUser.name}</h3>
-                    <p className="text-xs text-ig-text-2 font-semibold">Last seen {format(new Date(), 'h:mm a')}</p>
-                  </div>
+                  <Link to={`/dashboard/profile/${activeConversation.otherUser.id}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                    <img 
+                      src={activeConversation.otherUser.avatar || `https://ui-avatars.com/api/?name=${activeConversation.otherUser.name}`} 
+                      onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${activeConversation.otherUser.name}&background=1e3a5f&color=fbbf24`; }}
+                      alt={activeConversation.otherUser.name} 
+                      className="w-12 h-12 rounded-full object-cover shadow-[2px_2px_5px_var(--neu-shadow-dark),-2px_-2px_5px_var(--neu-shadow-light)]" 
+                    />
+                    <div>
+                      <h3 className="font-bold text-ig-text dark:text-ig-text-light">{activeConversation.otherUser.name}</h3>
+                      <p className="text-xs text-ig-text-2 font-semibold">Last seen {format(new Date(), 'h:mm a')}</p>
+                    </div>
+                  </Link>
                 </div>
                 <button onClick={() => setActiveConversation(null)} className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center shadow-lg hover:bg-blue-600 transition">
                    <HiX className="w-4 h-4" />

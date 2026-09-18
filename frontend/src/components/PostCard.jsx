@@ -115,10 +115,6 @@ export default memo(function PostCard({ post, onUpdate }) {
   };
 
   const handleDelete = async () => {
-    if (!confirmDelete) {
-      setConfirmDelete(true);
-      return;
-    }
     try {
       await deletePost(post._id);
       toast.success('Post deleted.');

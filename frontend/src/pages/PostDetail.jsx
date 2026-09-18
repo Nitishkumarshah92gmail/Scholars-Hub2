@@ -156,10 +156,25 @@ export default function PostDetail() {
         );
       case 'youtube_video': {
         let videoId = post.youtubeId;
-        if (!videoId && post.fileUrl) {
-          const m = post.fileUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/live\/)([a-zA-Z0-9_-]{11})/);
+        if (!videoId && (post.fileUrl || post.youtubeUrl)) {
+          const url = post.fileUrl || post.youtubeUrl;
+          const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/live\/)([a-zA-Z0-9_-]{11})/);
           if (m) videoId = m[1];
         }
+        
+        // Handle TikTok/Instagram directly via iframe or a link if they are saved as youtube_video type but with non-youtube URLs
+        const urlToParse = post.youtubeUrl || post.fileUrl || '';
+        if (urlToParse.includes('tiktok.com') || urlToParse.includes('instagram.com')) {
+          return (
+            <div className="p-6 text-center" style={{ background: 'var(--glass-bg)' }}>
+              <p className="mb-3 text-ig-text dark:text-ig-text-light font-semibold">Video Link</p>
+              <a href={urlToParse} target="_blank" rel="noopener noreferrer" className="btn-primary inline-block text-sm">
+                Watch on {urlToParse.includes('tiktok.com') ? 'TikTok' : 'Instagram'}
+              </a>
+            </div>
+          );
+        }
+
         if (!videoId) return <div className="p-6 text-center text-ig-text-2">Invalid YouTube URL</div>;
         return (
           <div className="aspect-video">
@@ -196,6 +211,30 @@ export default function PostDetail() {
           </div>
         );
       }
+      case 'drive_link':
+        return (
+          <div className="p-6 flex flex-col sm:flex-row items-center justify-between gap-4" style={{ background: 'var(--glass-bg)', backdropFilter: 'blur(12px)' }}>
+            <div className="flex items-center gap-3">
+              <span className="text-4xl">🔗</span>
+              <div className="text-left">
+                <p className="font-semibold text-ig-text dark:text-ig-text-light">External Link</p>
+                <p className="text-sm text-ig-text-2 truncate max-w-xs">{post.fileUrl || post.youtubeUrl}</p>
+              </div>
+            </div>
+            <a href={post.fileUrl || post.youtubeUrl} target="_blank" rel="noopener noreferrer" className="btn-primary flex items-center gap-2 text-sm whitespace-nowrap">
+              Open Link
+            </a>
+          </div>
+        );
+      case 'video_link':
+        return (
+          <div className="p-6 text-center" style={{ background: 'var(--glass-bg)' }}>
+            <p className="mb-3 text-ig-text dark:text-ig-text-light font-semibold">Video Link</p>
+            <a href={post.fileUrl || post.youtubeUrl} target="_blank" rel="noopener noreferrer" className="btn-primary inline-block text-sm">
+              Watch Video
+            </a>
+          </div>
+        );
       default:
         return null;
     }

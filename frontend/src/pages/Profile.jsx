@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { getUser, updateUser, getTotalUsers, getPresignedUrl, uploadDirect } from '../api';
+import { getUser, updateUser, getTotalUsers, getPresignedUrl, uploadDirect, followUser } from '../api';
 import PostCard from '../components/PostCard';
 import PostSkeleton from '../components/PostSkeleton';
 import { SUBJECTS, getSubjectColor } from '../utils';
@@ -21,6 +21,10 @@ export default function Profile() {
   const [editing, setEditing] = useState(false);
   const [editForm, setEditForm] = useState({});
   const [saving, setSaving] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followersCount, setFollowersCount] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
+  const [followLoading, setFollowLoading] = useState(false);
 
   const isOwnProfile = currentUser?._id === id;
 
@@ -34,6 +38,9 @@ export default function Profile() {
         setProfile(res.data.user);
         setPosts(res.data.posts);
         setTotalUsers(statsRes.data.totalUsers || 0);
+        setIsFollowing(res.data.user.followers?.some(f => f._id === currentUser?._id) || false);
+        setFollowersCount(res.data.user.followers?.length || 0);
+        setFollowingCount(res.data.user.following?.length || 0);
         setEditForm({
           name: res.data.user.name,
           bio: res.data.user.bio || '',
@@ -78,6 +85,22 @@ export default function Profile() {
     }
   };
 
+  const handleFollow = async () => {
+    if (!currentUser) return toast.error('Please log in to follow users.');
+    setFollowLoading(true);
+    try {
+      const res = await followUser(id);
+      setIsFollowing(res.data.isFollowing);
+      setFollowersCount(res.data.followersCount);
+      setFollowingCount(res.data.followingCount);
+      toast.success(res.data.isFollowing ? 'Following!' : 'Unfollowed.');
+    } catch (err) {
+      toast.error('Failed to follow user.');
+    } finally {
+      setFollowLoading(false);
+    }
+  };
+
   if (loading) {
     return (
       <div>
@@ -111,10 +134,9 @@ export default function Profile() {
   return (
     <div className="relative min-h-screen pb-24 bg-[var(--neu-bg)] font-body">
       {/* Top Image Banner */}
-      <div className="absolute top-0 left-0 w-full h-72 rounded-b-[48px] shadow-lg overflow-hidden">
-        <img src="/profile-bg.jpg" alt="Profile Background" className="w-full h-full object-cover" />
+      <div className="absolute top-0 left-0 w-full h-72 rounded-b-[48px] shadow-lg overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700">
         <div className="absolute inset-0 bg-black/10"></div>
-        <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent mix-blend-overlay"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent mix-blend-overlay"></div>
       </div>
 
       {/* Top Header Nav (Back / Message) */}
@@ -175,14 +197,18 @@ export default function Profile() {
           </div>
 
           {/* Stats Row */}
-          <div className="flex justify-center gap-12 sm:gap-24 mb-8">
+          <div className="flex justify-center gap-8 sm:gap-16 mb-8">
             <div className="flex flex-col items-center">
               <span className="text-xl font-bold text-ig-text dark:text-ig-text-light">{posts.length}</span>
               <span className="text-[11px] font-medium text-ig-text-2 tracking-wide uppercase">Posts</span>
             </div>
             <div className="flex flex-col items-center">
-              <span className="text-xl font-bold text-ig-text dark:text-ig-text-light">{totalUsers}</span>
-              <span className="text-[11px] font-medium text-ig-text-2 tracking-wide uppercase">Scholars</span>
+              <span className="text-xl font-bold text-ig-text dark:text-ig-text-light">{followersCount}</span>
+              <span className="text-[11px] font-medium text-ig-text-2 tracking-wide uppercase">Followers</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <span className="text-xl font-bold text-ig-text dark:text-ig-text-light">{followingCount}</span>
+              <span className="text-[11px] font-medium text-ig-text-2 tracking-wide uppercase">Following</span>
             </div>
           </div>
 
@@ -203,8 +229,16 @@ export default function Profile() {
               </button>
             ) : (
               <>
-                <button className="w-36 py-2.5 rounded-full text-sm font-semibold text-white bg-blue-500 shadow-[0_4px_14px_rgba(59,130,246,0.4)] hover:bg-blue-600 transition">
-                  Follow
+                <button 
+                  onClick={handleFollow}
+                  disabled={followLoading}
+                  className={`w-36 py-2.5 rounded-full text-sm font-semibold transition ${
+                    isFollowing 
+                      ? 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600'
+                      : 'text-white bg-blue-500 shadow-[0_4px_14px_rgba(59,130,246,0.4)] hover:bg-blue-600'
+                  }`}
+                >
+                  {followLoading ? '...' : isFollowing ? 'Following' : 'Follow'}
                 </button>
                 <button className="w-36 py-2.5 rounded-full text-sm font-semibold bg-white text-ig-text shadow-[0_4px_14px_rgba(0,0,0,0.05)] hover:bg-gray-50 transition">
                   Message
@@ -217,6 +251,23 @@ export default function Profile() {
           {editing && (
             <div className="p-5 mb-6 text-left" style={{ background: 'var(--neu-bg)', borderRadius: '24px', boxShadow: 'inset 4px 4px 10px var(--neu-shadow-dark), inset -4px -4px 10px var(--neu-shadow-light)' }}>
               <form onSubmit={handleSaveProfile} className="space-y-3">
+                <div className="flex flex-col items-center mb-4">
+                  <div className="relative">
+                    <img 
+                      src={editForm.avatarFile ? URL.createObjectURL(editForm.avatarFile) : (profile.avatar || `https://ui-avatars.com/api/?name=${profile.name}`)}
+                      alt="Avatar Preview"
+                      className="w-20 h-20 rounded-full object-cover shadow-[2px_2px_5px_var(--neu-shadow-dark)]"
+                    />
+                    <label className="absolute bottom-0 right-0 p-1.5 bg-blue-500 rounded-full text-white cursor-pointer hover:bg-blue-600 shadow-sm transition">
+                      <HiCamera className="w-4 h-4" />
+                      <input type="file" hidden accept="image/*" onChange={(e) => {
+                        if (e.target.files[0]) {
+                          setEditForm(prev => ({ ...prev, avatarFile: e.target.files[0] }));
+                        }
+                      }} />
+                    </label>
+                  </div>
+                </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className="block text-xs font-semibold text-ig-text dark:text-ig-text-light mb-1">Name</label>

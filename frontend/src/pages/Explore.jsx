@@ -32,7 +32,15 @@ export default function Explore() {
         if (reset || pageNum === 1) {
           setPosts(res.data.posts);
         } else {
-          setPosts((prev) => [...prev, ...res.data.posts]);
+          setPosts((prev) => {
+            const newPosts = [...prev];
+            res.data.posts.forEach(p => {
+              if (!newPosts.some(existing => existing._id === p._id)) {
+                newPosts.push(p);
+              }
+            });
+            return newPosts;
+          });
         }
         setHasMore(res.data.hasMore);
       } catch {
@@ -88,6 +96,16 @@ export default function Explore() {
 
       {/* Subjects Filter */}
       <div className="flex gap-3 overflow-x-auto px-4 pb-4 scrollbar-hide z-10 relative bg-[var(--neu-bg)]">
+        <button
+          onClick={() => setSelectedSubject('All')}
+          className={`flex-shrink-0 px-5 py-2 rounded-full text-sm font-semibold transition-all ${
+            selectedSubject === 'All'
+              ? 'bg-blue-500 text-white shadow-[inset_2px_2px_5px_rgba(0,0,0,0.2)]'
+              : 'bg-[var(--neu-bg)] text-ig-text dark:text-ig-text-light shadow-[4px_4px_10px_var(--neu-shadow-dark),-4px_-4px_10px_var(--neu-shadow-light)] hover:shadow-[2px_2px_5px_var(--neu-shadow-dark),-2px_-2px_5px_var(--neu-shadow-light)] active:shadow-[inset_2px_2px_5px_var(--neu-shadow-dark),inset_-2px_-2px_5px_var(--neu-shadow-light)]'
+          }`}
+        >
+          All
+        </button>
         {SUBJECTS.map((s) => (
           <button
             key={s.name}

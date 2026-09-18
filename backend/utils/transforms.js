@@ -43,6 +43,7 @@ function transformPost(post) {
     type: post.type,
     fileUrl: post.file_url,
     fileUrls: post.file_urls || [],
+    youtubeUrl: post.file_url && (post.file_url.includes('youtube.com') || post.file_url.includes('youtu.be') || post.file_url.includes('tiktok.com') || post.file_url.includes('instagram.com')) ? post.file_url : '',
     youtubeId: post.youtube_id || '',
     playlistId: post.playlist_id || '',
     title: post.title,

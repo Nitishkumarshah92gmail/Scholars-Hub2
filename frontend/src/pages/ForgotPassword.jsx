@@ -95,20 +95,14 @@ export default function ForgotPassword() {
                 <HiMail className="w-8 h-8 text-green-500" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-ig-text dark:text-ig-text-light">Ready to reset!</p>
+                <p className="text-sm font-semibold text-ig-text dark:text-ig-text-light">Email sent!</p>
                 <p className="text-xs text-ig-text-2 mt-1 leading-relaxed">
-                  Click the button below to set a new password for <span className="font-semibold">{email}</span>.
+                  We sent an email to <span className="font-semibold">{email}</span> with a link to get back into your account.
                 </p>
               </div>
-              <a
-                href={resetLink}
-                className="btn-primary w-full text-sm inline-block text-center"
-              >
-                Reset My Password
-              </a>
               <button
                 onClick={() => { setSent(false); setEmail(''); setResetLink(''); }}
-                className="text-ag-primary text-xs font-semibold hover:text-ag-primary-hover transition-colors"
+                className="text-ag-primary text-xs font-semibold hover:text-ag-primary-hover transition-colors mt-2"
               >
                 Use a different email
               </button>

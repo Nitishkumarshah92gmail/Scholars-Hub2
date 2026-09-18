@@ -164,6 +164,23 @@ export function AuthProvider({ children }) {
     setSession(null);
   };
 
+  const loginWithGoogle = async () => {
+    if (!isSupabaseConfigured) {
+      throw new Error(
+        'Supabase is not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables.'
+      );
+    }
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        // Automatically redirects back to where they started from,
+        // or uses the default site URL configured in Supabase.
+      },
+    });
+    if (error) throw error;
+    return data;
+  };
+
   const updateUserData = (userData) => {
     setUser(userData);
   };
@@ -181,6 +198,7 @@ export function AuthProvider({ children }) {
         loading,
         loginUser,
         registerUser,
+        loginWithGoogle,
         logoutUser,
         updateUserData,
         getAccessToken,

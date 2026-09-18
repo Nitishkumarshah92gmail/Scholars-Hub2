@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { SUBJECTS } from '../utils';
 import logoImg from '../assets/logo.png';
 import toast from 'react-hot-toast';
+import { FcGoogle } from 'react-icons/fc';
 
 export default function Register() {
   const [form, setForm] = useState({
@@ -15,7 +16,7 @@ export default function Register() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { registerUser } = useAuth();
+  const { registerUser, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -60,6 +61,15 @@ export default function Register() {
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGoogleSignup = async () => {
+    try {
+      await loginWithGoogle();
+      // Redirect happens automatically with Supabase OAuth
+    } catch (err) {
+      toast.error(err.message || 'Google signup failed.');
     }
   };
 
@@ -169,6 +179,22 @@ export default function Register() {
               )}
             </button>
           </form>
+
+          {/* Divider */}
+          <div className="flex items-center gap-4 my-5">
+            <div className="flex-1 h-px" style={{ background: 'var(--glass-border)' }} />
+            <span className="text-xs text-ig-text-2 font-semibold uppercase">Or</span>
+            <div className="flex-1 h-px" style={{ background: 'var(--glass-border)' }} />
+          </div>
+
+          <button
+            type="button"
+            onClick={handleGoogleSignup}
+            className="w-full flex items-center justify-center gap-2 bg-white text-black font-semibold text-sm py-2.5 rounded-[12px] shadow-[0_2px_10px_rgba(0,0,0,0.1)] hover:bg-gray-50 transition-colors mb-4"
+          >
+            <FcGoogle className="w-5 h-5" />
+            Sign up with Google
+          </button>
 
           <p className="text-center text-[11px] text-ig-text-2 mt-4 leading-4">
             By signing up, you agree to share knowledge and help fellow students learn.

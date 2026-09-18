@@ -4,13 +4,14 @@ import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import logoImg from '../assets/logo.png';
 import { HiEye, HiEyeOff } from 'react-icons/hi';
+import { FcGoogle } from 'react-icons/fc';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { loginUser } = useAuth();
+  const { loginUser, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -39,6 +40,15 @@ export default function Login() {
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      await loginWithGoogle();
+      // Redirect happens automatically with Supabase OAuth
+    } catch (err) {
+      toast.error(err.message || 'Google login failed.');
     }
   };
 
@@ -109,6 +119,15 @@ export default function Login() {
             <span className="text-xs text-ig-text-2 font-semibold uppercase">Or</span>
             <div className="flex-1 h-px" style={{ background: 'var(--glass-border)' }} />
           </div>
+
+          <button
+            type="button"
+            onClick={handleGoogleLogin}
+            className="w-full flex items-center justify-center gap-2 bg-white text-black font-semibold text-sm py-2.5 rounded-[12px] shadow-[0_2px_10px_rgba(0,0,0,0.1)] hover:bg-gray-50 transition-colors mb-4"
+          >
+            <FcGoogle className="w-5 h-5" />
+            Continue with Google
+          </button>
 
           <Link to="/forgot-password" className="block text-center text-xs text-ag-primary font-semibold hover:text-ag-primary-hover transition-colors">
             Forgot password?

@@ -137,15 +137,14 @@ export default function Profile() {
     <div className="relative min-h-screen pb-24 bg-[var(--neu-bg)] font-body">
       {/* Top Image Banner */}
       <div 
-        className="absolute top-0 left-0 w-full h-56 rounded-b-[48px] shadow-lg overflow-hidden"
+        className="absolute top-0 left-0 w-full h-56 overflow-hidden"
         style={{
           backgroundImage: 'url(/campus-bg.jpg)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
       >
-        <div className="absolute inset-0 bg-black/30"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-[var(--neu-bg)] to-transparent opacity-60"></div>
+        <div className="absolute inset-0 bg-black/20"></div>
       </div>
 
       {/* Top Header Nav (Back / Message) */}
@@ -159,13 +158,8 @@ export default function Profile() {
       </div>
 
       <div className="relative z-10 px-4 max-w-4xl mx-auto mt-20 w-full">
-        {/* Profile Card */}
-        <div className="relative p-6 pt-0 sm:p-10 sm:pt-0 rounded-[40px] text-center w-full"
-             style={{
-               background: 'transparent',
-               border: '1px solid rgba(255, 255, 255, 0.3)',
-               boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.05), 8px 8px 20px var(--neu-shadow-dark), -8px -8px 20px var(--neu-shadow-light)',
-             }}>
+        {/* Profile Content */}
+        <div className="relative p-6 pt-0 sm:p-10 sm:pt-0 text-center w-full">
           
           {/* Avatar (centered and protruding) */}
           <div className="relative z-20 flex justify-center -mt-16 sm:-mt-20 mb-4">

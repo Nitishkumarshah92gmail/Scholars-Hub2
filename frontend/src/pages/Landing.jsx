@@ -128,8 +128,7 @@ export default function Landing() {
       const x = (window.innerWidth / 2 - e.pageX) / 25;
       const y = (window.innerHeight / 2 - e.pageY) / 25;
       
-      const avatar = document.getElementById('hero-avatar');
-      if (avatar) avatar.style.transform = `rotateX(${y}deg) rotateY(${x}deg)`;
+
       
       const decors = document.querySelectorAll('.about-decor');
       decors.forEach((decor, index) => {
@@ -277,12 +276,7 @@ export default function Landing() {
               </h1>
             </div>
 
-            {/* Avatar Parallax */}
-            <div className="reveal delay-4 hidden lg:block mt-10 lg:mt-0 mr-10 xl:mr-20">
-                <div className="hero-avatar-parallax" id="hero-avatar">
-                    <img src="/portfolio-assets/images/nitish_avatar_nobg.png" alt="Nitish Avatar" className="hero-avatar-img" />
-                </div>
-            </div>
+
           </div>
 
           {/* Bottom Row */}
@@ -293,13 +287,7 @@ export default function Landing() {
                Discover comprehensive study materials in collaborative digital hubs. Connect, learn, and excel together with your peers.
              </div>
 
-             {/* Bottom Center Rating */}
-             <div className="flex flex-col items-center animate-fade-in-up mb-4 lg:mb-0" style={{ animationDelay: '0.3s' }}>
-               <div className="flex items-center gap-2 text-yellow-500">
-                  ★ <span className="text-white text-3xl font-medium">4.9</span>
-               </div>
-               <span className="text-gray-400 text-sm mt-1">from 20,000+ students</span>
-             </div>
+
 
              {/* Bottom Right Glass Card (Study Hub Widget) */}
              <div className="bg-[#121c22]/60 backdrop-blur-2xl border border-white/10 rounded-[2rem] p-6 w-full lg:w-[400px] shadow-2xl animate-fade-in-up hover:-translate-y-1 transition-transform duration-500" style={{ animationDelay: '0.4s' }}>

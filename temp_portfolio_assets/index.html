@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nitish Kumar Sahu — Data Science & Engineering</title>
+    <meta name="description" content="Nitish Kumar Sahu — Data Science student at IIT Madras & CS at Ambala. Building scalable systems, data pipelines, and full-stack applications." />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+    <!-- ========== NAVIGATION ========== -->
+    <nav class="navbar" id="navbar">
+        <a href="#" class="nav-logo">N<span>.</span>K<span>.</span>S</a>
+        <div class="nav-links">
+            <a href="#about">About</a>
+            <a href="#skills">Skills</a>
+            <a href="#projects">Projects</a>
+            <a href="#education">Education</a>
+            <a href="#achievements">Achievements</a>
+            <a href="#resume">Resume</a>
+            <button data-open-contact class="btn-cta" style="padding: 0.5rem 1.5rem; font-size: 0.75rem;">Contact</button>
+        </div>
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <!-- Mobile Nav Overlay -->
+    <div class="mobile-nav" id="mobile-nav">
+        <a href="#about">About</a>
+        <a href="#skills">Skills</a>
+        <a href="#projects">Projects</a>
+        <a href="#education">Education</a>
+        <a href="#achievements">Achievements</a>
+        <a href="#resume">Resume</a>
+        <a href="#" data-open-contact>Contact</a>
+    </div>
+
+    <!-- ========== HERO SECTION ========== -->
+    <!-- ========== HERO SECTION ========== -->
+    <section class="hero" id="hero">
+        <!-- Center Glow -->
+        <div class="hero-center-glow"></div>
+
+        <!-- Center Avatar -->
+        <div class="hero-center-avatar reveal delay-2">
+            <div class="hero-avatar-parallax" id="hero-avatar">
+                <img src="images/nitish_avatar_nobg.png" alt="Nitish Kumar Sahu — 3D Avatar" class="hero-avatar-img" />
+            </div>
+        </div>
+
+        <!-- Left Content -->
+        <div class="hero-side-content hero-left-content reveal delay-3">
+            <span class="hero-small-text accent-purple">Hello, I'm</span>
+            <h1 class="hero-big-text">Nitish Sahu</h1>
+        </div>
+
+        <!-- Right Content -->
+        <div class="hero-side-content hero-right-content reveal delay-4">
+            <span class="hero-small-text accent-purple">Creative</span>
+            <h1 class="hero-big-text gradient-text-purple">Data Science</h1>
+            <h1 class="hero-big-text">& Engineer</h1>
+        </div>
+
+        <!-- Bottom Left Socials -->
+        <div class="hero-socials reveal delay-5">
+            <a href="https://www.linkedin.com/in/nitish-sahu" target="_blank" rel="noreferrer" class="hero-social-link">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+      </a>
+            <a href="https://github.com/" target="_blank" rel="noreferrer" class="hero-social-link">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+      </a>
+            <a href="mailto:nitishkumarshah92@gmail.com" class="hero-social-link">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+      </a>
+        </div>
+
+        <!-- Bottom Right Resume -->
+        <a href="Nitish_Kumar_Sahu_Resume.pdf" download class="hero-resume-link reveal delay-5">
+      RESUME <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+    </a>
+    </section>
+
+
+    <!-- ========== SCROLLING SHOWCASE ========== -->
+    <section class="showcase-section" aria-label="Design showcase gallery">
+        <div class="marquee-row" id="marquee-row-1">
+            <img src="motionsites-assets/hero-space-voyage-preview-eECLH3Yc.gif" alt="Space Voyage design" loading="lazy" />
+            <img src="motionsites-assets/hero-codenest-preview-Cgppc2qV.gif" alt="CodeNest design" loading="lazy" />
+            <img src="motionsites-assets/hero-vex-ventures-preview-BczMFIiw.gif" alt="Vex Ventures design" loading="lazy" />
+            <img src="motionsites-assets/hero-stellar-ai-v2-preview-DjvxjG3C.gif" alt="Stellar AI design" loading="lazy" />
+            <img src="motionsites-assets/hero-asme-preview-B_nGDnTP.gif" alt="ASME design" loading="lazy" />
+            <img src="motionsites-assets/hero-transform-data-preview-Cx5OU29N.gif" alt="Transform Data design" loading="lazy" />
+            <img src="motionsites-assets/hero-vitara-preview-Cjz2QYyU.gif" alt="Vitara design" loading="lazy" />
+            <img src="motionsites-assets/hero-terra-preview-BFjrCr7T.gif" alt="Terra design" loading="lazy" />
+            <img src="motionsites-assets/hero-skyelite-preview-DHaZIgUv.gif" alt="Skyelite design" loading="lazy" />
+            <img src="motionsites-assets/hero-aethera-preview-DknSlcTa.gif" alt="Aethera design" loading="lazy" />
+            <img src="motionsites-assets/hero-designpro-preview-D8c5_een.gif" alt="DesignPro design" loading="lazy" />
+            <!-- Duplicated for seamless scroll -->
+            <img src="motionsites-assets/hero-space-voyage-preview-eECLH3Yc.gif" alt="Space Voyage design" loading="lazy" />
+            <img src="motionsites-assets/hero-codenest-preview-Cgppc2qV.gif" alt="CodeNest design" loading="lazy" />
+            <img src="motionsites-assets/hero-vex-ventures-preview-BczMFIiw.gif" alt="Vex Ventures design" loading="lazy" />
+            <img src="motionsites-assets/hero-stellar-ai-v2-preview-DjvxjG3C.gif" alt="Stellar AI design" loading="lazy" />
+        </div>
+        <div class="marquee-row" id="marquee-row-2">
+            <img src="motionsites-assets/hero-stellar-ai-preview-D3HL6bw1.gif" alt="Stellar AI v1 design" loading="lazy" />
+            <img src="motionsites-assets/hero-xportfolio-preview-D4A8maiC.gif" alt="XPortfolio design" loading="lazy" />
+            <img src="motionsites-assets/hero-orbit-web3-preview-BXt4OttD.gif" alt="Orbit Web3 design" loading="lazy" />
+            <img src="motionsites-assets/hero-nexora-preview-cx5HmUgo.gif" alt="Nexora design" loading="lazy" />
+            <img src="motionsites-assets/hero-evr-ventures-preview-DZxeVFEX.gif" alt="EVR Ventures design" loading="lazy" />
+            <img src="motionsites-assets/hero-planet-orbit-preview-DWAP8Z1P.gif" alt="Planet Orbit design" loading="lazy" />
+            <img src="motionsites-assets/hero-new-era-preview-CocuDUm9.gif" alt="New Era design" loading="lazy" />
+            <img src="motionsites-assets/hero-wealth-preview-B70idl_u.gif" alt="Wealth design" loading="lazy" />
+            <img src="motionsites-assets/hero-luminex-preview-CxOP7ce6.gif" alt="Luminex design" loading="lazy" />
+            <img src="motionsites-assets/hero-celestia-preview-0yO3jXO8.gif" alt="Celestia design" loading="lazy" />
+            <!-- Duplicated for seamless scroll -->
+            <img src="motionsites-assets/hero-stellar-ai-preview-D3HL6bw1.gif" alt="Stellar AI v1 design" loading="lazy" />
+            <img src="motionsites-assets/hero-xportfolio-preview-D4A8maiC.gif" alt="XPortfolio design" loading="lazy" />
+            <img src="motionsites-assets/hero-orbit-web3-preview-BXt4OttD.gif" alt="Orbit Web3 design" loading="lazy" />
+        </div>
+    </section>
+
+
+    <!-- ========== ABOUT SECTION ========== -->
+    <section class="about-section" id="about">
+        <!-- 3D Decorative icons -->
+        <div class="about-decor decor-top-left reveal-left delay-1">
+            <img src="_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/moon_icon.11395d36.png" alt="3D Moon icon" />
+        </div>
+        <div class="about-decor decor-top-right reveal-right delay-2">
+            <img src="_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/lego_icon-1.703bb594.png" alt="3D Lego icon" />
+        </div>
+        <div class="about-decor decor-bottom-left reveal-left delay-3">
+            <img src="_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/p59_1.4659672e.png" alt="3D decoration" />
+        </div>
+        <div class="about-decor decor-bottom-right reveal-right delay-4">
+            <img src="_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/Group_134-1.2e04f3ce.png" alt="3D group decoration" />
+        </div>
+
+        <h2 class="section-title hero-heading reveal">About Me</h2>
+
+        <div class="about-text-container reveal delay-2">
+            <p class="about-text">
+                <span class="word" style="opacity:0.2">I'm</span>
+                <span class="word" style="opacity:0.2">pursuing</span>
+                <span class="word" style="opacity:0.2">Data</span>
+                <span class="word" style="opacity:0.2">Science</span>
+                <span class="word" style="opacity:0.2">at</span>
+                <span class="word" style="opacity:0.2">IIT</span>
+                <span class="word" style="opacity:0.2">Madras</span>
+                <span class="word" style="opacity:0.2">and</span>
+                <span class="word" style="opacity:0.2">Computer</span>
+                <span class="word" style="opacity:0.2">Science</span>
+                <span class="word" style="opacity:0.2">at</span>
+                <span class="word" style="opacity:0.2">Ambala.</span>
+                <span class="word" style="opacity:0.2">I</span>
+                <span class="word" style="opacity:0.2">build</span>
+                <span class="word" style="opacity:0.2">scalable</span>
+                <span class="word" style="opacity:0.2">full-stack</span>
+                <span class="word" style="opacity:0.2">applications,</span>
+                <span class="word" style="opacity:0.2">data</span>
+                <span class="word" style="opacity:0.2">pipelines,</span>
+                <span class="word" style="opacity:0.2">and</span>
+                <span class="word" style="opacity:0.2">high-performance</span>
+                <span class="word" style="opacity:0.2">systems.</span>
+                <span class="word" style="opacity:0.2">From</span>
+                <span class="word" style="opacity:0.2">winning</span>
+                <span class="word" style="opacity:0.2">hackathons</span>
+                <span class="word" style="opacity:0.2">to</span>
+                <span class="word" style="opacity:0.2">leading</span>
+                <span class="word" style="opacity:0.2">data</span>
+                <span class="word" style="opacity:0.2">teams</span>
+                <span class="word" style="opacity:0.2">—</span>
+                <span class="word" style="opacity:0.2">I</span>
+                <span class="word" style="opacity:0.2">solve</span>
+                <span class="word" style="opacity:0.2">complex</span>
+                <span class="word" style="opacity:0.2">problems</span>
+                <span class="word" style="opacity:0.2">with</span>
+                <span class="word" style="opacity:0.2">clean</span>
+                <span class="word" style="opacity:0.2">code.</span>
+                <span class="word" style="opacity:0.2">Let's</span>
+                <span class="word" style="opacity:0.2">build</span>
+                <span class="word" style="opacity:0.2">something</span>
+                <span class="word" style="opacity:0.2">incredible</span>
+                <span class="word" style="opacity:0.2">together!</span>
+            </p>
+        </div>
+
+        <div class="reveal delay-4" style="margin-top: 3rem;">
+            <button class="btn-cta" data-open-contact>Contact Me</button>
+        </div>
+    </section>
+
+
+    <!-- ========== SKILLS SECTION (White) ========== -->
+    <section class="skills-section" id="skills">
+        <h2 class="section-title reveal">Skills</h2>
+
+        <div class="skills-grid">
+            <!-- Data Analysis -->
+            <div class="skill-category reveal delay-1" data-tilt data-tilt-glare data-tilt-max-glare="0.2">
+                <div class="skill-category-header">
+                    <span class="skill-number">01</span>
+                    <h3 class="skill-category-title">Data Analysis & Libraries</h3>
+                </div>
+                <div class="skill-tags">
+                    <span class="skill-tag">Pandas</span>
+                    <span class="skill-tag">NumPy</span>
+                    <span class="skill-tag">Matplotlib</span>
+                    <span class="skill-tag">Data Cleaning</span>
+                    <span class="skill-tag">EDA</span>
+                    <span class="skill-tag">Statistical Analysis</span>
+                </div>
+            </div>
+
+            <!-- Languages -->
+            <div class="skill-category reveal delay-2" data-tilt data-tilt-glare data-tilt-max-glare="0.2">
+                <div class="skill-category-header">
+                    <span class="skill-number">02</span>
+                    <h3 class="skill-category-title">Languages</h3>
+                </div>
+                <div class="skill-tags">
+                    <span class="skill-tag">Python</span>
+                    <span class="skill-tag">C</span>
+                    <span class="skill-tag">C++</span>
+                    <span class="skill-tag">SQL</span>
+                    <span class="skill-tag">Java</span>
+                    <span class="skill-tag">JavaScript</span>
+                    <span class="skill-tag">HTML</span>
+                    <span class="skill-tag">CSS</span>
+                </div>
+            </div>
+
+            <!-- CS Fundamentals -->
+            <div class="skill-category reveal delay-3" data-tilt data-tilt-glare data-tilt-max-glare="0.2">
+                <div class="skill-category-header">
+                    <span class="skill-number">03</span>
+                    <h3 class="skill-category-title">CS Fundamentals</h3>
+                </div>
+                <div class="skill-tags">
+                    <span class="skill-tag">DSA</span>
+                    <span class="skill-tag">OOP</span>
+                    <span class="skill-tag">Operating Systems</span>
+                    <span class="skill-tag">Computer Networks</span>
+                </div>
+            </div>
+
+            <!-- Databases -->
+            <div class="skill-category reveal delay-4">
+                <div class="skill-category-header">
+                    <span class="skill-number">04</span>
+                    <h3 class="skill-category-title">Databases</h3>
+                </div>
+                <div class="skill-tags">
+                    <span class="skill-tag">MySQL</span>
+                    <span class="skill-tag">PostgreSQL</span>
+                    <span class="skill-tag">Relational DB Design</span>
+                    <span class="skill-tag">DBMS</span>
+                </div>
+            </div>
+
+            <!-- Tools & Viz -->
+            <div class="skill-category reveal delay-5">
+                <div class="skill-category-header">
+                    <span class="skill-number">05</span>
+                    <h3 class="skill-category-title">Tools & Visualization</h3>
+                </div>
+                <div class="skill-tags">
+                    <span class="skill-tag">Power BI</span>
+                    <span class="skill-tag">Tableau</span>
+                    <span class="skill-tag">Excel</span>
+                    <span class="skill-tag">Google Sheets</span>
+                    <span class="skill-tag">Git</span>
+                    <span class="skill-tag">Flask</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ========== EDUCATION SECTION ========== -->
+    <section class="education-section" id="education">
+        <h2 class="section-title hero-heading reveal">Education</h2>
+
+        <div class="education-timeline">
+            <!-- IIT Madras -->
+            <div class="edu-card reveal delay-1">
+                <div class="edu-dot"></div>
+                <div class="edu-card-inner">
+                    <span class="edu-date">Currently Pursuing</span>
+                    <h3 class="edu-institution">Indian Institute of Technology (IIT) Madras</h3>
+                    <p class="edu-degree">Bachelor of Science (BS): Data Science and Applications</p>
+                    <p class="edu-coursework"><strong>Coursework:</strong> Python, Java, Statistics, Database Management Systems (DBMS), Business Data Management (BDM), Modern Application Development (MAD 1 & MAD 2)</p>
+                </div>
+            </div>
+
+            <!-- Govt College Ambala -->
+            <div class="edu-card reveal delay-2">
+                <div class="edu-dot"></div>
+                <div class="edu-card-inner">
+                    <span class="edu-date">Currently Pursuing</span>
+                    <h3 class="edu-institution">Government College, Ambala Cantt</h3>
+                    <p class="edu-degree">Bachelor of Science (BSc): Computer Science</p>
+                    <p class="edu-coursework"><strong>Coursework:</strong> Data Structures & Algorithms (DSA), Operating Systems, Computer Networks, Object-Oriented Programming (OOP), C/C++, Software Engineering</p>
+                </div>
+            </div>
+
+            <!-- NIOS -->
+            <div class="edu-card reveal delay-3">
+                <div class="edu-dot"></div>
+                <div class="edu-card-inner">
+                    <span class="edu-date">2023 · Score: 78%</span>
+                    <h3 class="edu-institution">National Institute of Open Schooling (NIOS)</h3>
+                    <p class="edu-degree">Class XII (Senior Secondary)</p>
+                </div>
+            </div>
+
+            <!-- GHS -->
+            <div class="edu-card reveal delay-4">
+                <div class="edu-dot"></div>
+                <div class="edu-card-inner">
+                    <span class="edu-date">2021 · Score: 90.6%</span>
+                    <h3 class="edu-institution">Government High School (GHS) Military Dairy Farm</h3>
+                    <p class="edu-degree">Class X (Secondary)</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ========== PROJECTS SECTION ========== -->
+    <section class="projects-section" id="projects">
+        <h2 class="section-title hero-heading reveal">Projects</h2>
+
+        <div class="projects-container" id="projects-stack">
+
+            <!-- Project 01 -->
+            <div class="project-sticky-wrap" data-index="0">
+                <div class="project-card">
+                    <div class="project-card-header">
+                        <div class="project-header-left">
+                            <span class="project-number">01</span>
+                            <div class="project-meta">
+                                <span class="project-category">Data Visualization</span>
+                                <h3 class="project-name">Sales Performance Dashboard</h3>
+                            </div>
+                        </div>
+                        <span class="project-date-badge">Nov 2025 – Dec 2025</span>
+                    </div>
+                    <div class="project-body">
+                        <div class="project-images-grid">
+                            <div class="project-images-left">
+                                <p class="project-description">Transformed raw e-commerce datasets into an executive-ready visual narrative tracking revenue trends and top-performing regions.</p>
+                                <img src="images/project_dashboard.png" alt="Dashboard overview" loading="lazy" />
+                                <img src="images/project_charts.png" alt="Analytics charts" loading="lazy" />
+                            </div>
+                            <div class="project-images-right">
+                                <img src="images/project_segmentation.png" alt="Data visualization render" loading="lazy" />
+                            </div>
+                        </div>
+                        <div class="project-tech-tags" style="margin-top: 1rem;">
+                            <span class="tech-tag">Power BI</span>
+                            <span class="tech-tag">SQL</span>
+                            <span class="tech-tag">Data Visualization</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 02 -->
+            <div class="project-sticky-wrap" data-index="1">
+                <div class="project-card">
+                    <div class="project-card-header">
+                        <div class="project-header-left">
+                            <span class="project-number">02</span>
+                            <div class="project-meta">
+                                <span class="project-category">Exploratory Data Analysis</span>
+                                <h3 class="project-name">Customer Segmentation (RFM)</h3>
+                            </div>
+                        </div>
+                        <span class="project-date-badge">Dec 2025</span>
+                    </div>
+                    <div class="project-body">
+                        <div class="project-images-grid">
+                            <div class="project-images-left">
+                                <p class="project-description">Performed RFM analysis on transaction datasets to group customers by buying habits. Cleaned data to identify high-value segments.</p>
+                                <img src="images/project_segmentation.png" alt="Data clusters" loading="lazy" />
+                                <img src="images/project_dashboard.png" alt="Analysis dashboard" loading="lazy" />
+                            </div>
+                            <div class="project-images-right">
+                                <img src="images/project_charts.png" alt="RFM segmentation render" loading="lazy" />
+                            </div>
+                        </div>
+                        <div class="project-tech-tags" style="margin-top: 1rem;">
+                            <span class="tech-tag">Python</span>
+                            <span class="tech-tag">Pandas</span>
+                            <span class="tech-tag">EDA</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 03 -->
+            <div class="project-sticky-wrap" data-index="2">
+                <div class="project-card">
+                    <div class="project-card-header">
+                        <div class="project-header-left">
+                            <span class="project-number">03</span>
+                            <div class="project-meta">
+                                <span class="project-category">Infrastructure</span>
+                                <h3 class="project-name">Placement Portal Data System</h3>
+                            </div>
+                        </div>
+                        <span class="project-date-badge">Jan 2026 – Feb 2026</span>
+                    </div>
+                    <div class="project-body">
+                        <div class="project-images-grid">
+                            <div class="project-images-left">
+                                <p class="project-description">Designed relational databases using SQL for 300+ students. Created data pipelines using Python and Flask.</p>
+                                <img src="images/project_code.png" alt="Code preview" loading="lazy" />
+                                <img src="images/project_database.png" alt="Database architecture" loading="lazy" />
+                            </div>
+                            <div class="project-images-right">
+                                <img src="images/project_database.png" alt="Infrastructure render" loading="lazy" />
+                            </div>
+                        </div>
+                        <div class="project-tech-tags" style="margin-top: 1rem;">
+                            <span class="tech-tag">Python</span>
+                            <span class="tech-tag">SQL</span>
+                            <span class="tech-tag">Flask</span>
+                            <span class="tech-tag">OOP</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 04 -->
+            <div class="project-sticky-wrap" data-index="3">
+                <div class="project-card">
+                    <div class="project-card-header">
+                        <div class="project-header-left">
+                            <span class="project-number">04</span>
+                            <div class="project-meta">
+                                <span class="project-category">Data Management</span>
+                                <h3 class="project-name">ScholarsHub Resource Platform</h3>
+                            </div>
+                        </div>
+                        <span class="project-date-badge">Feb 2026 – Mar 2026</span>
+                    </div>
+                    <div class="project-body">
+                        <div class="project-images-grid">
+                            <div class="project-images-left">
+                                <p class="project-description">Centralized system for 500+ students with BDM principles for high data integrity and rapid querying.</p>
+                                <img src="images/project_education.png" alt="Education platform" loading="lazy" />
+                                <img src="images/project_code.png" alt="Platform code" loading="lazy" />
+                            </div>
+                            <div class="project-images-right">
+                                <img src="images/project_education.png" alt="ScholarsHub render" loading="lazy" />
+                            </div>
+                        </div>
+                        <div class="project-tech-tags" style="margin-top: 1rem;">
+                            <span class="tech-tag">SQL</span>
+                            <span class="tech-tag">JavaScript</span>
+                            <span class="tech-tag">Data Management</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 05 -->
+            <div class="project-sticky-wrap" data-index="4">
+                <div class="project-card">
+                    <div class="project-card-header">
+                        <div class="project-header-left">
+                            <span class="project-number">05</span>
+                            <div class="project-meta">
+                                <span class="project-category">AI / Automation</span>
+                                <h3 class="project-name">AI Prompt Management Data Tool</h3>
+                            </div>
+                        </div>
+                        <span class="project-date-badge">Jan 2026 – Mar 2026</span>
+                    </div>
+                    <div class="project-body">
+                        <div class="project-images-grid">
+                            <div class="project-images-left">
+                                <p class="project-description">Analyzed LLM prompt-response datasets and increased developer productivity by 30% through efficiency metrics.</p>
+                                <img src="images/project_ai.png" alt="AI neural network" loading="lazy" />
+                                <img src="images/project_charts.png" alt="AI metrics" loading="lazy" />
+                            </div>
+                            <div class="project-images-right">
+                                <img src="images/project_ai.png" alt="AI tool render" loading="lazy" />
+                            </div>
+                        </div>
+                        <div class="project-tech-tags" style="margin-top: 1rem;">
+                            <span class="tech-tag">Python</span>
+                            <span class="tech-tag">Pandas</span>
+                            <span class="tech-tag">Data Extraction</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- ========== ACHIEVEMENTS SECTION (White) ========== -->
+    <section class="achievements-section" id="achievements">
+        <h2 class="section-title reveal">Achievements</h2>
+
+        <div class="achievements-grid">
+            <!-- 1 -->
+            <div class="achievement-card reveal delay-1" data-tilt data-tilt-glare data-tilt-max-glare="0.2">
+                <div class="achievement-icon">🏆</div>
+                <h3 class="achievement-title">1st Place — SD Tech4Society Hackathon</h3>
+                <p class="achievement-desc">Achieved first place out of 50+ competing teams by successfully developing and presenting a scalable, data-driven application platform.</p>
+            </div>
+
+            <!-- 2 -->
+            <div class="achievement-card reveal delay-2" data-tilt data-tilt-glare data-tilt-max-glare="0.2">
+                <div class="achievement-icon">👨‍💻</div>
+                <h3 class="achievement-title">Team Lead — Open Government Data Platform</h3>
+                <p class="achievement-desc">Led a technical data team (UIDAI 12156) in a national data-themed competition, organizing workflows, cleaning public datasets, and supporting data-driven civic projects.</p>
+            </div>
+
+            <!-- 3 -->
+            <div class="achievement-card reveal delay-3" data-tilt data-tilt-glare data-tilt-max-glare="0.2">
+                <div class="achievement-icon">📊</div>
+                <h3 class="achievement-title">Data Analysis Fundamentals — Microsoft</h3>
+                <p class="achievement-desc">Achieved certification in data analysis concepts, Excel, and visualization tools from Microsoft's official program.</p>
+            </div>
+
+            <!-- 4 -->
+            <div class="achievement-card reveal delay-4" data-tilt data-tilt-glare data-tilt-max-glare="0.2">
+                <div class="achievement-icon">🐍</div>
+                <h3 class="achievement-title">Python for Data Science — IIT Madras</h3>
+                <p class="achievement-desc">Credentialed in Python programming for statistical and data science applications through the IIT Madras certification program.</p>
+            </div>
+        </div>
+    </section>
+
+    </section>
+
+
+    <!-- ========== RESUME SECTION ========== -->
+    <section class="resume-section" id="resume">
+        <div class="resume-container reveal delay-2">
+            <div class="resume-content">
+                <h2 class="resume-title">Ready to see the full picture?</h2>
+                <p class="resume-desc">Get a comprehensive overview of my experience, education, and technical skills in one place.</p>
+            </div>
+            <a href="Nitish_Kumar_Sahu_Resume.pdf" download="Nitish_Kumar_Sahu_Resume.pdf" class="btn-resume">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.5rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+        Download Resume (PDF)
+      </a>
+        </div>
+    </section>
+    <footer class="footer" id="contact">
+        <div class="footer-top">
+            <div class="reveal">
+                <h3 class="footer-heading hero-heading">Nitish Kumar Sahu</h3>
+                <p class="footer-subtitle">Data Science & Full-Stack Engineering</p>
+            </div>
+            <div class="reveal delay-2">
+                <button class="btn-cta" data-open-contact>Get In Touch</button>
+            </div>
+        </div>
+
+        <div class="footer-contact-info">
+            <div class="contact-links">
+                <a href="mailto:nitishkumarshah92@gmail.com" class="contact-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          nitishkumarshah92@gmail.com
+        </a>
+                <a href="https://www.linkedin.com/in/nitish-sahu" target="_blank" rel="noreferrer" class="contact-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+          LinkedIn
+        </a>
+                <a href="https://github.com/" target="_blank" rel="noreferrer" class="contact-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+          GitHub
+        </a>
+                <a href="tel:+916200101314" class="contact-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          +91 6200101314
+        </a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <span>© 2026 Nitish Kumar Sahu. All rights reserved.</span>
+            <span>Ambala, Haryana, India</span>
+            <span>Built with HTML, CSS & JavaScript</span>
+        </div>
+    </footer>
+
+
+    <!-- ========== CONTACT MODAL ========== -->
+    <div class="modal-overlay" id="contact-modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-container">
+            <div class="modal-orb-1"></div>
+            <div class="modal-orb-2"></div>
+            <button class="modal-close" aria-label="Close modal">✕</button>
+
+            <div id="modal-form-content">
+                <h2 class="modal-title hero-heading">Ready To Build</h2>
+                <p class="modal-subtitle">Let's connect. Drop me a message below.</p>
+                <form class="modal-form" id="contact-form" action="https://formspree.io/f/myegzper" method="POST">
+                    <div class="form-group">
+                        <label for="contact-name">Your Name</label>
+                        <input type="text" id="contact-name" name="name" placeholder="Nitish Sahu" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-email">Your Email</label>
+                        <input type="email" id="contact-email" name="email" placeholder="hello@example.com" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-message">Message</label>
+                        <textarea id="contact-message" name="message" placeholder="Tell me about your project or idea..." rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn-cta" id="contact-submit-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+            <span id="contact-submit-text">Send Message</span>
+          </button>
+                </form>
+            </div>
+
+            <div class="modal-success" id="modal-success">
+                <span class="checkmark">✅</span>
+                <h3>Message Sent!</h3>
+                <p>Thank you for reaching out! Nitish will get back to you shortly.</p>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
+import '../landing-theme.css';
 import logoImg from '../assets/logo.png';
 import { useEffect, useRef, useState } from 'react';
 import {
@@ -61,13 +62,12 @@ function useScrollReveal() {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('is-revealed');
-          entry.target.classList.remove('opacity-0', 'translate-y-10');
+          entry.target.classList.add('visible');
         }
       });
     }, { threshold: 0.1 });
 
-    const hiddenElements = document.querySelectorAll('.reveal-on-scroll');
+    const hiddenElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
     hiddenElements.forEach((el) => observer.observe(el));
 
     return () => {
@@ -91,6 +91,34 @@ export default function Landing() {
   useEffect(() => {
     const onScroll = () => setHeaderScrolled(window.scrollY > 20);
     window.addEventListener('scroll', onScroll, { passive: true });
+    
+    // Load VanillaTilt for 3D card effects
+    if (!document.getElementById('vanilla-tilt-script')) {
+      const script = document.createElement('script');
+      script.id = 'vanilla-tilt-script';
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js';
+      script.onload = () => {
+        if (window.VanillaTilt) {
+          window.VanillaTilt.init(document.querySelectorAll("[data-tilt]"), {
+            max: 15,
+            speed: 400,
+            glare: true,
+            "max-glare": 0.15,
+          });
+        }
+      };
+      document.body.appendChild(script);
+    } else if (window.VanillaTilt) {
+      setTimeout(() => {
+        window.VanillaTilt.init(document.querySelectorAll("[data-tilt]"), {
+          max: 15,
+          speed: 400,
+          glare: true,
+          "max-glare": 0.15,
+        });
+      }, 100);
+    }
+    
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
@@ -211,12 +239,17 @@ export default function Landing() {
       </nav>
 
       {/* ── Fixed Background Hero Section ── */}
-      <section className="relative min-h-screen w-full flex flex-col justify-center px-8 sm:px-14 lg:px-20 pt-40 pb-20">
+      <section className="relative min-h-screen w-full flex flex-col justify-center px-8 sm:px-14 lg:px-20 pt-40 pb-20 overflow-hidden bg-black/20">
+        <div className="hero-grid"></div>
+        <div className="hero-orb hero-orb-1"></div>
+        <div className="hero-orb hero-orb-2"></div>
+        <div className="hero-center-glow"></div>
+
         <div className="relative z-10 w-full max-w-[1600px] mx-auto flex flex-col justify-between h-full flex-1">
           
           {/* Typography */}
-          <div className="max-w-4xl animate-fade-in-up mt-10 lg:mt-20">
-            <h1 className="text-[60px] sm:text-[90px] lg:text-[130px] font-sans font-light leading-[0.9] tracking-tight text-white/90" style={{ textShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
+          <div className="max-w-4xl reveal delay-2 mt-10 lg:mt-20">
+            <h1 className="text-[60px] sm:text-[90px] lg:text-[130px] font-sans font-light leading-[0.9] tracking-tight hero-heading drop-shadow-2xl">
               Your<br/>
               <span className="text-white/60">Perfect</span><br/>
               Study Hub
@@ -283,10 +316,10 @@ export default function Landing() {
       </section>
 
       {/* ── Features Section — Liquid Glass Cards ── */}
-      <section id="features" className="py-24 px-6" style={{ borderTop: '1px solid var(--glass-border)' }}>
+      <section id="features" className="py-24 px-6 relative z-10" style={{ borderTop: '1px solid var(--glass-border)' }}>
         <div className="max-w-[1100px] mx-auto">
-          <div className="text-center mb-16 reveal-on-scroll opacity-0 translate-y-10 transition-all duration-1000 ease-out">
-            <h2 className="text-3xl sm:text-4xl font-heading font-bold text-white tracking-tight drop-shadow-lg">
+          <div className="text-center mb-16 reveal delay-1">
+            <h2 className="text-3xl sm:text-4xl font-heading font-bold hero-heading drop-shadow-lg">
               4 Ways to Share Knowledge
             </h2>
             <p className="mt-4 text-white/80 max-w-xl mx-auto text-base leading-relaxed drop-shadow">
@@ -297,30 +330,33 @@ export default function Landing() {
             {features.map((f, i) => (
               <div
                 key={f.title}
-                className="group p-6 text-center hover:-translate-y-1 reveal-on-scroll opacity-0 translate-y-10 transition-all duration-700 ease-out delay-[calc(var(--delay)*1ms)] bg-black/40 backdrop-blur-md border border-white/10 rounded-[2rem] shadow-xl hover:bg-black/60"
-                style={{ '--delay': i * 150 }}
+                data-tilt
+                className={`group p-6 text-center portfolio-card reveal-scale delay-${(i % 6) + 1}`}
               >
-                <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${f.color} flex items-center justify-center transition-all duration-300 group-hover:scale-110 shadow-lg`}
-                >
-                  <f.icon className="w-7 h-7 text-white" />
+                <div className="portfolio-card-inner">
+                  <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${f.color} flex items-center justify-center transition-all duration-300 group-hover:scale-110 shadow-lg`}
+                  >
+                    <f.icon className="w-7 h-7 text-white" />
+                  </div>
+                  <h3 className="font-heading font-semibold text-white mb-2 text-[15px] drop-shadow-sm">
+                    {f.title}
+                  </h3>
+                  <p className="text-sm text-white/70 leading-relaxed drop-shadow-sm">
+                    {f.desc}
+                  </p>
                 </div>
-                <h3 className="font-heading font-semibold text-white mb-2 text-[15px] drop-shadow-sm">
-                  {f.title}
-                </h3>
-                <p className="text-sm text-white/70 leading-relaxed drop-shadow-sm">
-                  {f.desc}
-                </p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
+
       {/* ── Community / Social Features — Glass Cards ── */}
-      <section id="community" className="py-24 px-6">
+      <section id="community" className="py-24 px-6 relative z-10">
         <div className="max-w-[1100px] mx-auto">
-          <div className="text-center mb-16 reveal-on-scroll opacity-0 translate-y-10 transition-all duration-1000 ease-out">
-            <h2 className="text-3xl sm:text-4xl font-heading font-bold text-white tracking-tight drop-shadow-lg">
+          <div className="text-center mb-16 reveal delay-1">
+            <h2 className="text-3xl sm:text-4xl font-heading font-bold hero-heading drop-shadow-lg">
               Built for Student Communities
             </h2>
             <p className="mt-4 text-white/80 max-w-xl mx-auto text-base leading-relaxed drop-shadow">
@@ -331,20 +367,22 @@ export default function Landing() {
             {socialFeatures.map((f, i) => (
               <div
                 key={f.title}
-                className="group p-5 text-center hover:-translate-y-1 reveal-on-scroll opacity-0 translate-y-10 transition-all duration-700 ease-out delay-[calc(var(--delay)*1ms)] bg-black/40 backdrop-blur-md border border-white/10 rounded-[1.5rem] shadow-xl hover:bg-black/60"
-                style={{ '--delay': i * 100 }}
+                data-tilt
+                className={`group p-5 text-center portfolio-card reveal delay-${(i % 6) + 1}`}
               >
-                <div className="w-12 h-12 mx-auto mb-3 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"
-                  style={{
-                    background: 'rgba(255,255,255,0.1)',
-                  }}
-                >
-                  <f.icon className="w-6 h-6 text-white" />
+                <div className="portfolio-card-inner">
+                  <div className="w-12 h-12 mx-auto mb-3 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+                    style={{
+                      background: 'rgba(255,255,255,0.1)',
+                    }}
+                  >
+                    <f.icon className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="font-heading font-semibold text-sm text-white mb-1 drop-shadow-sm">
+                    {f.title}
+                  </h3>
+                  <p className="text-xs text-white/70 leading-relaxed drop-shadow-sm">{f.desc}</p>
                 </div>
-                <h3 className="font-heading font-semibold text-sm text-white mb-1 drop-shadow-sm">
-                  {f.title}
-                </h3>
-                <p className="text-xs text-white/70 leading-relaxed drop-shadow-sm">{f.desc}</p>
               </div>
             ))}
           </div>
@@ -376,18 +414,18 @@ export default function Landing() {
               >
                 <HiAcademicCap className="w-8 h-8 text-ag-primary-light" />
               </div>
-              <h2 className="text-3xl sm:text-4xl font-heading font-bold text-white mb-4 tracking-tight">
+              <h2 className="text-3xl sm:text-4xl font-heading font-bold hero-heading mb-4 tracking-tight">
                 Ready to Start Sharing?
               </h2>
               <p className="text-ag-on-surface-variant text-base mb-8 max-w-md mx-auto leading-relaxed">
                 Join students who are already sharing notes, videos, and study materials. It's completely free.
               </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                <Link to="/register" className="btn-primary text-base px-8 py-3.5 flex items-center gap-2">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Link to="/register" className="btn-cta text-base">
                   Sign up — it's free
-                  <HiArrowRight className="w-4 h-4" />
+                  <HiArrowRight className="w-4 h-4 ml-2" />
                 </Link>
-                <Link to="/login" className="text-ag-on-surface-variant hover:text-white font-medium text-sm px-4 py-3 rounded-ag-pill hover:bg-white/5 transition-all">
+                <Link to="/login" className="btn-outline text-base">
                   Already have an account?
                 </Link>
               </div>

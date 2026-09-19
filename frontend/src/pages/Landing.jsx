@@ -191,8 +191,16 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen transition-colors duration-300">
-      {/* ── Solid Neumorphism Background ── */}
-      <div className="fixed inset-0 z-[-1] bg-[var(--bg-primary)] pointer-events-none"></div>
+      {/* ── Campus Background with Liquid Glass ── */}
+      <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
+        <img 
+          src="/campus-bg.jpg" 
+          alt="Campus" 
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-[#09090b]/40 backdrop-blur-md"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-[#1e1e24] via-[#1e1e24]/80 to-transparent"></div>
+      </div>
 
       {/* ── Global Glass Frame (Always visible overlay) ── */}
       <div className="fixed inset-3 sm:inset-4 lg:inset-6 z-40 pointer-events-none border-2 border-white/10 rounded-[2rem] sm:rounded-[3rem] mix-blend-overlay"></div>

@@ -289,7 +289,7 @@ export default function Landing() {
         }}
       >
         {/* Liquid Glass Full Overlay */}
-        <div className="absolute inset-0 bg-[#0a0f16]/60 backdrop-blur-2xl saturate-150 border-b border-white/10 pointer-events-none z-0"></div>
+        <div className="absolute inset-0 bg-[#0a0f16]/40 backdrop-blur-md saturate-150 border-b border-white/10 pointer-events-none z-0"></div>
 
         <div className="hero-grid opacity-30 z-0"></div>
         <div className="hero-orb hero-orb-1 opacity-70 z-0"></div>

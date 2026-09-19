@@ -198,8 +198,8 @@ export default function Landing() {
           alt="Campus" 
           className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-[#09090b]/40 backdrop-blur-md"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-[#1e1e24] via-[#1e1e24]/80 to-transparent"></div>
+        <div className="absolute inset-0 bg-[#09090b]/30 backdrop-blur-sm"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-[#1e1e24] via-[#1e1e24]/50 to-transparent"></div>
       </div>
 
       {/* ── Global Glass Frame (Always visible overlay) ── */}

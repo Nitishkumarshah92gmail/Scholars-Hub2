@@ -5,6 +5,23 @@ const { transformPost } = require('../utils/transforms');
 
 const router = express.Router();
 
+// GET /api/posts/stats/count — get total posts count (PUBLIC)
+router.get('/stats/count', async (req, res) => {
+  try {
+    const { count, error } = await supabase
+      .from('posts')
+      .select('*', { count: 'exact', head: true });
+
+    if (error && error.code === 'PGRST205') {
+      return res.json({ totalPosts: 0 });
+    }
+    res.json({ totalPosts: count || 0 });
+  } catch (error) {
+    console.error('Post count error:', error);
+    res.json({ totalPosts: 0 });
+  }
+});
+
 const YOUTUBE_API_KEY = (process.env.YOUTUBE_API_KEY || '').trim();
 
 // Helper: fetch YouTube video info via Data API v3

@@ -80,6 +80,27 @@ export default function Landing() {
   const { darkMode, toggleTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [headerScrolled, setHeaderScrolled] = useState(false);
+  const [stats, setStats] = useState({ notes: 0, members: 0 });
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const [postsRes, usersRes] = await Promise.all([
+          fetch('/api/posts/stats/count'),
+          fetch('/api/users/stats/count')
+        ]);
+        const postsData = await postsRes.json();
+        const usersData = await usersRes.json();
+        setStats({ 
+          notes: postsData.totalPosts || 0, 
+          members: usersData.totalUsers || 0 
+        });
+      } catch (err) {
+        console.error('Failed to fetch stats:', err);
+      }
+    };
+    fetchStats();
+  }, []);
 
   const typedText = useTypingEffect(
     ['inspire learning', 'build communities', 'share knowledge', 'grow together'],
@@ -293,8 +314,8 @@ export default function Landing() {
              <div className="bg-[#121c22]/60 backdrop-blur-2xl border border-white/10 rounded-[2rem] p-6 w-full lg:w-[400px] shadow-2xl animate-fade-in-up hover:-translate-y-1 transition-transform duration-500" style={{ animationDelay: '0.4s' }}>
                <div className="flex justify-between items-start mb-6">
                  <div>
-                   <span className="inline-block bg-blue-500/20 text-blue-300 text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md mb-2">Promoted</span>
-                   <h3 className="text-[26px] font-light text-white leading-[1.2]">Advanced Physics<br/>Study Hub</h3>
+                   <span className="inline-block bg-emerald-500/20 text-emerald-300 text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md mb-2">Live Stats</span>
+                   <h3 className="text-[26px] font-light text-white leading-[1.2]">Global Scholars<br/>Study Hub</h3>
                  </div>
                  <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center animate-spin-slow">
                    <svg className="w-4 h-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
@@ -304,12 +325,12 @@ export default function Landing() {
                <div className="flex gap-4 mb-6 border-b border-white/10 pb-6">
                  <div className="flex-1">
                    <p className="text-[10px] text-gray-400 uppercase font-semibold mb-1 tracking-wider">Resources</p>
-                   <p className="text-sm text-gray-200 font-medium">1,240+ Notes</p>
+                   <p className="text-sm text-gray-200 font-medium">{stats.notes}+ Notes</p>
                  </div>
                  <div className="w-px bg-white/10 h-8 self-center"></div>
                  <div className="flex-1 pl-2">
                    <p className="text-[10px] text-gray-400 uppercase font-semibold mb-1 tracking-wider">Members</p>
-                   <p className="text-sm text-gray-200 font-medium">850 Active</p>
+                   <p className="text-sm text-gray-200 font-medium">{stats.members} Active</p>
                  </div>
                </div>
 

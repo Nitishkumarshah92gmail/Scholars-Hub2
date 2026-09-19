@@ -42,7 +42,7 @@ router.get('/scholars', auth, async (req, res) => {
 });
 
 // GET /api/users/stats/count — get total registered users count
-router.get('/stats/count', auth, async (req, res) => {
+router.get('/stats/count', async (req, res) => {
   try {
     const { count, error } = await supabase
       .from('profiles')

@@ -279,11 +279,22 @@ export default function Landing() {
       </nav>
 
       {/* ── Fixed Background Hero Section ── */}
-      <section className="relative min-h-screen w-full flex flex-col justify-center px-8 sm:px-14 lg:px-20 pt-40 pb-20 overflow-hidden bg-black/20">
-        <div className="hero-grid"></div>
-        <div className="hero-orb hero-orb-1"></div>
-        <div className="hero-orb hero-orb-2"></div>
-        <div className="hero-center-glow"></div>
+      <section 
+        className="relative min-h-screen w-full flex flex-col justify-center px-8 sm:px-14 lg:px-20 pt-40 pb-20 overflow-hidden"
+        style={{
+          backgroundImage: 'url("https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=2000")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed'
+        }}
+      >
+        {/* Liquid Glass Full Overlay */}
+        <div className="absolute inset-0 bg-[#0a0f16]/60 backdrop-blur-2xl saturate-150 border-b border-white/10 pointer-events-none z-0"></div>
+
+        <div className="hero-grid opacity-30 z-0"></div>
+        <div className="hero-orb hero-orb-1 opacity-70 z-0"></div>
+        <div className="hero-orb hero-orb-2 opacity-70 z-0"></div>
+        <div className="hero-center-glow z-0"></div>
 
         <div className="relative z-10 w-full max-w-[1600px] mx-auto flex flex-col justify-between h-full flex-1">
           

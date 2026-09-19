@@ -297,19 +297,6 @@ export default function Landing() {
               </h1>
             </div>
 
-            {/* Futuristic Study Hub 3D Image */}
-            <div className="hidden lg:block reveal delay-4 max-w-xl xl:max-w-[650px] relative mt-12 lg:mt-0 lg:ml-10">
-                <div className="relative animate-float" style={{ animationDuration: '6s' }}>
-                    {/* Glowing shadow behind the image */}
-                    <div className="absolute inset-0 bg-blue-600/30 blur-[120px] rounded-full scale-90 mix-blend-screen"></div>
-                    <img 
-                      src="/portfolio-assets/images/study_hub_hero.jpg" 
-                      alt="Futuristic Study Hub" 
-                      className="relative z-10 w-full h-auto rounded-[2.5rem] border border-white/10 shadow-[0_0_60px_rgba(59,130,246,0.25)] object-cover" 
-                    />
-                </div>
-            </div>
-
           </div>
 
           {/* Bottom Row */}

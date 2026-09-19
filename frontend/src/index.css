@@ -530,3 +530,13 @@ html {
 .animate-float {
   animation: float 6s ease-in-out infinite;
 }
+
+/* ── Mobile Chrome Optimizations ── */
+body, html {
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button, a, [role="button"] {
+  touch-action: manipulation;
+}

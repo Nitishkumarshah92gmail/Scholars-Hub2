@@ -282,7 +282,7 @@ export default function Landing() {
       <section 
         className="relative min-h-screen w-full flex flex-col justify-center px-8 sm:px-14 lg:px-20 pt-40 pb-20 overflow-hidden"
         style={{
-          backgroundImage: 'url("https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=2000")',
+          backgroundImage: 'url("/portfolio-assets/images/campus.jpg")',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundAttachment: 'fixed'
@@ -446,9 +446,9 @@ export default function Landing() {
       <section className="py-24 px-6 relative z-10">
         <div className="max-w-[1100px] mx-auto">
           <div className="relative rounded-[2rem] overflow-hidden shadow-2xl group border border-white/10">
-            {/* The Image - You can replace this src with your downloaded image path (e.g. /university.jpg) */}
+            {/* The Image - User uploaded campus image */}
             <img 
-              src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=2000" 
+              src="/portfolio-assets/images/campus.jpg" 
               alt="University Campus" 
               className="w-full h-[400px] md:h-[500px] object-cover transition-transform duration-700 group-hover:scale-105"
             />

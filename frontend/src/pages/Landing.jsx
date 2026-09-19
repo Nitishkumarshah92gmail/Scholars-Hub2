@@ -431,6 +431,34 @@ export default function Landing() {
       </section>
 
 
+      {/* ── Campus / Image Section with Liquid Glass ── */}
+      <section className="py-24 px-6 relative z-10">
+        <div className="max-w-[1100px] mx-auto">
+          <div className="relative rounded-[2rem] overflow-hidden shadow-2xl group border border-white/10">
+            {/* The Image - You can replace this src with your downloaded image path (e.g. /university.jpg) */}
+            <img 
+              src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=2000" 
+              alt="University Campus" 
+              className="w-full h-[400px] md:h-[500px] object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+            {/* Liquid Glass Overlay Card */}
+            <div className="absolute inset-0 flex items-center justify-center p-6 bg-black/20">
+              <div className="neu-card liquid-glass max-w-2xl p-10 text-center animate-fade-in-up border border-white/20">
+                <h3 className="text-3xl sm:text-4xl font-heading font-bold text-white mb-4 drop-shadow-lg">
+                  Experience Our Campus
+                </h3>
+                <p className="text-white/90 text-sm sm:text-base leading-relaxed mb-8 drop-shadow-md">
+                  Join a vibrant community of scholars from around the globe. Share your knowledge, discover resources, and grow in an environment designed for excellence.
+                </p>
+                <button className="w-full sm:w-auto bg-white/10 hover:bg-white text-white hover:text-black font-semibold py-3 px-10 rounded-xl transition-all transform hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] backdrop-blur-md border border-white/20">
+                  Explore Campus
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── Community / Social Features — Glass Cards ── */}
       <section id="community" className="py-24 px-6 relative z-10">
         <div className="max-w-[1100px] mx-auto">

@@ -157,9 +157,9 @@ export default function Profile() {
         </button>
       </div>
 
-      <div className="relative z-10 px-4 max-w-4xl mx-auto mt-20 w-full">
+      <div className="relative z-10 px-0 sm:px-4 max-w-4xl mx-auto mt-20 w-full">
         {/* Profile Content */}
-        <div className="relative p-6 pt-0 sm:p-10 sm:pt-0 text-center w-full">
+        <div className="relative px-0 py-6 pt-0 sm:p-10 sm:pt-0 text-center w-full">
           
           {/* Avatar (centered and protruding) */}
           <div className="relative z-20 flex justify-center -mt-16 sm:-mt-20 mb-4">

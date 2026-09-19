@@ -203,10 +203,13 @@ export default function Landing() {
       {/* ── Global Glass Frame (Always visible overlay) ── */}
       <div className="fixed inset-3 sm:inset-4 lg:inset-6 z-40 pointer-events-none border-2 border-white/10 rounded-[2rem] sm:rounded-[3rem] mix-blend-overlay"></div>
 
+      {/* ── Top Dark Gradient for Navbar Legibility ── */}
+      <div className="fixed top-0 left-0 right-0 h-32 bg-gradient-to-b from-black/80 to-transparent z-40 pointer-events-none"></div>
+
       {/* ── Liquid Glass Navbar ── */}
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         headerScrolled
-          ? 'bg-black/40 backdrop-blur-2xl border-b border-white/10 shadow-lg'
+          ? 'bg-[#121c22]/80 backdrop-blur-2xl border-b border-white/10 shadow-lg'
           : 'bg-transparent pt-6 lg:pt-8'
       }`}
       >
@@ -285,9 +288,9 @@ export default function Landing() {
           <div className="flex flex-col lg:flex-row items-center justify-between mt-10 lg:mt-20">
             {/* Typography */}
             <div className="max-w-4xl reveal delay-2">
-              <h1 className="text-[60px] sm:text-[90px] lg:text-[130px] font-sans font-light leading-[0.9] tracking-tight hero-heading drop-shadow-2xl">
+              <h1 className="text-[60px] sm:text-[90px] lg:text-[130px] font-sans font-medium leading-[0.9] tracking-tight hero-heading text-white drop-shadow-2xl [text-shadow:_0_8px_32px_rgb(0_0_0_/_80%)]">
                 Your<br/>
-                <span className="text-white/60">Perfect</span><br/>
+                <span className="text-white/80">Perfect</span><br/>
                 Study Hub
               </h1>
             </div>
@@ -298,7 +301,7 @@ export default function Landing() {
           <div className="mt-16 sm:mt-auto flex flex-col lg:flex-row justify-between items-end gap-10">
              
              {/* Bottom Left Info */}
-             <div className="max-w-sm text-gray-300 font-light text-sm sm:text-base animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+             <div className="max-w-sm text-white font-medium text-sm sm:text-base drop-shadow-lg [text-shadow:_0_2px_8px_rgb(0_0_0_/_80%)] animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
                Discover comprehensive study materials in collaborative digital hubs. Connect, learn, and excel together with your peers.
              </div>
 

@@ -142,6 +142,7 @@
     mask-image: radial-gradient(ellipse 60% 50% at 50% 50%, black 40%, transparent 100%);
     -webkit-mask-image: radial-gradient(ellipse 60% 50% at 50% 50%, black 40%, transparent 100%);
     z-index: 1;
+    pointer-events: none;
 }
 
 .hero-orb {
@@ -188,6 +189,7 @@
     max-height: 600px;
     background: radial-gradient(circle, rgba(123, 97, 255, 0.15) 0%, transparent 60%);
     filter: blur(50px);
+    pointer-events: none;
     z-index: 1;
 }
 

@@ -7,6 +7,9 @@ const router = express.Router();
 
 // GET /api/posts/stats/count — get total posts count (PUBLIC)
 router.get('/stats/count', async (req, res) => {
+  // Cache the response for 60 seconds (client side and CDN)
+  res.set('Cache-Control', 'public, max-age=60');
+  
   try {
     const { count, error } = await supabase
       .from('posts')

@@ -8,10 +8,12 @@ const postRoutes = require('./routes/posts');
 const userRoutes = require('./routes/users');
 const notificationRoutes = require('./routes/notifications');
 const uploadRoutes = require('./routes/upload');
+const compression = require('compression');
 
 const app = express();
 
-// --- Security Middleware ---
+// --- Security & Performance Middleware ---
+app.use(compression());
 
 // Trust the reverse proxy (Render Load Balancer) so rate limiter gets the real client IP
 app.set('trust proxy', 1);

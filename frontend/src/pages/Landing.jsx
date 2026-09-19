@@ -191,19 +191,8 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen transition-colors duration-300">
-      {/* ── Fixed Background (Always behind everything) ── */}
-      <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none bg-black">
-        <video 
-          autoPlay 
-          loop 
-          muted 
-          playsInline 
-          className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto -translate-x-1/2 -translate-y-1/2 opacity-60 object-cover"
-        >
-          <source src="https://cdn.coverr.co/videos/coverr-a-woman-reading-a-book-2259/1080p.mp4" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 bg-[#0c1317]/60 bg-gradient-to-t from-[#0c1317]/90 via-transparent to-transparent"></div>
-      </div>
+      {/* ── Solid Neumorphism Background ── */}
+      <div className="fixed inset-0 z-[-1] bg-[var(--bg-primary)] pointer-events-none"></div>
 
       {/* ── Global Glass Frame (Always visible overlay) ── */}
       <div className="fixed inset-3 sm:inset-4 lg:inset-6 z-40 pointer-events-none border-2 border-white/10 rounded-[2rem] sm:rounded-[3rem] mix-blend-overlay"></div>
@@ -278,8 +267,8 @@ export default function Landing() {
         )}
       </nav>
 
-      {/* ── Fixed Background Hero Section ── */}
-      <section className="relative min-h-screen w-full flex flex-col justify-center px-8 sm:px-14 lg:px-20 pt-40 pb-20 overflow-hidden bg-black/20">
+      {/* ── Neumorphic Hero Section ── */}
+      <section className="relative min-h-screen w-full flex flex-col justify-center px-8 sm:px-14 lg:px-20 pt-40 pb-20 overflow-hidden">
         <div className="hero-grid"></div>
         <div className="hero-orb hero-orb-1"></div>
         <div className="hero-orb hero-orb-2"></div>

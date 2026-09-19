@@ -288,8 +288,8 @@ export default function Landing() {
           backgroundAttachment: 'fixed'
         }}
       >
-        {/* Liquid Glass Full Overlay */}
-        <div className="absolute inset-0 bg-[#0a0f16]/40 backdrop-blur-md saturate-150 border-b border-white/10 pointer-events-none z-0"></div>
+        {/* Liquid Glass Overlay - Very light (90% clear) */}
+        <div className="absolute inset-0 bg-[#0a0f16]/10 backdrop-blur-[2px] saturate-150 border-b border-white/10 pointer-events-none z-0"></div>
 
         <div className="hero-grid opacity-30 z-0"></div>
         <div className="hero-orb hero-orb-1 opacity-70 z-0"></div>

@@ -122,6 +122,26 @@ export default function Landing() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  // Mouse Parallax for Avatar and Decors
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      const x = (window.innerWidth / 2 - e.pageX) / 25;
+      const y = (window.innerHeight / 2 - e.pageY) / 25;
+      
+      const avatar = document.getElementById('hero-avatar');
+      if (avatar) avatar.style.transform = `rotateX(${y}deg) rotateY(${x}deg)`;
+      
+      const decors = document.querySelectorAll('.about-decor');
+      decors.forEach((decor, index) => {
+          const factor = index % 2 === 0 ? 1 : -1;
+          decor.style.transform = `translate(${x * factor}px, ${y * factor}px)`;
+      });
+    };
+    
+    document.addEventListener('mousemove', handleMouseMove);
+    return () => document.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
   const features = [
     { icon: HiDocumentText, title: 'Share PDFs', desc: 'Upload study notes, cheat sheets, and textbook summaries for your classmates.', color: 'from-blue-500/20 to-blue-600/10' },
     { icon: HiPhotograph, title: 'Share Images', desc: 'Upload diagrams, whiteboard photos, and visual study aids.', color: 'from-emerald-500/20 to-emerald-600/10' },
@@ -247,13 +267,22 @@ export default function Landing() {
 
         <div className="relative z-10 w-full max-w-[1600px] mx-auto flex flex-col justify-between h-full flex-1">
           
-          {/* Typography */}
-          <div className="max-w-4xl reveal delay-2 mt-10 lg:mt-20">
-            <h1 className="text-[60px] sm:text-[90px] lg:text-[130px] font-sans font-light leading-[0.9] tracking-tight hero-heading drop-shadow-2xl">
-              Your<br/>
-              <span className="text-white/60">Perfect</span><br/>
-              Study Hub
-            </h1>
+          <div className="flex flex-col lg:flex-row items-center justify-between mt-10 lg:mt-20">
+            {/* Typography */}
+            <div className="max-w-4xl reveal delay-2">
+              <h1 className="text-[60px] sm:text-[90px] lg:text-[130px] font-sans font-light leading-[0.9] tracking-tight hero-heading drop-shadow-2xl">
+                Your<br/>
+                <span className="text-white/60">Perfect</span><br/>
+                Study Hub
+              </h1>
+            </div>
+
+            {/* Avatar Parallax */}
+            <div className="reveal delay-4 hidden lg:block mt-10 lg:mt-0 mr-10 xl:mr-20">
+                <div className="hero-avatar-parallax" id="hero-avatar">
+                    <img src="/portfolio-assets/images/nitish_avatar_nobg.png" alt="Nitish Avatar" className="hero-avatar-img" />
+                </div>
+            </div>
           </div>
 
           {/* Bottom Row */}
@@ -315,8 +344,49 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ── Features Section — Liquid Glass Cards ── */}
+      {/* ── SCROLLING SHOWCASE MARQUEE ── */}
+      <section className="showcase-section">
+        <div className="marquee-row" id="marquee-row-1">
+            <img src="/portfolio-assets/motionsites-assets/hero-space-voyage-preview-eECLH3Yc.gif" alt="Design" loading="lazy" />
+            <img src="/portfolio-assets/motionsites-assets/hero-codenest-preview-Cgppc2qV.gif" alt="Design" loading="lazy" />
+            <img src="/portfolio-assets/motionsites-assets/hero-vex-ventures-preview-BczMFIiw.gif" alt="Design" loading="lazy" />
+            <img src="/portfolio-assets/motionsites-assets/hero-stellar-ai-v2-preview-DjvxjG3C.gif" alt="Design" loading="lazy" />
+            <img src="/portfolio-assets/motionsites-assets/hero-asme-preview-B_nGDnTP.gif" alt="Design" loading="lazy" />
+            {/* Duplicates for scroll */}
+            <img src="/portfolio-assets/motionsites-assets/hero-space-voyage-preview-eECLH3Yc.gif" alt="Design" loading="lazy" />
+            <img src="/portfolio-assets/motionsites-assets/hero-codenest-preview-Cgppc2qV.gif" alt="Design" loading="lazy" />
+            <img src="/portfolio-assets/motionsites-assets/hero-vex-ventures-preview-BczMFIiw.gif" alt="Design" loading="lazy" />
+        </div>
+        <div className="marquee-row" id="marquee-row-2">
+            <img src="/portfolio-assets/motionsites-assets/hero-stellar-ai-preview-D3HL6bw1.gif" alt="Design" loading="lazy" />
+            <img src="/portfolio-assets/motionsites-assets/hero-xportfolio-preview-D4A8maiC.gif" alt="Design" loading="lazy" />
+            <img src="/portfolio-assets/motionsites-assets/hero-orbit-web3-preview-BXt4OttD.gif" alt="Design" loading="lazy" />
+            <img src="/portfolio-assets/motionsites-assets/hero-nexora-preview-cx5HmUgo.gif" alt="Design" loading="lazy" />
+            <img src="/portfolio-assets/motionsites-assets/hero-evr-ventures-preview-DZxeVFEX.gif" alt="Design" loading="lazy" />
+            {/* Duplicates for scroll */}
+            <img src="/portfolio-assets/motionsites-assets/hero-stellar-ai-preview-D3HL6bw1.gif" alt="Design" loading="lazy" />
+            <img src="/portfolio-assets/motionsites-assets/hero-xportfolio-preview-D4A8maiC.gif" alt="Design" loading="lazy" />
+            <img src="/portfolio-assets/motionsites-assets/hero-orbit-web3-preview-BXt4OttD.gif" alt="Design" loading="lazy" />
+        </div>
+      </section>
+
+      {/* ── Features Section — Neumorphic Liquid Glass ── */}
       <section id="features" className="py-24 px-6 relative z-10" style={{ borderTop: '1px solid var(--glass-border)' }}>
+        
+        {/* 3D Decorative icons */}
+        <div className="about-decor decor-top-left reveal-left delay-1">
+            <img src="/portfolio-assets/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/moon_icon.11395d36.png" alt="Moon icon" />
+        </div>
+        <div className="about-decor decor-top-right reveal-right delay-2">
+            <img src="/portfolio-assets/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/lego_icon-1.703bb594.png" alt="Lego icon" />
+        </div>
+        <div className="about-decor decor-bottom-left reveal-left delay-3">
+            <img src="/portfolio-assets/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/p59_1.4659672e.png" alt="3D decoration" />
+        </div>
+        <div className="about-decor decor-bottom-right reveal-right delay-4">
+            <img src="/portfolio-assets/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/Group_134-1.2e04f3ce.png" alt="3D group" />
+        </div>
+
         <div className="max-w-[1100px] mx-auto">
           <div className="text-center mb-16 reveal delay-1">
             <h2 className="text-3xl sm:text-4xl font-heading font-bold hero-heading drop-shadow-lg">
@@ -331,7 +401,7 @@ export default function Landing() {
               <div
                 key={f.title}
                 data-tilt
-                className={`group p-6 text-center portfolio-card reveal-scale delay-${(i % 6) + 1}`}
+                className={`group p-6 text-center neu-card liquid-glass reveal-scale delay-${(i % 6) + 1}`}
               >
                 <div className="portfolio-card-inner">
                   <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${f.color} flex items-center justify-center transition-all duration-300 group-hover:scale-110 shadow-lg`}
@@ -368,7 +438,7 @@ export default function Landing() {
               <div
                 key={f.title}
                 data-tilt
-                className={`group p-5 text-center portfolio-card reveal delay-${(i % 6) + 1}`}
+                className={`group p-5 text-center neu-card liquid-glass reveal delay-${(i % 6) + 1}`}
               >
                 <div className="portfolio-card-inner">
                   <div className="w-12 h-12 mx-auto mb-3 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"

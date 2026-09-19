@@ -205,3 +205,135 @@
 .portfolio-card-inner {
     transform: translateZ(20px);
 }
+
+/* ============================================
+   NEUMORPHISM & LIQUID GLASS
+   ============================================ */
+.neu-card {
+    background: var(--bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    box-shadow: 
+        8px 8px 16px rgba(0, 0, 0, 0.6), 
+        -8px -8px 16px rgba(40, 40, 50, 0.2), 
+        inset 1px 1px 2px rgba(255, 255, 255, 0.1);
+    transition: all 0.3s var(--transition-smooth);
+    transform-style: preserve-3d;
+}
+
+.neu-card:hover {
+    box-shadow: 
+        12px 12px 24px rgba(0, 0, 0, 0.8), 
+        -12px -12px 24px rgba(40, 40, 50, 0.3), 
+        inset 1px 1px 3px rgba(255, 255, 255, 0.15);
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.liquid-glass {
+    background: rgba(18, 18, 20, 0.4);
+    backdrop-filter: blur(24px) saturate(150%);
+    -webkit-backdrop-filter: blur(24px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================
+   AVATAR PARALLAX
+   ============================================ */
+.hero-avatar-parallax {
+    position: relative;
+    width: 280px;
+    height: 280px;
+    margin: 0 auto;
+    border-radius: 50%;
+    z-index: 10;
+    transition: transform 0.1s ease-out;
+}
+.hero-avatar-parallax::before {
+    content: '';
+    position: absolute;
+    inset: -15px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, var(--accent-magenta), var(--accent-purple));
+    opacity: 0.5;
+    filter: blur(20px);
+    z-index: -1;
+    animation: spin 10s linear infinite;
+}
+.hero-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    filter: drop-shadow(0 15px 25px rgba(0,0,0,0.5));
+}
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+/* ============================================
+   MARQUEE SHOWCASE
+   ============================================ */
+.showcase-section {
+    padding: 2rem 0;
+    overflow: hidden;
+    position: relative;
+    z-index: 5;
+    background: linear-gradient(180deg, transparent, rgba(0,0,0,0.4) 50%, transparent);
+}
+.marquee-row {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    width: max-content;
+}
+.marquee-row img {
+    width: 300px;
+    height: 180px;
+    border-radius: 12px;
+    object-fit: cover;
+    opacity: 0.7;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+.marquee-row img:hover {
+    opacity: 1;
+    transform: scale(1.05);
+    z-index: 2;
+    border-color: rgba(255,255,255,0.2);
+}
+#marquee-row-1 {
+    animation: scroll-left 40s linear infinite;
+}
+#marquee-row-2 {
+    animation: scroll-right 35s linear infinite;
+    transform: translateX(-20%);
+}
+@keyframes scroll-left { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+@keyframes scroll-right { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
+
+/* ============================================
+   3D DECORATIVE ICONS
+   ============================================ */
+.about-decor {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    pointer-events: none;
+    z-index: 0;
+    filter: drop-shadow(0 20px 30px rgba(0,0,0,0.6));
+    animation: floatDecor 6s ease-in-out infinite;
+}
+.about-decor img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+.decor-top-left { top: -40px; left: -20px; animation-delay: 0s; }
+.decor-top-right { top: -20px; right: -30px; animation-delay: 1.5s; width: 100px; height: 100px; }
+.decor-bottom-left { bottom: -30px; left: 10px; animation-delay: 3s; width: 70px; height: 70px; }
+.decor-bottom-right { bottom: -50px; right: 20px; animation-delay: 4.5s; }
+
+@keyframes floatDecor {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(5deg); }
+}

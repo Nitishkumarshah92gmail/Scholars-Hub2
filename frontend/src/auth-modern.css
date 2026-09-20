@@ -224,8 +224,54 @@
     transform: translateX(0);
 }
 
-.auth-modern-wrapper .modern-container.active .toggle-right {
     transform: translateX(200%);
+}
+
+/* Adjust sliding panel ratio on mobile to give forms more space (60% / 40%) */
+@media (max-width: 768px) {
+    .auth-modern-wrapper .sign-in,
+    .auth-modern-wrapper .sign-up {
+        width: 60%;
+    }
+    .auth-modern-wrapper .modern-container.active .sign-in,
+    .auth-modern-wrapper .modern-container.active .sign-up {
+        transform: translateX(66.666%);
+    }
+    .auth-modern-wrapper .modern-toggle-container {
+        width: 40%;
+        left: 60%;
+    }
+    .auth-modern-wrapper .modern-container.active .modern-toggle-container {
+        transform: translateX(-150%);
+    }
+    .auth-modern-wrapper .toggle {
+        width: 250%;
+        left: -150%;
+    }
+    .auth-modern-wrapper .modern-container.active .toggle {
+        transform: translateX(60%);
+    }
+    .auth-modern-wrapper .toggle-panel {
+        width: 40%;
+    }
+    .auth-modern-wrapper .toggle-left {
+        transform: translateX(-150%);
+    }
+    .auth-modern-wrapper .modern-container.active .toggle-left {
+        transform: translateX(0);
+    }
+    .auth-modern-wrapper .modern-container.active .toggle-right {
+        transform: translateX(150%);
+    }
+    .auth-modern-wrapper .modern-container form {
+        padding: 0 20px;
+    }
+    .auth-modern-wrapper h1 {
+        font-size: 28px !important;
+    }
+    .auth-modern-wrapper .toggle-panel p {
+        font-size: 11px;
+    }
 }
 
 /* Responsive scaling is handled natively by the viewport meta tag in Login.jsx */

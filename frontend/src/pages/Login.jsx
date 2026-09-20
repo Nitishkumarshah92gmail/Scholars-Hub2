@@ -83,7 +83,7 @@ export default function Login() {
               {isRegistering ? 'Signing Up...' : 'Sign Up'}
             </button>
             {/* Mobile-only toggle button */}
-            <button type="button" className="mobile-toggle hidden" onClick={() => setIsRightPanelActive(false)}>
+            <button type="button" className="mobile-toggle" onClick={() => setIsRightPanelActive(false)}>
               Already have an account? Sign In
             </button>
           </form>
@@ -107,7 +107,7 @@ export default function Login() {
               {isLoggingIn ? 'Signing In...' : 'Sign In'}
             </button>
             {/* Mobile-only toggle button */}
-            <button type="button" className="mobile-toggle hidden" onClick={() => setIsRightPanelActive(true)}>
+            <button type="button" className="mobile-toggle" onClick={() => setIsRightPanelActive(true)}>
               New here? Sign Up
             </button>
           </form>
@@ -119,14 +119,14 @@ export default function Login() {
             <div className="toggle-panel toggle-left">
               <h1>Welcome Back!</h1>
               <p>Enter your personal details to use all of site features</p>
-              <button type="button" className="hidden" onClick={() => setIsRightPanelActive(false)}>
+              <button type="button" className="ghost-btn" onClick={() => setIsRightPanelActive(false)}>
                 Sign In
               </button>
             </div>
             <div className="toggle-panel toggle-right">
               <h1>Hello, Friend!</h1>
               <p>Register with your personal details to use all of site features</p>
-              <button type="button" className="hidden" onClick={() => setIsRightPanelActive(true)}>
+              <button type="button" className="ghost-btn" onClick={() => setIsRightPanelActive(true)}>
                 Sign Up
               </button>
             </div>

@@ -68,7 +68,7 @@
     cursor: pointer;
 }
 
-.auth-modern-wrapper .modern-container button.hidden {
+.auth-modern-wrapper .modern-container button.ghost-btn {
     background-color: transparent;
     border-color: #fff;
 }

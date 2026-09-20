@@ -39,6 +39,55 @@ export default function Chat() {
   const [editingMessageId, setEditingMessageId] = useState(null);
   const [editContent, setEditContent] = useState('');
   const [unreadCount, setUnreadCount] = useState(0);
+  const [viewportStyle, setViewportStyle] = useState({});
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handleViewport = () => {
+      const isMob = window.innerWidth < 768;
+      if (isMob && window.visualViewport) {
+        const vv = window.visualViewport;
+        setViewportStyle({
+          height: `${vv.height}px`,
+          top: `${vv.offsetTop || 0}px`,
+          bottom: 'auto',
+          position: 'fixed',
+          left: 0,
+          right: 0,
+        });
+      } else {
+        setViewportStyle({});
+      }
+      if (isMob && activeConversation) {
+        window.scrollTo(0, 0);
+      }
+    };
+
+    handleViewport();
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', handleViewport);
+      window.visualViewport.addEventListener('scroll', handleViewport);
+    }
+    window.addEventListener('resize', handleViewport);
+
+    const preventWindowScroll = () => {
+      if (window.innerWidth < 768 && activeConversation && window.scrollY !== 0) {
+        window.scrollTo(0, 0);
+      }
+    };
+    window.addEventListener('scroll', preventWindowScroll);
+
+    return () => {
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', handleViewport);
+        window.visualViewport.removeEventListener('scroll', handleViewport);
+      }
+      window.removeEventListener('resize', handleViewport);
+      window.removeEventListener('scroll', preventWindowScroll);
+    };
+  }, [activeConversation]);
   
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -568,7 +617,7 @@ export default function Chat() {
       </div>
 
       {/* Main Chat Area */}
-      <div className={`flex-1 flex flex-col bg-white dark:bg-black md:bg-[var(--neu-bg)] ${!activeConversation ? 'hidden md:flex relative' : 'flex fixed inset-0 h-[100dvh] z-[60] md:relative md:inset-auto md:h-full md:z-auto'} min-h-0`}>
+      <div style={activeConversation ? viewportStyle : undefined} className={`flex-1 flex flex-col bg-white dark:bg-black md:bg-[var(--neu-bg)] ${!activeConversation ? 'hidden md:flex relative' : 'flex fixed inset-x-0 z-[60] md:relative md:inset-auto md:h-full md:z-auto'} min-h-0 overflow-hidden`}>
         {activeConversation ? (
           <div className="flex-1 flex flex-col relative pb-0 md:p-6 lg:p-10 items-center justify-center min-h-0">
             {/* Liquid Background - Desktop Only */}
@@ -576,7 +625,7 @@ export default function Chat() {
             
             <div className="w-full h-full flex flex-col relative z-10 mx-0 mt-0 mb-0 rounded-none md:rounded-[32px] overflow-hidden md:shadow-[0_-10px_40px_rgba(0,0,0,0.05),8px_8px_20px_var(--neu-shadow-dark),-8px_-8px_20px_var(--neu-shadow-light)] bg-white dark:bg-black md:bg-[var(--neu-bg)] max-w-3xl min-h-0 max-h-full">
               {/* Chat Header */}
-              <div className="px-4 pb-3 pt-14 md:pt-4 flex items-center justify-between bg-white dark:bg-black md:bg-[var(--neu-bg)] border-b border-gray-100 dark:border-gray-900 md:border-[rgba(255,255,255,0.05)] z-20 sticky top-0 shrink-0">
+              <div className="px-3.5 sm:px-4 py-2.5 sm:py-3 md:py-4 flex items-center justify-between bg-white dark:bg-black md:bg-[var(--neu-bg)] border-b border-gray-100 dark:border-gray-900 md:border-[rgba(255,255,255,0.05)] z-20 sticky top-0 shrink-0">
                 <div className="flex items-center gap-4">
                   <button 
                     onClick={() => setActiveConversation(null)}
@@ -699,8 +748,8 @@ export default function Chat() {
               </div>
 
               {/* Message Input */}
-              <div className="p-3 md:px-6 md:pb-6 bg-white dark:bg-black md:bg-[var(--neu-bg)] border-t md:border-t-0 border-gray-100 dark:border-gray-900 md:border-transparent pb-safe shrink-0">
-                <form onSubmit={sendMessage} className="flex items-end gap-3 md:gap-4">
+              <div className="p-2 sm:p-3 md:px-6 md:pb-6 bg-white dark:bg-black md:bg-[var(--neu-bg)] border-t md:border-t-0 border-gray-100 dark:border-gray-900 md:border-transparent shrink-0">
+                <form onSubmit={sendMessage} className="flex items-end gap-2 sm:gap-3 md:gap-4">
                   <input 
                     type="file" 
                     ref={fileInputRef} 
@@ -708,7 +757,7 @@ export default function Chat() {
                     accept="image/*,video/*,audio/*,application/pdf"
                     onChange={handleFileSelect} 
                   />
-                  <div className="flex-1 min-w-0 bg-[#EFEFEF] dark:bg-[#262626] md:bg-gray-100 md:dark:bg-[#262626] rounded-[24px] pl-5 pr-2 py-2 flex items-end gap-2 border border-transparent focus-within:border-gray-300 dark:focus-within:border-gray-600 transition-colors md:shadow-inner">
+                  <div className="flex-1 min-w-0 bg-[#EFEFEF] dark:bg-[#262626] md:bg-gray-100 md:dark:bg-[#262626] rounded-[24px] pl-4 sm:pl-5 pr-2 py-1.5 sm:py-2 flex items-end gap-2 border-none transition-colors md:shadow-inner">
                     <textarea
                       value={newMessage}
                       onChange={(e) => {
@@ -716,9 +765,21 @@ export default function Chat() {
                         e.target.style.height = 'auto';
                         e.target.style.height = (e.target.scrollHeight) + 'px';
                       }}
+                      onFocus={() => {
+                        if (typeof window !== 'undefined') {
+                          window.scrollTo(0, 0);
+                        }
+                        setTimeout(() => {
+                          scrollToBottom();
+                        }, 100);
+                        setTimeout(() => {
+                          scrollToBottom();
+                        }, 300);
+                      }}
                       placeholder="Message..."
-                      className="flex-1 min-w-0 w-full bg-transparent border-none focus:ring-0 resize-none max-h-[100px] min-h-[24px] py-1.5 text-[15px] text-black dark:text-white scrollbar-hide placeholder-gray-500"
+                      className="flex-1 min-w-0 w-full bg-transparent border-none outline-none focus:outline-none focus:border-none focus:ring-0 resize-none max-h-[100px] min-h-[24px] py-1 text-[15px] text-black dark:text-white scrollbar-hide placeholder-gray-500"
                       rows="1"
+                      style={{ outline: 'none', boxShadow: 'none', WebkitAppearance: 'none' }}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' && !e.shiftKey) {
                            e.preventDefault();
@@ -728,7 +789,7 @@ export default function Chat() {
                       }}
                     />
                     {!newMessage.trim() && !isUploading ? (
-                      <div className="flex items-center gap-1 sm:gap-2 text-gray-800 dark:text-gray-200 mb-1.5 pr-1 sm:pr-2 shrink-0">
+                      <div className="flex items-center gap-1 sm:gap-2 text-gray-800 dark:text-gray-200 mb-1 pr-1 sm:pr-2 shrink-0">
                         <button type="button" onClick={() => fileInputRef.current?.click()} className="hover:opacity-70 transition-opacity p-1">
                           <HiPhotograph className="w-[20px] h-[20px] sm:w-[22px] sm:h-[22px]" />
                         </button>
@@ -737,7 +798,7 @@ export default function Chat() {
                       <button
                         type="submit"
                         disabled={isUploading}
-                        className="mb-1.5 font-bold text-[#0095F6] hover:text-blue-700 disabled:opacity-50 transition-colors px-3 text-[15px]"
+                        className="mb-1 font-bold text-[#0095F6] hover:text-blue-700 disabled:opacity-50 transition-colors px-2 sm:px-3 text-[15px]"
                       >
                         {isUploading ? (
                           <div className="w-5 h-5 border-2 border-[#0095F6] border-t-transparent rounded-full animate-spin"></div>

@@ -224,6 +224,7 @@
     transform: translateX(0);
 }
 
+.auth-modern-wrapper .modern-container.active .toggle-right {
     transform: translateX(200%);
 }
 

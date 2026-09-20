@@ -270,7 +270,7 @@ export default memo(function PostCard({ post, onUpdate }) {
   };
 
   return (
-    <div className="relative overflow-hidden mb-2 lg:mb-6 rounded-none lg:rounded-[32px] lg:shadow-[6px_6px_14px_var(--neu-shadow-dark),-6px_-6px_14px_var(--neu-shadow-light)] bg-[var(--neu-bg)] border-y border-[rgba(255,255,255,0.05)] lg:border-0 transition-all">
+    <div className="relative overflow-hidden mb-2 xl:mb-6 rounded-none xl:rounded-[32px] xl:shadow-[6px_6px_14px_var(--neu-shadow-dark),-6px_-6px_14px_var(--neu-shadow-light)] bg-[var(--neu-bg)] border-y border-[rgba(255,255,255,0.05)] xl:border-0 transition-all">
       
       {/* Header */}
       <div className="px-5 py-3 flex items-center justify-between">

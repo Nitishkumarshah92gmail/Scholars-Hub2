@@ -619,7 +619,7 @@ export default function Chat() {
       {/* Main Chat Area */}
       <div style={activeConversation ? viewportStyle : undefined} className={`flex-1 flex flex-col bg-white dark:bg-black md:bg-[var(--neu-bg)] ${!activeConversation ? 'hidden md:flex relative' : 'flex fixed inset-x-0 z-[60] md:relative md:inset-auto md:h-full md:z-auto'} min-h-0 overflow-hidden`}>
         {activeConversation ? (
-          <div className="flex-1 flex flex-col relative pb-0 md:p-6 lg:p-10 items-center justify-center min-h-0">
+          <div className="flex-1 flex flex-col relative pb-0 md:p-6 lg:p-10 md:items-center md:justify-center min-h-0 w-full h-full">
             {/* Liquid Background - Desktop Only */}
             <div className="hidden md:block absolute top-0 left-0 w-full h-64 bg-liquid-swirl rounded-none md:rounded-b-[48px] shadow-lg pointer-events-none"></div>
             
@@ -654,7 +654,7 @@ export default function Chat() {
               </div>
 
               {/* Messages Stream */}
-              <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-2 md:space-y-4 bg-white dark:bg-black md:bg-transparent relative min-h-0">
+              <div className="flex-1 overflow-y-auto overscroll-contain p-4 md:p-6 space-y-2 md:space-y-4 bg-white dark:bg-black md:bg-transparent relative min-h-0">
                 {messages.length === 0 ? (
                   <div className="h-full flex flex-col items-center justify-center text-ig-text-2 text-sm mt-10">
                      <img 

@@ -7,7 +7,6 @@ import { lazy, Suspense } from 'react';
 // Lazy load all pages — only Layout is kept eager for shell rendering
 const Layout = lazy(() => import('./components/Layout'));
 const Login = lazy(() => import('./pages/Login'));
-const Register = lazy(() => import('./pages/Register'));
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
 const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 const Feed = lazy(() => import('./pages/Feed'));
@@ -48,7 +47,6 @@ function AppRoutes() {
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-        <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
         <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/dashboard" element={<ProtectedRoute><Layout /></ProtectedRoute>}>

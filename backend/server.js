@@ -84,6 +84,12 @@ if (fs.existsSync(frontendDist)) {
   });
 }
 
+// Global Error Handler
+app.use((err, req, res, next) => {
+  console.error('Unhandled Server Error:', err);
+  res.status(500).json({ error: 'Internal Server Error' });
+});
+
 // Export for Vercel serverless
 module.exports = app;
 

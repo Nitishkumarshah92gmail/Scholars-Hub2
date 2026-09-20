@@ -328,8 +328,8 @@ export default memo(function PostCard({ post, onUpdate }) {
       )}
 
       {/* Main Image / Content */}
-      <div className="w-full px-0 lg:px-4 mb-2">
-        <div className="w-full rounded-none lg:rounded-[24px] overflow-hidden lg:shadow-[4px_4px_10px_var(--neu-shadow-dark),-4px_-4px_10px_var(--neu-shadow-light)] border-y border-[rgba(255,255,255,0.05)] lg:border bg-[var(--neu-bg)]">
+      <div className="w-full mb-2">
+        <div className="w-full overflow-hidden border-y border-[rgba(255,255,255,0.05)] bg-[var(--neu-bg)]">
            {post.type === 'image' ? (
              <img src={toDriveImageUrl(post.fileUrls?.[0] || post.fileUrl)} alt="Post" className="w-full h-80 object-cover" loading="lazy" />
            ) : (

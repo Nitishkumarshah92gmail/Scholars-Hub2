@@ -5,8 +5,8 @@ import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
 import toast from 'react-hot-toast';
-import { HiPaperAirplane, HiOutlineChat, HiOutlineSearch, HiArrowLeft, HiPaperClip, HiDocumentText, HiTrash, HiPencil, HiCheck, HiX } from 'react-icons/hi';
-import { deleteFile, getPresignedUrl, uploadDirect } from '../api';
+import { HiPaperAirplane, HiOutlineChat, HiOutlineSearch, HiArrowLeft, HiPaperClip, HiDocumentText, HiTrash, HiPencil, HiCheck, HiX, HiOutlineBell } from 'react-icons/hi';
+import { deleteFile, getPresignedUrl, uploadDirect, getNotifications } from '../api';
 import imageCompression from 'browser-image-compression';
 
 export default function Chat() {
@@ -22,6 +22,7 @@ export default function Chat() {
   const [isUploading, setIsUploading] = useState(false);
   const [editingMessageId, setEditingMessageId] = useState(null);
   const [editContent, setEditContent] = useState('');
+  const [unreadCount, setUnreadCount] = useState(0);
   
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -32,6 +33,10 @@ export default function Chat() {
 
   useEffect(() => {
     fetchConversations();
+    
+    getNotifications()
+      .then((res) => setUnreadCount(res.data.unreadCount))
+      .catch(() => {});
 
     // Subscribe to new messages
     const channel = supabase
@@ -548,9 +553,19 @@ export default function Chat() {
                     </div>
                   </Link>
                 </div>
-                <button onClick={() => setActiveConversation(null)} className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center shadow-lg hover:bg-blue-600 transition">
-                   <HiX className="w-4 h-4" />
-                </button>
+                <div className="flex items-center gap-3">
+                  <Link to="/dashboard/notifications" className="relative p-2 rounded-full text-ig-text dark:text-ig-text-light hover:bg-black/5 transition-colors">
+                    <HiOutlineBell className="w-6 h-6" />
+                    {unreadCount > 0 && (
+                      <span className="absolute top-1 right-1 bg-red-500 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                        {unreadCount > 9 ? '9+' : unreadCount}
+                      </span>
+                    )}
+                  </Link>
+                  <button onClick={() => setActiveConversation(null)} className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center shadow-lg hover:bg-blue-600 transition">
+                     <HiX className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
 
               {/* Messages Stream */}

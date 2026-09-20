@@ -105,10 +105,10 @@ export default function ScholarsBar() {
         </div>
       </div>
 
-      {/* "See All" Modal */}
+      {/* "See All" Modal - Bottom Sheet on Mobile */}
       <AnimatePresence>
         {showAll && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -118,20 +118,24 @@ export default function ScholarsBar() {
               onClick={() => setShowAll(false)}
             />
             <motion.div 
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="relative w-full max-w-md max-h-[80vh] flex flex-col overflow-hidden"
+              initial={{ opacity: 0, y: 100 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 100 }}
+              transition={{ type: "spring", damping: 28, stiffness: 350 }}
+              className="relative w-full sm:max-w-md max-h-[85vh] sm:max-h-[80vh] flex flex-col overflow-hidden rounded-t-[24px] sm:rounded-[28px] sm:mx-4 sm:mb-0"
               style={{
                 background: 'var(--glass-bg-strong)',
                 backdropFilter: 'blur(24px) saturate(200%)',
                 WebkitBackdropFilter: 'blur(24px) saturate(200%)',
                 border: '1px solid var(--glass-border)',
-                borderRadius: '28px',
-                boxShadow: '8px 8px 20px var(--neu-shadow-dark), -8px -8px 20px var(--neu-shadow-light), inset 0 1px 0 var(--glass-highlight)',
+                boxShadow: '0 -10px 40px rgba(0,0,0,0.3), 8px 8px 20px var(--neu-shadow-dark), -8px -8px 20px var(--neu-shadow-light)',
               }}
             >
+              {/* Drag handle for mobile */}
+              <div className="flex justify-center pt-3 pb-1 sm:hidden">
+                <div className="w-10 h-1 rounded-full bg-gray-400/50"></div>
+              </div>
+
               {/* Header */}
               <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: '1px solid var(--glass-border)' }}>
                 <h3 className="text-base font-semibold text-ig-text dark:text-ig-text-light">
@@ -148,7 +152,7 @@ export default function ScholarsBar() {
               </div>
   
               {/* Scholar list */}
-              <div className="overflow-y-auto flex-1 p-2">
+              <div className="overflow-y-auto flex-1 p-2 pb-[env(safe-area-inset-bottom,16px)]">
                 {scholars.map((scholar) => (
                   <button
                     key={scholar._id}

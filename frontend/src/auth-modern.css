@@ -228,28 +228,4 @@
     transform: translateX(200%);
 }
 
-/* Scale down the desktop layout to fit perfectly on mobile screens */
-@media (max-width: 768px) {
-    .auth-modern-wrapper .modern-container {
-        width: 768px;
-        min-height: 480px;
-        border-radius: 30px;
-        transform: scale(0.6);
-        transform-origin: center center;
-    }
-}
-@media (max-width: 480px) {
-    .auth-modern-wrapper .modern-container {
-        transform: scale(0.5);
-    }
-}
-@media (max-width: 400px) {
-    .auth-modern-wrapper .modern-container {
-        transform: scale(0.45);
-    }
-}
-@media (max-width: 360px) {
-    .auth-modern-wrapper .modern-container {
-        transform: scale(0.4);
-    }
-}
+/* Responsive scaling is handled natively by the viewport meta tag in Login.jsx */

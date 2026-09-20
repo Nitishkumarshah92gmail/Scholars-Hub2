@@ -50,7 +50,13 @@ export default function Chat() {
           const newMsg = payload.new;
           // If message belongs to active conversation, add to messages list
           if (activeConversation && newMsg.conversation_id === activeConversation.id) {
-            setMessages((prev) => [...prev, newMsg]);
+            setMessages((prev) => {
+              // Prevent duplicate messages if optimistic UI already added it
+              if (prev.some(m => m.id === newMsg.id || (m.content === newMsg.content && m.optimistic))) {
+                return prev.map(m => (m.content === newMsg.content && m.optimistic) ? newMsg : m);
+              }
+              return [...prev, newMsg];
+            });
             scrollToBottom();
           }
           // Also refresh conversations list to update 'latest message' and sorting
@@ -256,6 +262,18 @@ export default function Chat() {
 
     const content = newMessage.trim();
     setNewMessage(''); // optimistic clear
+    
+    // Optimistic UI update
+    const optimisticMessage = {
+      id: Date.now(),
+      conversation_id: activeConversation.id,
+      sender_id: user._id,
+      content: content,
+      created_at: new Date().toISOString(),
+      optimistic: true
+    };
+    setMessages(prev => [...prev, optimisticMessage]);
+    setTimeout(scrollToBottom, 50);
 
     try {
       const { error } = await supabase
@@ -534,7 +552,7 @@ export default function Chat() {
       </div>
 
       {/* Main Chat Area */}
-      <div className={`flex-1 flex flex-col bg-[var(--neu-bg)] ${!activeConversation ? 'hidden md:flex relative' : 'flex fixed inset-0 z-50 md:relative md:inset-auto md:z-auto'}`}>
+      <div className={`flex-1 flex flex-col bg-[var(--neu-bg)] ${!activeConversation ? 'hidden md:flex relative' : 'flex fixed inset-0 z-[60] md:relative md:inset-auto md:z-auto'}`}>
         {activeConversation ? (
           <div className="flex-1 flex flex-col relative pb-0 md:p-6 lg:p-10 items-center justify-center">
             {/* Liquid Background */}

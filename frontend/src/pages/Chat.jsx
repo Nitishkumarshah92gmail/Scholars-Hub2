@@ -568,15 +568,15 @@ export default function Chat() {
       </div>
 
       {/* Main Chat Area */}
-      <div className={`flex-1 flex flex-col bg-white dark:bg-black md:bg-[var(--neu-bg)] ${!activeConversation ? 'hidden md:flex relative' : 'flex fixed inset-0 h-[100dvh] z-[60] md:relative md:inset-auto md:h-auto md:z-auto'}`}>
+      <div className={`flex-1 flex flex-col bg-white dark:bg-black md:bg-[var(--neu-bg)] ${!activeConversation ? 'hidden md:flex relative' : 'flex fixed inset-0 h-[100dvh] z-[60] md:relative md:inset-auto md:h-full md:z-auto'} min-h-0`}>
         {activeConversation ? (
-          <div className="flex-1 flex flex-col relative pb-0 md:p-6 lg:p-10 items-center justify-center">
+          <div className="flex-1 flex flex-col relative pb-0 md:p-6 lg:p-10 items-center justify-center min-h-0">
             {/* Liquid Background - Desktop Only */}
             <div className="hidden md:block absolute top-0 left-0 w-full h-64 bg-liquid-swirl rounded-none md:rounded-b-[48px] shadow-lg pointer-events-none"></div>
             
-            <div className="w-full flex-1 flex flex-col relative z-10 mx-0 mt-0 mb-0 rounded-none md:rounded-[32px] overflow-hidden md:shadow-[0_-10px_40px_rgba(0,0,0,0.05),8px_8px_20px_var(--neu-shadow-dark),-8px_-8px_20px_var(--neu-shadow-light)] bg-white dark:bg-black md:bg-[var(--neu-bg)] max-w-3xl">
+            <div className="w-full h-full flex flex-col relative z-10 mx-0 mt-0 mb-0 rounded-none md:rounded-[32px] overflow-hidden md:shadow-[0_-10px_40px_rgba(0,0,0,0.05),8px_8px_20px_var(--neu-shadow-dark),-8px_-8px_20px_var(--neu-shadow-light)] bg-white dark:bg-black md:bg-[var(--neu-bg)] max-w-3xl min-h-0 max-h-full">
               {/* Chat Header */}
-              <div className="px-4 pb-3 pt-14 md:pt-4 flex items-center justify-between bg-white dark:bg-black md:bg-[var(--neu-bg)] border-b border-gray-100 dark:border-gray-900 md:border-[rgba(255,255,255,0.05)] z-20 sticky top-0">
+              <div className="px-4 pb-3 pt-14 md:pt-4 flex items-center justify-between bg-white dark:bg-black md:bg-[var(--neu-bg)] border-b border-gray-100 dark:border-gray-900 md:border-[rgba(255,255,255,0.05)] z-20 sticky top-0 shrink-0">
                 <div className="flex items-center gap-4">
                   <button 
                     onClick={() => setActiveConversation(null)}
@@ -705,7 +705,7 @@ export default function Chat() {
               </div>
 
               {/* Message Input */}
-              <div className="p-3 md:px-6 md:pb-6 bg-white dark:bg-black md:bg-[var(--neu-bg)] border-t md:border-t-0 border-gray-100 dark:border-gray-900 md:border-transparent pb-safe">
+              <div className="p-3 md:px-6 md:pb-6 bg-white dark:bg-black md:bg-[var(--neu-bg)] border-t md:border-t-0 border-gray-100 dark:border-gray-900 md:border-transparent pb-safe shrink-0">
                 <form onSubmit={sendMessage} className="flex items-end gap-3 md:gap-4">
                   <input 
                     type="file" 

@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { format } from 'date-fns';
+import { format, isToday, isYesterday } from 'date-fns';
 import toast from 'react-hot-toast';
-import { HiPaperAirplane, HiOutlineChat, HiOutlineSearch, HiArrowLeft, HiDocumentText, HiTrash, HiPencil, HiCheck, HiX, HiOutlineBell, HiCamera, HiMicrophone, HiPhotograph, HiEmojiHappy, HiInformationCircle, HiOutlineClock, HiExclamationCircle, HiCheckCircle } from 'react-icons/hi';
+import { HiPaperAirplane, HiOutlineChat, HiOutlineSearch, HiArrowLeft, HiDocumentText, HiTrash, HiPencil, HiCheck, HiX, HiOutlineBell, HiCamera, HiMicrophone, HiPhotograph, HiEmojiHappy, HiInformationCircle, HiOutlineClock, HiExclamationCircle, HiCheckCircle, HiPhone, HiVideoCamera } from 'react-icons/hi';
 import { deleteFile, getPresignedUrl, uploadDirect, getNotifications } from '../api';
 import imageCompression from 'browser-image-compression';
 
@@ -568,95 +568,145 @@ export default function Chat() {
       </div>
 
       {/* Main Chat Area */}
-      <div className={`flex-1 flex flex-col bg-[var(--neu-bg)] ${!activeConversation ? 'hidden md:flex relative' : 'flex fixed inset-0 h-[100dvh] z-[60] md:relative md:inset-auto md:h-auto md:z-auto'}`}>
+      <div className={`flex-1 flex flex-col bg-white dark:bg-black md:bg-[var(--neu-bg)] ${!activeConversation ? 'hidden md:flex relative' : 'flex fixed inset-0 h-[100dvh] z-[60] md:relative md:inset-auto md:h-auto md:z-auto'}`}>
         {activeConversation ? (
           <div className="flex-1 flex flex-col relative pb-0 md:p-6 lg:p-10 items-center justify-center">
-            {/* Liquid Background */}
-            <div className="absolute top-0 left-0 w-full h-64 bg-liquid-swirl rounded-none md:rounded-b-[48px] shadow-lg pointer-events-none"></div>
+            {/* Liquid Background - Desktop Only */}
+            <div className="hidden md:block absolute top-0 left-0 w-full h-64 bg-liquid-swirl rounded-none md:rounded-b-[48px] shadow-lg pointer-events-none"></div>
             
-            <div className="w-full flex-1 flex flex-col relative z-10 mx-0 mt-0 mb-0 rounded-none md:rounded-[32px] overflow-hidden md:shadow-[0_-10px_40px_rgba(0,0,0,0.05),8px_8px_20px_var(--neu-shadow-dark),-8px_-8px_20px_var(--neu-shadow-light)] bg-[var(--neu-bg)] max-w-3xl">
+            <div className="w-full flex-1 flex flex-col relative z-10 mx-0 mt-0 mb-0 rounded-none md:rounded-[32px] overflow-hidden md:shadow-[0_-10px_40px_rgba(0,0,0,0.05),8px_8px_20px_var(--neu-shadow-dark),-8px_-8px_20px_var(--neu-shadow-light)] bg-white dark:bg-black md:bg-[var(--neu-bg)] max-w-3xl">
               {/* Chat Header */}
-              <div className="px-4 pb-3 pt-14 md:pt-3 flex items-center justify-between bg-[var(--neu-bg)] border-b border-gray-200 dark:border-[rgba(255,255,255,0.05)] z-20 sticky top-0">
-                <div className="flex items-center gap-3">
+              <div className="px-4 pb-3 pt-14 md:pt-4 flex items-center justify-between bg-white dark:bg-black md:bg-[var(--neu-bg)] border-b border-gray-100 dark:border-gray-900 md:border-[rgba(255,255,255,0.05)] z-20 sticky top-0">
+                <div className="flex items-center gap-4">
                   <button 
                     onClick={() => setActiveConversation(null)}
-                    className="md:hidden w-8 h-8 flex items-center justify-center rounded-full text-ig-text dark:text-ig-text-light hover:bg-black/5 dark:hover:bg-white/5 transition"
+                    className="md:hidden w-8 h-8 flex items-center justify-center rounded-full text-ig-text dark:text-ig-text-light hover:bg-gray-100 dark:hover:bg-gray-800 transition -ml-1 shrink-0"
                   >
-                    <HiArrowLeft className="w-5 h-5" />
+                    <HiArrowLeft className="w-6 h-6" />
                   </button>
-                  <Link to={`/dashboard/profile/${activeConversation.otherUser.id}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                  <Link to={`/dashboard/profile/${activeConversation.otherUser.id}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity min-w-0">
                     <img 
                       src={activeConversation.otherUser.avatar || `https://ui-avatars.com/api/?name=${activeConversation.otherUser.name}`} 
                       onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${activeConversation.otherUser.name}&background=1e3a5f&color=fbbf24`; }}
                       alt={activeConversation.otherUser.name} 
-                      className="w-10 h-10 rounded-full object-cover" 
+                      className="w-10 h-10 rounded-full object-cover shrink-0" 
                     />
-                    <div className="flex flex-col">
-                      <h3 className="font-semibold text-[15px] text-ig-text dark:text-ig-text-light leading-tight">{activeConversation.otherUser.name}</h3>
-                      <p className="text-[12px] text-ig-text-2">Active {format(new Date(), 'h:mm a')}</p>
+                    <div className="flex flex-col min-w-0">
+                      <h3 className="font-bold text-[15px] text-ig-text dark:text-ig-text-light leading-tight tracking-tight font-heading truncate">{activeConversation.otherUser.name}</h3>
+                      <p className="text-[12px] text-gray-500 font-medium truncate">Active {format(new Date(), 'h')}h ago</p>
                     </div>
                   </Link>
                 </div>
-                <div className="flex items-center gap-4 text-ig-text dark:text-ig-text-light">
-                  <Link to="/dashboard/notifications" className="relative hover:opacity-70 transition-opacity">
-                    <HiOutlineBell className="w-6 h-6" />
-                    {unreadCount > 0 && (
-                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                        {unreadCount > 9 ? '9+' : unreadCount}
-                      </span>
-                    )}
-                  </Link>
+                <div className="flex items-center gap-5 md:gap-4 text-ig-text dark:text-ig-text-light shrink-0">
                   <button className="hover:opacity-70 transition-opacity">
-                    <HiInformationCircle className="w-6 h-6" />
+                    <HiPhone className="w-6 h-6 md:w-5 md:h-5" />
                   </button>
-                  <button onClick={() => setActiveConversation(null)} className="hidden md:flex hover:opacity-70 transition-opacity">
+                  <button className="hover:opacity-70 transition-opacity">
+                    <HiVideoCamera className="w-7 h-7 md:w-6 md:h-6" />
+                  </button>
+                  <button onClick={() => setActiveConversation(null)} className="hidden md:flex hover:opacity-70 transition-opacity ml-2">
                      <HiX className="w-6 h-6" />
                   </button>
                 </div>
               </div>
 
               {/* Messages Stream */}
-              <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-transparent">
+              <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-2 md:space-y-4 bg-white dark:bg-black md:bg-transparent relative">
                 {messages.length === 0 ? (
-                  <div className="h-full flex items-center justify-center text-ig-text-2 text-sm">
-                    Say hi to {activeConversation.otherUser.name}! 👋
+                  <div className="h-full flex flex-col items-center justify-center text-ig-text-2 text-sm mt-10">
+                     <img 
+                      src={activeConversation.otherUser.avatar || `https://ui-avatars.com/api/?name=${activeConversation.otherUser.name}`} 
+                      onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${activeConversation.otherUser.name}&background=1e3a5f&color=fbbf24`; }}
+                      alt={activeConversation.otherUser.name} 
+                      className="w-24 h-24 rounded-full object-cover mb-4 shadow-sm" 
+                    />
+                    <p className="font-bold text-xl text-black dark:text-white">{activeConversation.otherUser.name}</p>
+                    <p className="text-gray-500 mb-5 text-sm">StudyShare</p>
+                    <button className="bg-gray-100 dark:bg-gray-800 text-black dark:text-white px-5 py-2 rounded-lg font-semibold text-[15px] hover:bg-gray-200 dark:hover:bg-gray-700 transition">View Profile</button>
                   </div>
                 ) : (
                   messages.map((msg, idx) => {
                     const isMine = msg.sender_id === user._id;
+                    const msgDate = new Date(msg.created_at);
+                    
+                    let showDate = false;
+                    let dateText = '';
+                    if (idx === 0) {
+                      showDate = true;
+                    } else {
+                      const prevMsgDate = new Date(messages[idx-1].created_at);
+                      if (msgDate - prevMsgDate > 2 * 60 * 60 * 1000) {
+                        showDate = true;
+                      }
+                    }
+                    
+                    if (showDate) {
+                      if (isToday(msgDate)) {
+                        dateText = 'Today ' + format(msgDate, 'h:mm a');
+                      } else if (isYesterday(msgDate)) {
+                        dateText = 'Yesterday ' + format(msgDate, 'h:mm a');
+                      } else {
+                        dateText = format(msgDate, 'MMM d, h:mm a');
+                      }
+                    }
+                    
+                    const isMedia = msg.attachment_url && msg.content === ('Sent an attachment: ' + msg.attachment_name);
+                    const showProfilePic = !isMine && (idx === messages.length - 1 || messages[idx+1]?.sender_id === user._id || (messages[idx+1] && new Date(messages[idx+1].created_at) - msgDate > 2*60*60*1000));
+
                     return (
-                      <motion.div 
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        key={msg.id} 
-                        className={`flex flex-col ${isMine ? 'items-end' : 'items-start'} group w-full min-w-0`}
-                      >
-                        <div className={`flex items-center gap-2 max-w-[85%] sm:max-w-[75%] min-w-0 ${isMine ? 'flex-row-reverse' : ''}`}>
-                          <div 
-                            className={`px-4 py-2.5 sm:px-5 sm:py-3 text-sm min-w-0 break-words ${
-                              isMine 
-                                ? 'bg-blue-500 text-white rounded-t-[20px] rounded-bl-[20px] rounded-br-sm shadow-[4px_4px_10px_rgba(59,130,246,0.3)]' 
-                                : 'bg-[var(--neu-bg)] text-ig-text dark:text-ig-text-light rounded-t-[20px] rounded-br-[20px] rounded-bl-sm shadow-[4px_4px_10px_var(--neu-shadow-dark),-4px_-4px_10px_var(--neu-shadow-light)]'
-                            }`}
-                          >
-                            <div className="min-w-0 overflow-hidden w-full">
-                                {(!msg.attachment_url || msg.content !== ('Sent an attachment: ' + msg.attachment_name)) && (
-                                  <div className="break-words overflow-wrap-anywhere whitespace-pre-wrap w-full">{renderContentWithLinks(msg.content, isMine)}</div>
-                                )}
-                                {renderAttachment(msg)}
-                            </div>
+                      <div key={msg.id} className={`flex flex-col w-full ${isMine ? 'items-end' : 'items-start'}`}>
+                        {showDate && (
+                          <div className="w-full text-center my-5 text-[11px] font-medium text-gray-400">
+                            {dateText}
                           </div>
-                        </div>
-                      </motion.div>
+                        )}
+                        <motion.div 
+                          initial={{ opacity: 0, y: 5 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className={`flex items-end gap-2 max-w-[85%] md:max-w-[75%] min-w-0 ${isMine ? 'flex-row-reverse' : ''} mb-[2px]`}
+                        >
+                            {!isMine ? (
+                               <div className="w-7 h-7 shrink-0 mr-1 flex items-end">
+                                 {showProfilePic && (
+                                   <img 
+                                     src={activeConversation.otherUser.avatar || `https://ui-avatars.com/api/?name=${activeConversation.otherUser.name}`} 
+                                     className="w-7 h-7 rounded-full object-cover" 
+                                     onError={(e) => e.target.style.display='none'} 
+                                   />
+                                 )}
+                               </div>
+                            ) : null}
+                            
+                            <div 
+                              className={`text-[15px] min-w-0 break-words ${
+                                isMedia ? 'bg-transparent overflow-hidden rounded-[22px] max-w-full' :
+                                isMine 
+                                  ? 'bg-[#3797F0] text-white px-4 py-3 rounded-t-[22px] rounded-bl-[22px] rounded-br-[4px] md:shadow-[4px_4px_10px_rgba(59,130,246,0.3)]' 
+                                  : 'bg-[#EFEFEF] dark:bg-[#262626] text-black dark:text-white px-4 py-3 rounded-t-[22px] rounded-br-[22px] rounded-bl-[4px] md:shadow-[4px_4px_10px_var(--neu-shadow-dark),-4px_-4px_10px_var(--neu-shadow-light)]'
+                              }`}
+                            >
+                              <div className="min-w-0 overflow-hidden w-full leading-snug">
+                                  {!isMedia && (
+                                    <div className="break-words overflow-wrap-anywhere whitespace-pre-wrap w-full">{renderContentWithLinks(msg.content, isMine)}</div>
+                                  )}
+                                  {isMedia && (
+                                     <div className="rounded-[22px] overflow-hidden">
+                                        {renderAttachment(msg)}
+                                     </div>
+                                  )}
+                              </div>
+                            </div>
+                        </motion.div>
+                      </div>
                     );
                   })
                 )}
-                <div ref={messagesEndRef} />
+                <div ref={messagesEndRef} className="h-4" />
               </div>
 
               {/* Message Input */}
-              <div className="p-3 bg-[var(--neu-bg)] border-t border-gray-200 dark:border-[rgba(255,255,255,0.05)]">
-                <form onSubmit={sendMessage} className="flex items-end gap-2 md:gap-3">
+              <div className="p-3 md:px-6 md:pb-6 bg-white dark:bg-black md:bg-[var(--neu-bg)] border-t md:border-t-0 border-gray-100 dark:border-gray-900 md:border-transparent pb-safe">
+                <form onSubmit={sendMessage} className="flex items-end gap-3 md:gap-4">
                   <input 
                     type="file" 
                     ref={fileInputRef} 
@@ -666,11 +716,11 @@ export default function Chat() {
                   />
                   <button
                     type="button"
-                    className="w-10 h-10 mb-1 flex items-center justify-center bg-blue-500 hover:bg-blue-600 rounded-full text-white transition-colors shrink-0"
+                    className="w-[42px] h-[42px] mb-0.5 flex items-center justify-center bg-[#0095F6] hover:bg-blue-600 rounded-full text-white transition-colors shrink-0 md:shadow-md"
                   >
-                    <HiCamera className="w-6 h-6" />
+                    <HiCamera className="w-[22px] h-[22px]" />
                   </button>
-                  <div className="flex-1 bg-gray-100 dark:bg-[#262626] rounded-[24px] px-4 py-2 flex items-end gap-2 border border-transparent focus-within:border-gray-300 dark:focus-within:border-gray-600 transition-colors">
+                  <div className="flex-1 bg-[#EFEFEF] dark:bg-[#262626] md:bg-gray-100 md:dark:bg-[#262626] rounded-[24px] pl-5 pr-2 py-2 flex items-end gap-2 border border-transparent focus-within:border-gray-300 dark:focus-within:border-gray-600 transition-colors md:shadow-inner">
                     <textarea
                       value={newMessage}
                       onChange={(e) => {
@@ -679,7 +729,7 @@ export default function Chat() {
                         e.target.style.height = (e.target.scrollHeight) + 'px';
                       }}
                       placeholder="Message..."
-                      className="flex-1 bg-transparent border-none focus:ring-0 resize-none max-h-32 min-h-[24px] py-1 text-[15px] text-ig-text dark:text-ig-text-light scrollbar-hide placeholder-gray-500"
+                      className="flex-1 bg-transparent border-none focus:ring-0 resize-none max-h-[100px] min-h-[24px] py-1.5 text-[15px] text-black dark:text-white scrollbar-hide placeholder-gray-500"
                       rows="1"
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' && !e.shiftKey) {
@@ -690,25 +740,25 @@ export default function Chat() {
                       }}
                     />
                     {!newMessage.trim() && !isUploading ? (
-                      <div className="flex items-center gap-3 text-ig-text dark:text-ig-text-light mb-1 opacity-80">
+                      <div className="flex items-center gap-3 text-gray-800 dark:text-gray-200 mb-1.5 pr-2">
                         <button type="button" className="hover:opacity-70 transition-opacity">
-                          <HiMicrophone className="w-6 h-6" />
+                          <HiMicrophone className="w-[22px] h-[22px]" />
                         </button>
                         <button type="button" onClick={() => fileInputRef.current?.click()} className="hover:opacity-70 transition-opacity">
-                          <HiPhotograph className="w-6 h-6" />
+                          <HiPhotograph className="w-[22px] h-[22px]" />
                         </button>
-                        <button type="button" className="hover:opacity-70 transition-opacity hidden sm:block">
-                          <HiEmojiHappy className="w-6 h-6" />
+                        <button type="button" className="hover:opacity-70 transition-opacity">
+                          <HiEmojiHappy className="w-[22px] h-[22px]" />
                         </button>
                       </div>
                     ) : (
                       <button
                         type="submit"
                         disabled={isUploading}
-                        className="mb-1 font-semibold text-blue-500 hover:text-blue-600 disabled:opacity-50 transition-colors px-2"
+                        className="mb-1.5 font-bold text-[#0095F6] hover:text-blue-700 disabled:opacity-50 transition-colors px-3 text-[15px]"
                       >
                         {isUploading ? (
-                          <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                          <div className="w-5 h-5 border-2 border-[#0095F6] border-t-transparent rounded-full animate-spin"></div>
                         ) : (
                           "Send"
                         )}
@@ -718,8 +768,7 @@ export default function Chat() {
                 </form>
               </div>
             </div>
-          </div>
-        ) : (
+          </div>        ) : (
           <div className="h-full flex flex-col items-center justify-center text-ig-text-2 bg-[var(--neu-bg)]">
             <div className="w-24 h-24 rounded-full border-2 border-ig-text-2/20 flex items-center justify-center mb-4 shadow-[inset_4px_4px_10px_var(--neu-shadow-dark),inset_-4px_-4px_10px_var(--neu-shadow-light)]">
               <HiOutlineChat className="w-10 h-10 opacity-50" />

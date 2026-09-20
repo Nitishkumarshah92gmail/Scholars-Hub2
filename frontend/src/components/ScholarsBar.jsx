@@ -1,14 +1,15 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { getScholars } from '../api';
-import { motion, AnimatePresence } from 'framer-motion';
+
+const avatarFallback = (name) =>
+  `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=1e3a5f&color=fbbf24&size=200`;
 
 export default function ScholarsBar() {
   const [scholars, setScholars] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAll, setShowAll] = useState(false);
-  const scrollRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,6 +18,11 @@ export default function ScholarsBar() {
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
+
+  const goToProfile = useCallback((id) => {
+    setShowAll(false);
+    navigate(`/dashboard/profile/${id}`);
+  }, [navigate]);
 
   if (loading) {
     return (
@@ -35,8 +41,6 @@ export default function ScholarsBar() {
 
   if (scholars.length === 0) return null;
 
-  const displayScholars = showAll ? scholars : scholars;
-
   return (
     <>
       <div className="card mb-4 p-3 overflow-hidden">
@@ -53,32 +57,25 @@ export default function ScholarsBar() {
             </button>
           )}
         </div>
-        <div
-          ref={scrollRef}
-          className="flex gap-3 overflow-x-auto scrollbar-hide pb-1 scroll-smooth"
-        >
-          {displayScholars.map((scholar) => (
+        <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-1 scroll-smooth">
+          {scholars.map((scholar) => (
             <button
               key={scholar._id}
-              onClick={() => navigate(`/dashboard/profile/${scholar._id}`)}
+              onClick={() => goToProfile(scholar._id)}
               className="flex flex-col items-center gap-1.5 min-w-[72px] max-w-[72px] group"
             >
               <div className="relative">
                 <div className="w-[62px] h-[62px] rounded-full p-[2.5px] bg-gradient-to-br from-ig-primary via-purple-500 to-pink-500 group-hover:scale-105 transition-transform"
                   style={{ boxShadow: '3px 3px 8px var(--neu-shadow-dark), -3px -3px 8px var(--neu-shadow-light)' }}>
                     <img
-                      src={
-                        scholar.avatar ||
-                        `https://ui-avatars.com/api/?name=${encodeURIComponent(scholar.name)}`
-                      }
-                      onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(scholar.name)}&background=1e3a5f&color=fbbf24`; }}
+                      src={scholar.avatar || avatarFallback(scholar.name)}
+                      onError={(e) => { e.target.onerror = null; e.target.src = avatarFallback(scholar.name); }}
                       alt={scholar.name}
                       loading="lazy"
                       decoding="async"
                       className="w-full h-full rounded-full object-cover border-[2.5px] border-ig-bg dark:border-black"
                     />
                 </div>
-                {/* Online indicator */}
                 <span className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 bg-blue-500 rounded-full border-2 border-ig-bg dark:border-black" />
               </div>
               <span className="text-[11px] text-ig-text dark:text-ig-text-light truncate w-full text-center leading-tight">
@@ -106,96 +103,83 @@ export default function ScholarsBar() {
         </div>
       </div>
 
-      {/* "See All" Modal - Portaled to body so it escapes all parent containers */}
-      {createPortal(
-        <AnimatePresence>
-          {showAll && (
-            <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center">
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="absolute inset-0 bg-black/60"
-                onClick={() => setShowAll(false)}
-              />
-              <motion.div 
-                initial={{ opacity: 0, y: 100 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 100 }}
-                transition={{ type: "spring", damping: 28, stiffness: 350 }}
-                className="relative w-full sm:max-w-md max-h-[85vh] sm:max-h-[80vh] flex flex-col overflow-hidden rounded-t-[24px] sm:rounded-[28px] sm:mx-4 sm:mb-0"
-                style={{
-                  background: 'var(--glass-bg-strong)',
-                  backdropFilter: 'blur(24px) saturate(200%)',
-                  WebkitBackdropFilter: 'blur(24px) saturate(200%)',
-                  border: '1px solid var(--glass-border)',
-                  boxShadow: '0 -10px 40px rgba(0,0,0,0.3), 8px 8px 20px var(--neu-shadow-dark), -8px -8px 20px var(--neu-shadow-light)',
-                }}
-              >
-                {/* Drag handle for mobile */}
-                <div className="flex justify-center pt-3 pb-1 sm:hidden">
-                  <div className="w-10 h-1 rounded-full bg-gray-400/50"></div>
-                </div>
+      {/* "See All" Modal — Portaled centered popup */}
+      {showAll && createPortal(
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+          style={{ animation: 'fadeIn .2s ease-out' }}
+        >
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => setShowAll(false)}
+          />
 
-                {/* Header */}
-                <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: '1px solid var(--glass-border)' }}>
-                  <h3 className="text-base font-semibold text-ig-text dark:text-ig-text-light">
-                    All Scholars ({scholars.length})
-                  </h3>
-                  <button
-                    onClick={() => setShowAll(false)}
-                    className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-ag-surface-container-high transition-colors text-ig-text dark:text-ig-text-light"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-    
-                {/* Scholar list */}
-                <div className="overflow-y-auto flex-1 p-2 pb-[env(safe-area-inset-bottom,16px)]">
-                  {scholars.map((scholar) => (
-                    <button
-                      key={scholar._id}
-                      onClick={() => {
-                        setShowAll(false);
-                        navigate(`/dashboard/profile/${scholar._id}`);
-                      }}
-                      className="flex items-center gap-3 w-full px-3 py-2.5 rounded-ag-sm hover:bg-gray-100 dark:hover:bg-ag-surface-container-high transition-colors"
-                    >
-                      <div className="relative flex-shrink-0">
-                        <div className="w-12 h-12 rounded-full p-[2px] bg-gradient-to-br from-ig-primary via-purple-500 to-pink-500"
-                          style={{ boxShadow: '2px 2px 5px var(--neu-shadow-dark), -2px -2px 5px var(--neu-shadow-light)' }}>
-                          <img
-                            src={
-                              scholar.avatar ||
-                              `https://ui-avatars.com/api/?name=${encodeURIComponent(scholar.name)}`
-                            }
-                            onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(scholar.name)}&background=1e3a5f&color=fbbf24`; }}
-                            alt={scholar.name}
-                            className="w-full h-full rounded-full object-cover border-2 border-ig-bg dark:border-black"
-                          />
-                        </div>
-                        <span className="absolute bottom-0 right-0 w-3 h-3 bg-blue-500 rounded-full border-2 border-ig-bg dark:border-black" />
-                      </div>
-                      <div className="flex-1 min-w-0 text-left">
-                        <p className="text-sm font-semibold text-ig-text dark:text-ig-text-light truncate">
-                          {scholar.name}
-                        </p>
-                        <p className="text-xs text-ig-text-2 truncate">
-                          {scholar.school || 'Scholar'}
-                        </p>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </motion.div>
+          {/* Popup */}
+          <div
+            className="relative w-full max-w-sm max-h-[70vh] flex flex-col overflow-hidden rounded-[20px]"
+            style={{
+              background: 'var(--neu-bg, #fff)',
+              boxShadow: '0 25px 60px rgba(0,0,0,0.3)',
+              animation: 'popIn .25s cubic-bezier(0.34,1.56,0.64,1)',
+            }}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-800 shrink-0">
+              <h3 className="text-base font-bold text-ig-text dark:text-ig-text-light">
+                All Scholars ({scholars.length})
+              </h3>
+              <button
+                onClick={() => setShowAll(false)}
+                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-ig-text dark:text-ig-text-light"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
-          )}
-        </AnimatePresence>,
+
+            {/* Scholar list — scrollable */}
+            <div className="overflow-y-auto flex-1 py-1">
+              {scholars.map((scholar) => (
+                <button
+                  key={scholar._id}
+                  onClick={() => goToProfile(scholar._id)}
+                  className="flex items-center gap-3 w-full px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors"
+                >
+                  <div className="relative shrink-0">
+                    <div className="w-11 h-11 rounded-full p-[2px] bg-gradient-to-br from-ig-primary via-purple-500 to-pink-500">
+                      <img
+                        src={scholar.avatar || avatarFallback(scholar.name)}
+                        onError={(e) => { e.target.onerror = null; e.target.src = avatarFallback(scholar.name); }}
+                        alt={scholar.name}
+                        loading="lazy"
+                        className="w-full h-full rounded-full object-cover border-2 border-[var(--neu-bg,#fff)]"
+                      />
+                    </div>
+                    <span className="absolute bottom-0 right-0 w-3 h-3 bg-blue-500 rounded-full border-2 border-[var(--neu-bg,#fff)]" />
+                  </div>
+                  <div className="flex-1 min-w-0 text-left">
+                    <p className="text-sm font-semibold text-ig-text dark:text-ig-text-light truncate">
+                      {scholar.name}
+                    </p>
+                    <p className="text-xs text-ig-text-2 truncate">
+                      {scholar.school || 'Scholar'}
+                    </p>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>,
         document.body
       )}
+
+      {/* Inline keyframe animations — no framer-motion needed */}
+      <style>{`
+        @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+        @keyframes popIn { from { opacity: 0; transform: scale(0.9) } to { opacity: 1; transform: scale(1) } }
+      `}</style>
     </>
   );
 }

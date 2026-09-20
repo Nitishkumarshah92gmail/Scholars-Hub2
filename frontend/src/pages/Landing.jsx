@@ -201,7 +201,7 @@ export default function Landing() {
       </div>
 
       {/* ── Global Glass Frame (Always visible overlay) ── */}
-      <div className="fixed inset-3 sm:inset-4 lg:inset-6 z-40 pointer-events-none border-2 border-white/10 rounded-[2rem] sm:rounded-[3rem] mix-blend-overlay"></div>
+      <div className="hidden sm:block fixed inset-3 sm:inset-4 lg:inset-6 z-40 pointer-events-none border-2 border-white/10 rounded-[2rem] sm:rounded-[3rem] mix-blend-overlay"></div>
 
       {/* ── Top Dark Gradient for Navbar Legibility ── */}
       <div className="fixed top-0 left-0 right-0 h-32 bg-gradient-to-b from-black/80 to-transparent z-40 pointer-events-none"></div>
@@ -209,7 +209,7 @@ export default function Landing() {
       {/* ── Liquid Glass Navbar ── */}
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         headerScrolled
-          ? 'bg-[#121c22]/80 backdrop-blur-2xl border-b border-white/10 shadow-lg'
+          ? 'bg-[#121c22]/90 sm:bg-[#121c22]/80 backdrop-blur-md sm:backdrop-blur-2xl border-b border-white/10 shadow-md sm:shadow-lg'
           : 'bg-transparent pt-6 lg:pt-8'
       }`}
       >
@@ -259,7 +259,7 @@ export default function Landing() {
 
         {/* Mobile dropdown — Dark Glass */}
         {mobileMenuOpen && (
-          <div className="md:hidden animate-fade-in bg-black/60 backdrop-blur-2xl border-t border-white/10"
+          <div className="md:hidden animate-fade-in bg-[#121c22]/95 backdrop-blur-md border-t border-white/10"
           >
             <div className="px-6 py-4 space-y-2">
               <a href="#features" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-2.5 text-sm text-white rounded-ag-sm hover:bg-white/10 transition-all">Features</a>
@@ -308,7 +308,7 @@ export default function Landing() {
 
 
              {/* Bottom Right Glass Card (Study Hub Widget) */}
-             <div className="bg-[#121c22]/60 backdrop-blur-2xl border border-white/10 rounded-[2rem] p-6 w-full lg:w-[400px] shadow-2xl animate-fade-in-up hover:-translate-y-1 transition-transform duration-500" style={{ animationDelay: '0.4s' }}>
+             <div className="bg-[#121c22]/80 sm:bg-[#121c22]/60 backdrop-blur-lg sm:backdrop-blur-2xl border border-white/10 rounded-[2rem] p-6 w-full lg:w-[400px] shadow-lg sm:shadow-2xl animate-fade-in-up hover:-translate-y-1 transition-transform duration-500" style={{ animationDelay: '0.4s' }}>
                <div className="flex justify-between items-start mb-6">
                  <div>
                    <span className="inline-block bg-emerald-500/20 text-emerald-300 text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md mb-2">Live Stats</span>

@@ -340,3 +340,10 @@
     0%, 100% { transform: translateY(0) rotate(0deg); }
     50% { transform: translateY(-20px) rotate(5deg); }
 }
+
+/* --- Mobile Performance Optimizations --- */
+@media (max-width: 768px) {
+    .hero-orb { display: none !important; }
+    .hero-center-glow { display: none !important; }
+    .hero-grid { display: none !important; }
+}

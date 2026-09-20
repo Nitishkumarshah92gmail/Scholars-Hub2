@@ -51,10 +51,11 @@
 
 .auth-modern-wrapper .modern-container span {
     font-size: 12px;
+    color: #000 !important;
 }
 
 .auth-modern-wrapper .modern-container a {
-    color: #333;
+    color: #000 !important;
     font-size: 13px;
     text-decoration: none;
     margin: 15px 0 10px;
@@ -98,6 +99,12 @@
     border-radius: 8px;
     width: 100%;
     outline: none !important;
+    color: #000 !important;
+}
+
+.auth-modern-wrapper .modern-container input::placeholder {
+    color: #000 !important;
+    opacity: 1;
 }
 
 .auth-modern-wrapper .modern-container input:focus {
@@ -160,7 +167,7 @@
     margin: 15px 0;
     cursor: pointer;
     text-decoration: none;
-    color: #333;
+    color: #000 !important;
     font-size: 14px;
     font-weight: 500;
     transition: background-color 0.2s;

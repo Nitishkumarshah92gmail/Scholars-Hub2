@@ -522,7 +522,8 @@ export default function Layout() {
           }
         `}</style>
         {/* Desktop Top Right Actions */}
-        <div className="hidden md:flex fixed top-8 right-10 z-40 items-center gap-4">
+        {!location.pathname.includes('/dashboard/messages') && (
+          <div className="hidden md:flex fixed top-8 right-10 z-40 items-center gap-4">
           <a href="/scholars-hub.apk" download className="flex items-center gap-2 px-4 py-2 text-white text-sm font-bold rounded-ag-pill transition-all"
             style={{
               background: 'linear-gradient(135deg, #1a73e8 0%, #4285f4 100%)',
@@ -559,7 +560,8 @@ export default function Layout() {
               </>
             )}
           </NavLink>
-        </div>
+          </div>
+        )}
 
         <div className={`mx-auto w-full flex flex-col ${location.pathname.includes('/dashboard/messages') ? 'h-full max-w-none px-0 py-0 min-h-0' : 'max-w-6xl px-0 xl:px-8 py-4 xl:py-12'}`}>
           <Outlet />

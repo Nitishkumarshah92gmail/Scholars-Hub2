@@ -568,7 +568,7 @@ export default function Chat() {
       </div>
 
       {/* Main Chat Area */}
-      <div className={`flex-1 flex flex-col bg-[var(--neu-bg)] ${!activeConversation ? 'hidden md:flex relative' : 'flex fixed inset-0 z-[60] md:relative md:inset-auto md:z-auto'}`}>
+      <div className={`flex-1 flex flex-col bg-[var(--neu-bg)] ${!activeConversation ? 'hidden md:flex relative' : 'flex fixed inset-0 h-[100dvh] z-[60] md:relative md:inset-auto md:h-auto md:z-auto'}`}>
         {activeConversation ? (
           <div className="flex-1 flex flex-col relative pb-0 md:p-6 lg:p-10 items-center justify-center">
             {/* Liquid Background */}
@@ -576,7 +576,7 @@ export default function Chat() {
             
             <div className="w-full flex-1 flex flex-col relative z-10 mx-0 mt-0 mb-0 rounded-none md:rounded-[32px] overflow-hidden md:shadow-[0_-10px_40px_rgba(0,0,0,0.05),8px_8px_20px_var(--neu-shadow-dark),-8px_-8px_20px_var(--neu-shadow-light)] bg-[var(--neu-bg)] max-w-3xl">
               {/* Chat Header */}
-              <div className="px-4 py-3 flex items-center justify-between bg-[var(--neu-bg)] border-b border-gray-200 dark:border-[rgba(255,255,255,0.05)] z-20 sticky top-0">
+              <div className="px-4 pb-3 pt-14 md:pt-3 flex items-center justify-between bg-[var(--neu-bg)] border-b border-gray-200 dark:border-[rgba(255,255,255,0.05)] z-20 sticky top-0">
                 <div className="flex items-center gap-3">
                   <button 
                     onClick={() => setActiveConversation(null)}
@@ -641,7 +641,7 @@ export default function Chat() {
                           >
                             <div className="min-w-0 overflow-hidden w-full">
                                 {(!msg.attachment_url || msg.content !== ('Sent an attachment: ' + msg.attachment_name)) && (
-                                  <div className="break-all whitespace-pre-wrap w-full">{renderContentWithLinks(msg.content, isMine)}</div>
+                                  <div className="break-words overflow-wrap-anywhere whitespace-pre-wrap w-full">{renderContentWithLinks(msg.content, isMine)}</div>
                                 )}
                                 {renderAttachment(msg)}
                             </div>

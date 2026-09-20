@@ -129,10 +129,18 @@ export default function Chat() {
         };
       });
 
-      // Sort by latest activity
-      formattedConvos.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+      // Filter out duplicate conversations with the same user, keeping only the most recent one
+      const uniqueConvosMap = new Map();
+      formattedConvos.forEach(convo => {
+        const existing = uniqueConvosMap.get(convo.otherUser.id);
+        if (!existing || new Date(convo.updatedAt) > new Date(existing.updatedAt)) {
+          uniqueConvosMap.set(convo.otherUser.id, convo);
+        }
+      });
+      const uniqueConvos = Array.from(uniqueConvosMap.values());
+      uniqueConvos.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
       
-      setConversations(formattedConvos);
+      setConversations(uniqueConvos);
     } catch (error) {
       console.error('Error fetching conversations:', error);
       if (error.message) toast.error('Failed to load chats: ' + error.message);

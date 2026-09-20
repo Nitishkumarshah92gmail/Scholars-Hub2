@@ -226,11 +226,6 @@ export default memo(function PostCard({ post, onUpdate }) {
               <div className="aspect-video w-full">
                 <iframe src={embedSrc} title={post.title} className="w-full h-full" frameBorder="0" allowFullScreen loading="lazy" sandbox="allow-scripts allow-same-origin allow-presentation allow-popups" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" />
               </div>
-              <div className="px-4 py-2 flex justify-end">
-                <a href={url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-xs font-medium text-ig-primary hover:text-ig-primary-dark transition-colors">
-                  <HiDownload className="w-4 h-4" /> Watch on YouTube
-                </a>
-              </div>
             </div>
           );
         }
@@ -247,11 +242,6 @@ export default memo(function PostCard({ post, onUpdate }) {
                   title={post.title} allowFullScreen allow="encrypted-media;" 
                 />
               </div>
-              <div className="px-4 py-2 flex justify-end">
-                <a href={url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-xs font-medium text-ig-primary hover:text-ig-primary-dark transition-colors">
-                  <HiDownload className="w-4 h-4" /> Watch on TikTok
-                </a>
-              </div>
             </div>
           );
         }
@@ -266,11 +256,6 @@ export default memo(function PostCard({ post, onUpdate }) {
                   className="w-full h-[480px] border border-ig-separator rounded-lg" 
                   frameBorder="0" scrolling="no" allowTransparency allowFullScreen 
                 />
-              </div>
-              <div className="px-4 py-2 flex justify-end">
-                <a href={url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-xs font-medium text-ig-primary hover:text-ig-primary-dark transition-colors">
-                  <HiDownload className="w-4 h-4" /> Watch on Instagram
-                </a>
               </div>
             </div>
           );
@@ -383,6 +368,16 @@ export default memo(function PostCard({ post, onUpdate }) {
             <span className="font-bold mr-1">{post.author?.name}</span>
             {post.description || post.title}
           </p>
+        </div>
+      )}
+
+      {/* External Video Link */}
+      {(post.type === 'youtube_video' || post.type === 'youtube_playlist' || post.type === 'video_link') && (post.youtubeUrl || post.fileUrl) && (
+        <div className="px-5 pb-3">
+          <a href={post.youtubeUrl || post.fileUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs font-bold text-ig-primary hover:text-ig-primary-dark transition-colors bg-ig-primary/10 px-3 py-1.5 rounded-full">
+            <HiDownload className="w-4 h-4" /> 
+            {(post.youtubeUrl || post.fileUrl).includes('tiktok.com') ? 'Watch on TikTok' : (post.youtubeUrl || post.fileUrl).includes('instagram.com') ? 'Watch on Instagram' : 'Watch on YouTube'}
+          </a>
         </div>
       )}
 

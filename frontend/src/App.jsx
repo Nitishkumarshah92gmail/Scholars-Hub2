@@ -6,7 +6,6 @@ import { lazy, Suspense } from 'react';
 
 // Lazy load all pages — only Layout is kept eager for shell rendering
 const Layout = lazy(() => import('./components/Layout'));
-const Landing = lazy(() => import('./pages/Landing'));
 const Login = lazy(() => import('./pages/Login'));
 const Register = lazy(() => import('./pages/Register'));
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
@@ -34,7 +33,7 @@ function ProtectedRoute({ children }) {
   if (loading) {
     return <PageSpinner />;
   }
-  return user ? children : <Navigate to="/landing" />;
+  return user ? children : <Navigate to="/login" />;
 }
 
 function PublicRoute({ children }) {
@@ -47,8 +46,7 @@ function AppRoutes() {
   return (
     <Suspense fallback={<PageSpinner />}>
       <Routes>
-        <Route path="/" element={<PublicRoute><Landing /></PublicRoute>} />
-        <Route path="/landing" element={<PublicRoute><Landing /></PublicRoute>} />
+        <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
         <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />

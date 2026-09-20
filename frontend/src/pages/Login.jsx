@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
@@ -17,6 +17,20 @@ export default function Login() {
   const [registerEmail, setRegisterEmail] = useState('');
   const [registerPassword, setRegisterPassword] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
+
+  // Force desktop layout on mobile by changing the viewport meta tag
+  useEffect(() => {
+    const meta = document.querySelector('meta[name="viewport"]');
+    const originalContent = meta ? meta.getAttribute('content') : null;
+    if (meta) {
+      meta.setAttribute('content', 'width=768');
+    }
+    return () => {
+      if (meta && originalContent) {
+        meta.setAttribute('content', originalContent);
+      }
+    };
+  }, []);
 
   const { loginUser, registerUser, loginWithGoogle } = useAuth();
   const navigate = useNavigate();

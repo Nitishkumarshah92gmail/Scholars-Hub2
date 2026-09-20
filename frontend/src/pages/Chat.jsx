@@ -587,22 +587,22 @@ export default function Chat() {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         key={msg.id} 
-                        className={`flex flex-col ${isMine ? 'items-end' : 'items-start'} group w-full`}
+                        className={`flex flex-col ${isMine ? 'items-end' : 'items-start'} group w-full min-w-0`}
                       >
-                        <div className={`flex items-center gap-2 max-w-[80%] ${isMine ? 'flex-row-reverse' : ''}`}>
+                        <div className={`flex items-center gap-2 max-w-[85%] sm:max-w-[75%] min-w-0 ${isMine ? 'flex-row-reverse' : ''}`}>
                           <div 
-                            className={`px-5 py-3 text-sm ${
+                            className={`px-4 py-2.5 sm:px-5 sm:py-3 text-sm min-w-0 break-words ${
                               isMine 
                                 ? 'bg-blue-500 text-white rounded-t-[20px] rounded-bl-[20px] rounded-br-sm shadow-[4px_4px_10px_rgba(59,130,246,0.3)]' 
                                 : 'bg-[var(--neu-bg)] text-ig-text dark:text-ig-text-light rounded-t-[20px] rounded-br-[20px] rounded-bl-sm shadow-[4px_4px_10px_var(--neu-shadow-dark),-4px_-4px_10px_var(--neu-shadow-light)]'
                             }`}
                           >
-                            <>
+                            <div className="min-w-0 overflow-hidden">
                                 {(!msg.attachment_url || msg.content !== ('Sent an attachment: ' + msg.attachment_name)) && (
-                                  <div>{renderContentWithLinks(msg.content, isMine)}</div>
+                                  <div className="break-words whitespace-pre-wrap">{renderContentWithLinks(msg.content, isMine)}</div>
                                 )}
                                 {renderAttachment(msg)}
-                            </>
+                            </div>
                           </div>
                         </div>
                       </motion.div>

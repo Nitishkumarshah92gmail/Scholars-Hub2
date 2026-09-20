@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { FcGoogle } from 'react-icons/fc';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import '../auth-modern.css';
@@ -83,9 +84,10 @@ export default function Login() {
         <div className="modern-form-container sign-up">
           <form onSubmit={handleRegister}>
             <h1>Create Account</h1>
-            <div className="social-icons">
-              <a href="#" className="icon" onClick={(e) => { e.preventDefault(); handleGoogleAuth(); }}><i className="fa-brands fa-google-plus-g"></i></a>
-            </div>
+            <button type="button" className="google-btn" onClick={handleGoogleAuth}>
+              <FcGoogle size={22} />
+              <span>Continue with Google</span>
+            </button>
             <span>or use your email for registration</span>
             <input type="text" placeholder="Name" value={registerName} onChange={e => setRegisterName(e.target.value)} />
             <input type="email" placeholder="Email" value={registerEmail} onChange={e => setRegisterEmail(e.target.value)} />
@@ -100,9 +102,10 @@ export default function Login() {
         <div className="modern-form-container sign-in">
           <form onSubmit={handleLogin}>
             <h1>Sign In</h1>
-            <div className="social-icons">
-              <a href="#" className="icon" onClick={(e) => { e.preventDefault(); handleGoogleAuth(); }}><i className="fa-brands fa-google-plus-g"></i></a>
-            </div>
+            <button type="button" className="google-btn" onClick={handleGoogleAuth}>
+              <FcGoogle size={22} />
+              <span>Continue with Google</span>
+            </button>
             <span>or use your email password</span>
             <input type="email" placeholder="Email" value={loginEmail} onChange={e => setLoginEmail(e.target.value)} />
             <input type="password" placeholder="Password" value={loginPassword} onChange={e => setLoginPassword(e.target.value)} />

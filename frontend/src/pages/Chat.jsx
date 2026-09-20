@@ -598,12 +598,6 @@ export default function Chat() {
                   </Link>
                 </div>
                 <div className="flex items-center gap-5 md:gap-4 text-ig-text dark:text-ig-text-light shrink-0">
-                  <button className="hover:opacity-70 transition-opacity">
-                    <HiPhone className="w-6 h-6 md:w-5 md:h-5" />
-                  </button>
-                  <button className="hover:opacity-70 transition-opacity">
-                    <HiVideoCamera className="w-7 h-7 md:w-6 md:h-6" />
-                  </button>
                   <button onClick={() => setActiveConversation(null)} className="hidden md:flex hover:opacity-70 transition-opacity ml-2">
                      <HiX className="w-6 h-6" />
                   </button>
@@ -714,13 +708,7 @@ export default function Chat() {
                     accept="image/*,video/*,audio/*,application/pdf"
                     onChange={handleFileSelect} 
                   />
-                  <button
-                    type="button"
-                    className="w-[42px] h-[42px] mb-0.5 flex items-center justify-center bg-[#0095F6] hover:bg-blue-600 rounded-full text-white transition-colors shrink-0 md:shadow-md"
-                  >
-                    <HiCamera className="w-[22px] h-[22px]" />
-                  </button>
-                  <div className="flex-1 bg-[#EFEFEF] dark:bg-[#262626] md:bg-gray-100 md:dark:bg-[#262626] rounded-[24px] pl-5 pr-2 py-2 flex items-end gap-2 border border-transparent focus-within:border-gray-300 dark:focus-within:border-gray-600 transition-colors md:shadow-inner">
+                  <div className="flex-1 min-w-0 bg-[#EFEFEF] dark:bg-[#262626] md:bg-gray-100 md:dark:bg-[#262626] rounded-[24px] pl-5 pr-2 py-2 flex items-end gap-2 border border-transparent focus-within:border-gray-300 dark:focus-within:border-gray-600 transition-colors md:shadow-inner">
                     <textarea
                       value={newMessage}
                       onChange={(e) => {
@@ -729,7 +717,7 @@ export default function Chat() {
                         e.target.style.height = (e.target.scrollHeight) + 'px';
                       }}
                       placeholder="Message..."
-                      className="flex-1 bg-transparent border-none focus:ring-0 resize-none max-h-[100px] min-h-[24px] py-1.5 text-[15px] text-black dark:text-white scrollbar-hide placeholder-gray-500"
+                      className="flex-1 min-w-0 w-full bg-transparent border-none focus:ring-0 resize-none max-h-[100px] min-h-[24px] py-1.5 text-[15px] text-black dark:text-white scrollbar-hide placeholder-gray-500"
                       rows="1"
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' && !e.shiftKey) {
@@ -740,15 +728,9 @@ export default function Chat() {
                       }}
                     />
                     {!newMessage.trim() && !isUploading ? (
-                      <div className="flex items-center gap-3 text-gray-800 dark:text-gray-200 mb-1.5 pr-2">
-                        <button type="button" className="hover:opacity-70 transition-opacity">
-                          <HiMicrophone className="w-[22px] h-[22px]" />
-                        </button>
-                        <button type="button" onClick={() => fileInputRef.current?.click()} className="hover:opacity-70 transition-opacity">
-                          <HiPhotograph className="w-[22px] h-[22px]" />
-                        </button>
-                        <button type="button" className="hover:opacity-70 transition-opacity">
-                          <HiEmojiHappy className="w-[22px] h-[22px]" />
+                      <div className="flex items-center gap-1 sm:gap-2 text-gray-800 dark:text-gray-200 mb-1.5 pr-1 sm:pr-2 shrink-0">
+                        <button type="button" onClick={() => fileInputRef.current?.click()} className="hover:opacity-70 transition-opacity p-1">
+                          <HiPhotograph className="w-[20px] h-[20px] sm:w-[22px] sm:h-[22px]" />
                         </button>
                       </div>
                     ) : (

@@ -82,10 +82,6 @@ export default function Login() {
             <button type="submit" disabled={isRegistering}>
               {isRegistering ? 'Signing Up...' : 'Sign Up'}
             </button>
-            {/* Mobile-only toggle button */}
-            <button type="button" className="mobile-toggle" onClick={() => setIsRightPanelActive(false)}>
-              Already have an account? Sign In
-            </button>
           </form>
         </div>
 
@@ -105,10 +101,6 @@ export default function Login() {
             <Link to="/forgot-password">Forget Your Password?</Link>
             <button type="submit" disabled={isLoggingIn}>
               {isLoggingIn ? 'Signing In...' : 'Sign In'}
-            </button>
-            {/* Mobile-only toggle button */}
-            <button type="button" className="mobile-toggle" onClick={() => setIsRightPanelActive(true)}>
-              New here? Sign Up
             </button>
           </form>
         </div>

@@ -226,45 +226,53 @@
     transform: translateX(200%);
 }
 
-/* Make it somewhat responsive so mobile users don't break */
+/* Make it fit on mobile screens while retaining the exact sliding panel design */
 @media (max-width: 768px) {
     .auth-modern-wrapper .modern-container {
-        min-height: 100vh;
+        min-height: 480px;
+        width: 100%;
         border-radius: 0;
     }
-    
-    .auth-modern-wrapper .modern-toggle-container {
-        display: none;
+    .auth-modern-wrapper .modern-container form {
+        padding: 0 15px;
     }
-    
-    .auth-modern-wrapper .sign-in,
-    .auth-modern-wrapper .sign-up {
-        width: 100%;
-        transition: opacity 0.3s ease;
+    .auth-modern-wrapper h1 {
+        font-size: 20px !important;
     }
-    
-    .auth-modern-wrapper .modern-container.active .sign-in {
-        transform: translateX(0);
-        opacity: 0;
-        pointer-events: none;
+    .auth-modern-wrapper .modern-container p {
+        font-size: 10px;
+        line-height: 14px;
+        margin: 10px 0;
     }
-    
-    .auth-modern-wrapper .modern-container.active .sign-up {
-        transform: translateX(0);
-        opacity: 1;
-        pointer-events: all;
+    .auth-modern-wrapper .modern-container span {
+        font-size: 10px;
     }
-
-    .auth-modern-wrapper .mobile-toggle {
-        display: block !important;
-        background: none !important;
-        color: #512da8 !important;
-        margin-top: 20px !important;
-        text-transform: none !important;
-        padding: 0 !important;
+    .auth-modern-wrapper .modern-container a {
+        font-size: 10px;
+        margin: 10px 0 5px;
     }
-}
-
-.auth-modern-wrapper .mobile-toggle {
-    display: none;
+    .auth-modern-wrapper .social-icons {
+        margin: 10px 0;
+    }
+    .auth-modern-wrapper .social-icons a {
+        width: 30px;
+        height: 30px;
+        margin: 0 2px;
+    }
+    .auth-modern-wrapper .social-icons a i {
+        font-size: 12px;
+    }
+    .auth-modern-wrapper .modern-container input {
+        padding: 8px 10px;
+        font-size: 11px;
+        margin: 6px 0;
+    }
+    .auth-modern-wrapper .modern-container button {
+        padding: 8px 25px;
+        font-size: 10px;
+        margin-top: 5px;
+    }
+    .auth-modern-wrapper .toggle-panel {
+        padding: 0 15px;
+    }
 }

@@ -337,7 +337,7 @@ export default function Chat() {
           </a>
         );
       }
-      return <span key={i} className="whitespace-pre-wrap break-words">{part}</span>;
+      return <span key={i} className="whitespace-pre-wrap break-all">{part}</span>;
     });
   };
 
@@ -597,9 +597,9 @@ export default function Chat() {
                                 : 'bg-[var(--neu-bg)] text-ig-text dark:text-ig-text-light rounded-t-[20px] rounded-br-[20px] rounded-bl-sm shadow-[4px_4px_10px_var(--neu-shadow-dark),-4px_-4px_10px_var(--neu-shadow-light)]'
                             }`}
                           >
-                            <div className="min-w-0 overflow-hidden">
+                            <div className="min-w-0 overflow-hidden w-full">
                                 {(!msg.attachment_url || msg.content !== ('Sent an attachment: ' + msg.attachment_name)) && (
-                                  <div className="break-words whitespace-pre-wrap">{renderContentWithLinks(msg.content, isMine)}</div>
+                                  <div className="break-all whitespace-pre-wrap w-full">{renderContentWithLinks(msg.content, isMine)}</div>
                                 )}
                                 {renderAttachment(msg)}
                             </div>
@@ -631,7 +631,11 @@ export default function Chat() {
                   <div className="flex-1 bg-gray-100 dark:bg-[#262626] rounded-[24px] px-4 py-2 flex items-end gap-2 border border-transparent focus-within:border-gray-300 dark:focus-within:border-gray-600 transition-colors">
                     <textarea
                       value={newMessage}
-                      onChange={(e) => setNewMessage(e.target.value)}
+                      onChange={(e) => {
+                        setNewMessage(e.target.value);
+                        e.target.style.height = 'auto';
+                        e.target.style.height = (e.target.scrollHeight) + 'px';
+                      }}
                       placeholder="Message..."
                       className="flex-1 bg-transparent border-none focus:ring-0 resize-none max-h-32 min-h-[24px] py-1 text-[15px] text-ig-text dark:text-ig-text-light scrollbar-hide placeholder-gray-500"
                       rows="1"
@@ -639,6 +643,7 @@ export default function Chat() {
                         if (e.key === 'Enter' && !e.shiftKey) {
                            e.preventDefault();
                            sendMessage(e);
+                           e.target.style.height = 'auto';
                         }
                       }}
                     />

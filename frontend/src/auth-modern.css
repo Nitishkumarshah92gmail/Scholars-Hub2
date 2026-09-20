@@ -234,45 +234,45 @@
         border-radius: 0;
     }
     .auth-modern-wrapper .modern-container form {
-        padding: 0 15px;
+        padding: 0 5px;
     }
     .auth-modern-wrapper h1 {
-        font-size: 20px !important;
+        font-size: 16px !important;
     }
     .auth-modern-wrapper .modern-container p {
-        font-size: 10px;
-        line-height: 14px;
-        margin: 10px 0;
+        font-size: 9px;
+        line-height: 12px;
+        margin: 5px 0;
     }
     .auth-modern-wrapper .modern-container span {
-        font-size: 10px;
+        font-size: 9px;
     }
     .auth-modern-wrapper .modern-container a {
-        font-size: 10px;
-        margin: 10px 0 5px;
+        font-size: 9px;
+        margin: 8px 0 4px;
     }
     .auth-modern-wrapper .social-icons {
-        margin: 10px 0;
+        margin: 8px 0;
     }
     .auth-modern-wrapper .social-icons a {
-        width: 30px;
-        height: 30px;
+        width: 24px;
+        height: 24px;
         margin: 0 2px;
     }
     .auth-modern-wrapper .social-icons a i {
-        font-size: 12px;
+        font-size: 10px;
     }
     .auth-modern-wrapper .modern-container input {
-        padding: 8px 10px;
-        font-size: 11px;
-        margin: 6px 0;
+        padding: 6px 8px;
+        font-size: 10px;
+        margin: 4px 0;
     }
     .auth-modern-wrapper .modern-container button {
-        padding: 8px 25px;
-        font-size: 10px;
+        padding: 6px 16px;
+        font-size: 9px;
         margin-top: 5px;
     }
     .auth-modern-wrapper .toggle-panel {
-        padding: 0 15px;
+        padding: 0 5px;
     }
 }

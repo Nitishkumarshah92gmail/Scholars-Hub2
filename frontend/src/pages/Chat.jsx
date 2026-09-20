@@ -519,14 +519,13 @@ export default function Chat() {
       </div>
 
       {/* Main Chat Area */}
-      {/* Main Chat Area */}
-      <div className={`flex-1 flex flex-col bg-[var(--neu-bg)] relative ${!activeConversation ? 'hidden md:flex' : 'flex'}`}>
+      <div className={`flex-1 flex flex-col bg-[var(--neu-bg)] ${!activeConversation ? 'hidden md:flex relative' : 'flex fixed inset-0 z-50 md:relative md:inset-auto md:z-auto'}`}>
         {activeConversation ? (
-          <div className="flex-1 flex flex-col relative pb-24 md:pb-0">
+          <div className="flex-1 flex flex-col relative pb-0">
             {/* Liquid Background */}
-            <div className="absolute top-0 left-0 w-full h-64 bg-liquid-swirl rounded-b-[48px] shadow-lg pointer-events-none"></div>
+            <div className="absolute top-0 left-0 w-full h-64 bg-liquid-swirl rounded-none md:rounded-b-[48px] shadow-lg pointer-events-none"></div>
             
-            <div className="flex-1 flex flex-col relative z-10 mx-2 mt-16 mb-2 rounded-[40px] overflow-hidden shadow-[0_-10px_40px_rgba(0,0,0,0.05),8px_8px_20px_var(--neu-shadow-dark),-8px_-8px_20px_var(--neu-shadow-light)] bg-[var(--neu-bg)] max-w-2xl w-full self-center">
+            <div className="flex-1 flex flex-col relative z-10 mx-0 mt-0 mb-0 rounded-none md:mx-2 md:mt-16 md:mb-2 md:rounded-[40px] overflow-hidden md:shadow-[0_-10px_40px_rgba(0,0,0,0.05),8px_8px_20px_var(--neu-shadow-dark),-8px_-8px_20px_var(--neu-shadow-light)] bg-[var(--neu-bg)] max-w-2xl w-full self-center">
               {/* Chat Header */}
               <div className="px-6 py-4 flex items-center justify-between shadow-[0_4px_10px_rgba(0,0,0,0.05)] bg-[var(--neu-bg)]/80 backdrop-blur-md z-20 sticky top-0">
                 <div className="flex items-center gap-3">

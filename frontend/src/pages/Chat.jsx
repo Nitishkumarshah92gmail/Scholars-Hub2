@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
 import toast from 'react-hot-toast';
-import { HiPaperAirplane, HiOutlineChat, HiOutlineSearch, HiArrowLeft, HiPaperClip, HiDocumentText, HiTrash, HiPencil, HiCheck, HiX, HiOutlineBell, HiCamera, HiMicrophone, HiPhotograph, HiEmojiHappy, HiInformationCircle } from 'react-icons/hi';
+import { HiPaperAirplane, HiOutlineChat, HiOutlineSearch, HiArrowLeft, HiDocumentText, HiTrash, HiPencil, HiCheck, HiX, HiOutlineBell, HiCamera, HiMicrophone, HiPhotograph, HiEmojiHappy, HiInformationCircle } from 'react-icons/hi';
 import { deleteFile, getPresignedUrl, uploadDirect, getNotifications } from '../api';
 import imageCompression from 'browser-image-compression';
 
@@ -37,7 +37,9 @@ export default function Chat() {
     getNotifications()
       .then((res) => setUnreadCount(res.data.unreadCount))
       .catch(() => {});
+  }, []);
 
+  useEffect(() => {
     // Subscribe to new messages
     const channel = supabase
       .channel('realtime:messages')

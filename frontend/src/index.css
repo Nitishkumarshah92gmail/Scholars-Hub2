@@ -99,6 +99,7 @@ html {
   /* Smooth transitions on ALL interactive elements */
   a, button, input, select, textarea {
     transition: all var(--ag-transition-fast);
+    will-change: transform, opacity;
   }
 
   /* Better focus styles */
@@ -124,6 +125,7 @@ html {
     transition: all var(--ag-transition-fast);
     position: relative;
     overflow: hidden;
+    will-change: transform, box-shadow;
   }
   .btn-primary::before {
     content: '';

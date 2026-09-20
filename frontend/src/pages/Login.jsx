@@ -3,7 +3,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import { FcGoogle } from 'react-icons/fc';
-import { FaFacebookF, FaGithub, FaLinkedinIn } from 'react-icons/fa';
 import '../auth-modern.css';
 
 export default function Login() {
@@ -73,9 +72,6 @@ export default function Login() {
             <h1>Create Account</h1>
             <div className="social-icons">
               <button type="button" onClick={handleGoogleAuth} className="icon" aria-label="Google"><FcGoogle /></button>
-              <button type="button" className="icon" aria-label="Facebook"><FaFacebookF color="#1877F2" /></button>
-              <button type="button" className="icon" aria-label="Github"><FaGithub color="#333" /></button>
-              <button type="button" className="icon" aria-label="LinkedIn"><FaLinkedinIn color="#0077B5" /></button>
             </div>
             <span>or use your email for registration</span>
             <input type="text" placeholder="Name" value={registerName} onChange={e => setRegisterName(e.target.value)} />
@@ -97,9 +93,6 @@ export default function Login() {
             <h1>Sign In</h1>
             <div className="social-icons">
               <button type="button" onClick={handleGoogleAuth} className="icon" aria-label="Google"><FcGoogle /></button>
-              <button type="button" className="icon" aria-label="Facebook"><FaFacebookF color="#1877F2" /></button>
-              <button type="button" className="icon" aria-label="Github"><FaGithub color="#333" /></button>
-              <button type="button" className="icon" aria-label="LinkedIn"><FaLinkedinIn color="#0077B5" /></button>
             </div>
             <span>or use your email password</span>
             <input type="email" placeholder="Email" value={loginEmail} onChange={e => setLoginEmail(e.target.value)} />

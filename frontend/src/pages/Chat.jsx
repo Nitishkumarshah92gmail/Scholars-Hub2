@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
 import toast from 'react-hot-toast';
-import { HiPaperAirplane, HiOutlineChat, HiOutlineSearch, HiArrowLeft, HiPaperClip, HiDocumentText, HiTrash, HiPencil, HiCheck, HiX, HiOutlineBell } from 'react-icons/hi';
+import { HiPaperAirplane, HiOutlineChat, HiOutlineSearch, HiArrowLeft, HiPaperClip, HiDocumentText, HiTrash, HiPencil, HiCheck, HiX, HiOutlineBell, HiCamera, HiMicrophone, HiPhotograph, HiEmojiHappy, HiInformationCircle } from 'react-icons/hi';
 import { deleteFile, getPresignedUrl, uploadDirect, getNotifications } from '../api';
 import imageCompression from 'browser-image-compression';
 
@@ -532,38 +532,41 @@ export default function Chat() {
             
             <div className="flex-1 flex flex-col relative z-10 mx-0 mt-0 mb-0 rounded-none md:mx-2 md:mt-16 md:mb-2 md:rounded-[40px] overflow-hidden md:shadow-[0_-10px_40px_rgba(0,0,0,0.05),8px_8px_20px_var(--neu-shadow-dark),-8px_-8px_20px_var(--neu-shadow-light)] bg-[var(--neu-bg)] max-w-2xl w-full self-center">
               {/* Chat Header */}
-              <div className="px-6 py-4 flex items-center justify-between shadow-[0_4px_10px_rgba(0,0,0,0.05)] bg-[var(--neu-bg)]/80 backdrop-blur-md z-20 sticky top-0">
+              <div className="px-4 py-3 flex items-center justify-between bg-[var(--neu-bg)] border-b border-gray-200 dark:border-[rgba(255,255,255,0.05)] z-20 sticky top-0">
                 <div className="flex items-center gap-3">
                   <button 
                     onClick={() => setActiveConversation(null)}
-                    className="md:hidden w-8 h-8 flex items-center justify-center rounded-full text-ig-text shadow-[inset_2px_2px_5px_var(--neu-shadow-dark),inset_-2px_-2px_5px_var(--neu-shadow-light)] mr-2"
+                    className="md:hidden w-8 h-8 flex items-center justify-center rounded-full text-ig-text dark:text-ig-text-light hover:bg-black/5 dark:hover:bg-white/5 transition"
                   >
-                    <HiArrowLeft className="w-4 h-4" />
+                    <HiArrowLeft className="w-5 h-5" />
                   </button>
                   <Link to={`/dashboard/profile/${activeConversation.otherUser.id}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
                     <img 
                       src={activeConversation.otherUser.avatar || `https://ui-avatars.com/api/?name=${activeConversation.otherUser.name}`} 
                       onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${activeConversation.otherUser.name}&background=1e3a5f&color=fbbf24`; }}
                       alt={activeConversation.otherUser.name} 
-                      className="w-12 h-12 rounded-full object-cover shadow-[2px_2px_5px_var(--neu-shadow-dark),-2px_-2px_5px_var(--neu-shadow-light)]" 
+                      className="w-10 h-10 rounded-full object-cover" 
                     />
-                    <div>
-                      <h3 className="font-bold text-ig-text dark:text-ig-text-light">{activeConversation.otherUser.name}</h3>
-                      <p className="text-xs text-ig-text-2 font-semibold">Last seen {format(new Date(), 'h:mm a')}</p>
+                    <div className="flex flex-col">
+                      <h3 className="font-semibold text-[15px] text-ig-text dark:text-ig-text-light leading-tight">{activeConversation.otherUser.name}</h3>
+                      <p className="text-[12px] text-ig-text-2">Active {format(new Date(), 'h:mm a')}</p>
                     </div>
                   </Link>
                 </div>
-                <div className="flex items-center gap-3">
-                  <Link to="/dashboard/notifications" className="relative p-2 rounded-full text-ig-text dark:text-ig-text-light hover:bg-black/5 transition-colors">
+                <div className="flex items-center gap-4 text-ig-text dark:text-ig-text-light">
+                  <Link to="/dashboard/notifications" className="relative hover:opacity-70 transition-opacity">
                     <HiOutlineBell className="w-6 h-6" />
                     {unreadCount > 0 && (
-                      <span className="absolute top-1 right-1 bg-red-500 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
                         {unreadCount > 9 ? '9+' : unreadCount}
                       </span>
                     )}
                   </Link>
-                  <button onClick={() => setActiveConversation(null)} className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center shadow-lg hover:bg-blue-600 transition">
-                     <HiX className="w-4 h-4" />
+                  <button className="hover:opacity-70 transition-opacity">
+                    <HiInformationCircle className="w-6 h-6" />
+                  </button>
+                  <button onClick={() => setActiveConversation(null)} className="hidden md:flex hover:opacity-70 transition-opacity">
+                     <HiX className="w-6 h-6" />
                   </button>
                 </div>
               </div>
@@ -608,8 +611,8 @@ export default function Chat() {
               </div>
 
               {/* Message Input */}
-              <div className="p-4 bg-[var(--neu-bg)]/80 backdrop-blur-md">
-                <form onSubmit={sendMessage} className="flex items-center gap-3">
+              <div className="p-3 bg-[var(--neu-bg)] border-t border-gray-200 dark:border-[rgba(255,255,255,0.05)]">
+                <form onSubmit={sendMessage} className="flex items-end gap-2 md:gap-3">
                   <input 
                     type="file" 
                     ref={fileInputRef} 
@@ -619,38 +622,50 @@ export default function Chat() {
                   />
                   <button
                     type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={isUploading}
-                    className="w-10 h-10 flex items-center justify-center bg-[var(--neu-bg)] rounded-full text-ig-primary shadow-[4px_4px_10px_var(--neu-shadow-dark),-4px_-4px_10px_var(--neu-shadow-light)] active:shadow-[inset_2px_2px_5px_var(--neu-shadow-dark),inset_-2px_-2px_5px_var(--neu-shadow-light)] transition-all shrink-0"
+                    className="w-10 h-10 mb-1 flex items-center justify-center bg-blue-500 hover:bg-blue-600 rounded-full text-white transition-colors shrink-0"
                   >
-                    {isUploading ? (
-                      <div className="w-5 h-5 border-2 border-ig-primary border-t-transparent rounded-full animate-spin"></div>
-                    ) : (
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                    )}
+                    <HiCamera className="w-6 h-6" />
                   </button>
-                  <div className="flex-1 bg-[var(--neu-bg)] rounded-[24px] px-4 py-1 flex items-center shadow-[inset_3px_3px_8px_var(--neu-shadow-dark),inset_-3px_-3px_8px_var(--neu-shadow-light)]">
+                  <div className="flex-1 bg-gray-100 dark:bg-[#262626] rounded-[24px] px-4 py-2 flex items-end gap-2 border border-transparent focus-within:border-gray-300 dark:focus-within:border-gray-600 transition-colors">
                     <textarea
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
-                      placeholder="Write something..."
-                      className="flex-1 bg-transparent border-none focus:ring-0 resize-none max-h-32 min-h-[40px] pt-3 text-sm text-ig-text dark:text-ig-text-light scrollbar-hide"
+                      placeholder="Message..."
+                      className="flex-1 bg-transparent border-none focus:ring-0 resize-none max-h-32 min-h-[24px] py-1 text-[15px] text-ig-text dark:text-ig-text-light scrollbar-hide placeholder-gray-500"
                       rows="1"
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' && !e.shiftKey) {
-                          e.preventDefault();
-                          sendMessage(e);
+                           e.preventDefault();
+                           sendMessage(e);
                         }
                       }}
                     />
+                    {!newMessage.trim() && !isUploading ? (
+                      <div className="flex items-center gap-3 text-ig-text dark:text-ig-text-light mb-1 opacity-80">
+                        <button type="button" className="hover:opacity-70 transition-opacity">
+                          <HiMicrophone className="w-6 h-6" />
+                        </button>
+                        <button type="button" onClick={() => fileInputRef.current?.click()} className="hover:opacity-70 transition-opacity">
+                          <HiPhotograph className="w-6 h-6" />
+                        </button>
+                        <button type="button" className="hover:opacity-70 transition-opacity hidden sm:block">
+                          <HiEmojiHappy className="w-6 h-6" />
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        type="submit"
+                        disabled={isUploading}
+                        className="mb-1 font-semibold text-blue-500 hover:text-blue-600 disabled:opacity-50 transition-colors px-2"
+                      >
+                        {isUploading ? (
+                          <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                        ) : (
+                          "Send"
+                        )}
+                      </button>
+                    )}
                   </div>
-                  <button
-                    type="submit"
-                    disabled={!newMessage.trim()}
-                    className="w-10 h-10 flex items-center justify-center bg-blue-500 hover:bg-blue-600 disabled:opacity-50 rounded-full text-white shadow-lg transition-colors"
-                  >
-                    <HiPaperAirplane className="w-4 h-4 rotate-90 ml-0.5" />
-                  </button>
                 </form>
               </div>
             </div>

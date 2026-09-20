@@ -285,7 +285,7 @@ export default memo(function PostCard({ post, onUpdate }) {
   };
 
   return (
-    <div className="relative overflow-hidden mb-2 md:mb-6 rounded-none md:rounded-[32px] md:shadow-[6px_6px_14px_var(--neu-shadow-dark),-6px_-6px_14px_var(--neu-shadow-light)] bg-[var(--neu-bg)] border-y border-[rgba(255,255,255,0.05)] md:border-0 transition-all">
+    <div className="relative overflow-hidden mb-2 lg:mb-6 rounded-none lg:rounded-[32px] lg:shadow-[6px_6px_14px_var(--neu-shadow-dark),-6px_-6px_14px_var(--neu-shadow-light)] bg-[var(--neu-bg)] border-y border-[rgba(255,255,255,0.05)] lg:border-0 transition-all">
       
       {/* Header */}
       <div className="px-5 py-3 flex items-center justify-between">
@@ -343,8 +343,8 @@ export default memo(function PostCard({ post, onUpdate }) {
       )}
 
       {/* Main Image / Content */}
-      <div className="w-full px-0 md:px-4 mb-2">
-        <div className="w-full rounded-none md:rounded-[24px] overflow-hidden md:shadow-[4px_4px_10px_var(--neu-shadow-dark),-4px_-4px_10px_var(--neu-shadow-light)] border-y border-[rgba(255,255,255,0.05)] md:border bg-[var(--neu-bg)]">
+      <div className="w-full px-0 lg:px-4 mb-2">
+        <div className="w-full rounded-none lg:rounded-[24px] overflow-hidden lg:shadow-[4px_4px_10px_var(--neu-shadow-dark),-4px_-4px_10px_var(--neu-shadow-light)] border-y border-[rgba(255,255,255,0.05)] lg:border bg-[var(--neu-bg)]">
            {post.type === 'image' ? (
              <img src={toDriveImageUrl(post.fileUrls?.[0] || post.fileUrl)} alt="Post" className="w-full h-80 object-cover" loading="lazy" />
            ) : (

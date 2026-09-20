@@ -559,7 +559,7 @@ export default function Layout() {
           </NavLink>
         </div>
 
-        <div className="max-w-6xl mx-auto px-0 md:px-8 py-4 md:py-12 w-full">
+        <div className="max-w-6xl mx-auto px-0 lg:px-8 py-4 lg:py-12 w-full">
           <Outlet />
         </div>
       </main>

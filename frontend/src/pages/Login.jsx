@@ -64,10 +64,10 @@ export default function Login() {
 
   return (
     <div className="auth-modern-wrapper">
-      <div className={`container ${isRightPanelActive ? 'active' : ''}`} id="container">
+      <div className={`modern-container ${isRightPanelActive ? 'active' : ''}`} id="container">
         
         {/* Sign Up Form */}
-        <div className="form-container sign-up">
+        <div className="modern-form-container sign-up">
           <form onSubmit={handleRegister}>
             <h1>Create Account</h1>
             <div className="social-icons">
@@ -88,7 +88,7 @@ export default function Login() {
         </div>
 
         {/* Sign In Form */}
-        <div className="form-container sign-in">
+        <div className="modern-form-container sign-in">
           <form onSubmit={handleLogin}>
             <h1>Sign In</h1>
             <div className="social-icons">
@@ -109,7 +109,7 @@ export default function Login() {
         </div>
 
         {/* Desktop Toggle Panel */}
-        <div className="toggle-container">
+        <div className="modern-toggle-container">
           <div className="toggle">
             <div className="toggle-panel toggle-left">
               <h1>Welcome Back!</h1>

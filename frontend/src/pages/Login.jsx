@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
-import { FaGooglePlusG, FaFacebookF, FaGithub, FaLinkedinIn } from 'react-icons/fa';
 import '../auth-modern.css';
 
 export default function Login() {
@@ -71,10 +70,10 @@ export default function Login() {
           <form onSubmit={handleRegister}>
             <h1>Create Account</h1>
             <div className="social-icons">
-              <button type="button" onClick={handleGoogleAuth} className="icon"><FaGooglePlusG size={18} /></button>
-              <button type="button" className="icon"><FaFacebookF size={16} /></button>
-              <button type="button" className="icon"><FaGithub size={16} /></button>
-              <button type="button" className="icon"><FaLinkedinIn size={16} /></button>
+              <a href="#" className="icon" onClick={(e) => { e.preventDefault(); handleGoogleAuth(); }}><i className="fa-brands fa-google-plus-g"></i></a>
+              <a href="#" className="icon" onClick={(e) => e.preventDefault()}><i className="fa-brands fa-facebook-f"></i></a>
+              <a href="#" className="icon" onClick={(e) => e.preventDefault()}><i className="fa-brands fa-github"></i></a>
+              <a href="#" className="icon" onClick={(e) => e.preventDefault()}><i className="fa-brands fa-linkedin-in"></i></a>
             </div>
             <span>or use your email for registration</span>
             <input type="text" placeholder="Name" value={registerName} onChange={e => setRegisterName(e.target.value)} />
@@ -95,10 +94,10 @@ export default function Login() {
           <form onSubmit={handleLogin}>
             <h1>Sign In</h1>
             <div className="social-icons">
-              <button type="button" onClick={handleGoogleAuth} className="icon"><FaGooglePlusG size={18} /></button>
-              <button type="button" className="icon"><FaFacebookF size={16} /></button>
-              <button type="button" className="icon"><FaGithub size={16} /></button>
-              <button type="button" className="icon"><FaLinkedinIn size={16} /></button>
+              <a href="#" className="icon" onClick={(e) => { e.preventDefault(); handleGoogleAuth(); }}><i className="fa-brands fa-google-plus-g"></i></a>
+              <a href="#" className="icon" onClick={(e) => e.preventDefault()}><i className="fa-brands fa-facebook-f"></i></a>
+              <a href="#" className="icon" onClick={(e) => e.preventDefault()}><i className="fa-brands fa-github"></i></a>
+              <a href="#" className="icon" onClick={(e) => e.preventDefault()}><i className="fa-brands fa-linkedin-in"></i></a>
             </div>
             <span>or use your email password</span>
             <input type="email" placeholder="Email" value={loginEmail} onChange={e => setLoginEmail(e.target.value)} />

@@ -41,11 +41,34 @@ function PublicRoute({ children }) {
   return user ? <Navigate to="/dashboard" /> : children;
 }
 
+function RootRoute() {
+  const { user, loading } = useAuth();
+  if (loading) return <PageSpinner />;
+  
+  // If user is authenticated, go to dashboard
+  if (user) {
+    return <Navigate to="/dashboard" replace />;
+  }
+  
+  // If not authenticated, go to login but PRESERVE the hash and search params.
+  // This is critical for OAuth redirects (like Google Login) which put the access_token in the hash.
+  return (
+    <Navigate 
+      to={{ 
+        pathname: '/login', 
+        search: window.location.search, 
+        hash: window.location.hash 
+      }} 
+      replace 
+    />
+  );
+}
+
 function AppRoutes() {
   return (
     <Suspense fallback={<PageSpinner />}>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/" element={<RootRoute />} />
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
         <Route path="/reset-password" element={<ResetPassword />} />

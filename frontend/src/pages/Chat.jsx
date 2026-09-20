@@ -611,7 +611,7 @@ export default function Chat() {
               </div>
 
               {/* Messages Stream */}
-              <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-2 md:space-y-4 bg-white dark:bg-black md:bg-transparent relative">
+              <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-2 md:space-y-4 bg-white dark:bg-black md:bg-transparent relative min-h-0">
                 {messages.length === 0 ? (
                   <div className="h-full flex flex-col items-center justify-center text-ig-text-2 text-sm mt-10">
                      <img 

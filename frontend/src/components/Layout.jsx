@@ -502,7 +502,7 @@ export default function Layout() {
       )}
 
       {/* Main Content - Liquid Glass Window */}
-      <main className={`flex-1 md:ml-[260px] xl:ml-[340px] md:h-[calc(100vh-32px)] overflow-y-auto overflow-x-hidden md:pb-0 md:pt-0 relative md:rounded-[32px] ${location.pathname.includes('/dashboard/messages') ? 'pb-0 pt-0' : 'pb-16 pt-14'}`}
+      <main className={`flex-1 md:ml-[260px] xl:ml-[340px] md:h-[calc(100vh-32px)] overflow-x-hidden md:pb-0 md:pt-0 relative md:rounded-[32px] ${location.pathname.includes('/dashboard/messages') ? 'pb-0 pt-0 overflow-hidden' : 'pb-16 pt-14 overflow-y-auto'}`}
         style={{
           background: 'var(--glass-bg)',
           backdropFilter: `blur(16px) saturate(160%)`,
@@ -561,7 +561,7 @@ export default function Layout() {
           </NavLink>
         </div>
 
-        <div className="max-w-6xl mx-auto px-0 xl:px-8 py-4 xl:py-12 w-full">
+        <div className={`mx-auto w-full flex flex-col ${location.pathname.includes('/dashboard/messages') ? 'h-full max-w-none px-0 py-0 min-h-0' : 'max-w-6xl px-0 xl:px-8 py-4 xl:py-12'}`}>
           <Outlet />
         </div>
       </main>

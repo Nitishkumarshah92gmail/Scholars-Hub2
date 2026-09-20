@@ -5,11 +5,27 @@ import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
 import toast from 'react-hot-toast';
-import { HiPaperAirplane, HiOutlineChat, HiOutlineSearch, HiArrowLeft, HiDocumentText, HiTrash, HiPencil, HiCheck, HiX, HiOutlineBell, HiCamera, HiMicrophone, HiPhotograph, HiEmojiHappy, HiInformationCircle } from 'react-icons/hi';
+import { HiPaperAirplane, HiOutlineChat, HiOutlineSearch, HiArrowLeft, HiDocumentText, HiTrash, HiPencil, HiCheck, HiX, HiOutlineBell, HiCamera, HiMicrophone, HiPhotograph, HiEmojiHappy, HiInformationCircle, HiOutlineClock, HiExclamationCircle, HiCheckCircle } from 'react-icons/hi';
 import { deleteFile, getPresignedUrl, uploadDirect, getNotifications } from '../api';
 import imageCompression from 'browser-image-compression';
 
+
+const UserAvatar = ({ src, name, size = 'w-10 h-10' }) => (
+  <div className={`${size} rounded-full flex-shrink-0 bg-gradient-to-br from-blue-400 via-indigo-500 to-purple-500 flex items-center justify-center overflow-hidden`}>
+    <img 
+      src={src || `https://ui-avatars.com/api/?name=${name}&background=1e3a5f&color=fbbf24`}
+      onError={(e) => { 
+        e.target.onerror = null; 
+        e.target.src = `https://ui-avatars.com/api/?name=${name}&background=1e3a5f&color=fbbf24`; 
+      }}
+      alt={name} 
+      className="w-full h-full object-cover" 
+    />
+  </div>
+);
+
 export default function Chat() {
+
   const { user } = useAuth();
   const [conversations, setConversations] = useState([]);
   const [activeConversation, setActiveConversation] = useState(null);

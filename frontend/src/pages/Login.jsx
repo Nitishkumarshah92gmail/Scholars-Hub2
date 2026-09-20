@@ -85,9 +85,6 @@ export default function Login() {
             <h1>Create Account</h1>
             <div className="social-icons">
               <a href="#" className="icon" onClick={(e) => { e.preventDefault(); handleGoogleAuth(); }}><i className="fa-brands fa-google-plus-g"></i></a>
-              <a href="#" className="icon" onClick={(e) => e.preventDefault()}><i className="fa-brands fa-facebook-f"></i></a>
-              <a href="#" className="icon" onClick={(e) => e.preventDefault()}><i className="fa-brands fa-github"></i></a>
-              <a href="#" className="icon" onClick={(e) => e.preventDefault()}><i className="fa-brands fa-linkedin-in"></i></a>
             </div>
             <span>or use your email for registration</span>
             <input type="text" placeholder="Name" value={registerName} onChange={e => setRegisterName(e.target.value)} />
@@ -105,9 +102,6 @@ export default function Login() {
             <h1>Sign In</h1>
             <div className="social-icons">
               <a href="#" className="icon" onClick={(e) => { e.preventDefault(); handleGoogleAuth(); }}><i className="fa-brands fa-google-plus-g"></i></a>
-              <a href="#" className="icon" onClick={(e) => e.preventDefault()}><i className="fa-brands fa-facebook-f"></i></a>
-              <a href="#" className="icon" onClick={(e) => e.preventDefault()}><i className="fa-brands fa-github"></i></a>
-              <a href="#" className="icon" onClick={(e) => e.preventDefault()}><i className="fa-brands fa-linkedin-in"></i></a>
             </div>
             <span>or use your email password</span>
             <input type="email" placeholder="Email" value={loginEmail} onChange={e => setLoginEmail(e.target.value)} />

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
-import { FcGoogle } from 'react-icons/fc';
+import { FaGooglePlusG, FaFacebookF, FaGithub, FaLinkedinIn } from 'react-icons/fa';
 import '../auth-modern.css';
 
 export default function Login() {
@@ -71,7 +71,10 @@ export default function Login() {
           <form onSubmit={handleRegister}>
             <h1>Create Account</h1>
             <div className="social-icons">
-              <button type="button" onClick={handleGoogleAuth} className="icon" aria-label="Google"><FcGoogle /></button>
+              <button type="button" onClick={handleGoogleAuth} className="icon"><FaGooglePlusG size={18} /></button>
+              <button type="button" className="icon"><FaFacebookF size={16} /></button>
+              <button type="button" className="icon"><FaGithub size={16} /></button>
+              <button type="button" className="icon"><FaLinkedinIn size={16} /></button>
             </div>
             <span>or use your email for registration</span>
             <input type="text" placeholder="Name" value={registerName} onChange={e => setRegisterName(e.target.value)} />
@@ -92,7 +95,10 @@ export default function Login() {
           <form onSubmit={handleLogin}>
             <h1>Sign In</h1>
             <div className="social-icons">
-              <button type="button" onClick={handleGoogleAuth} className="icon" aria-label="Google"><FcGoogle /></button>
+              <button type="button" onClick={handleGoogleAuth} className="icon"><FaGooglePlusG size={18} /></button>
+              <button type="button" className="icon"><FaFacebookF size={16} /></button>
+              <button type="button" className="icon"><FaGithub size={16} /></button>
+              <button type="button" className="icon"><FaLinkedinIn size={16} /></button>
             </div>
             <span>or use your email password</span>
             <input type="email" placeholder="Email" value={loginEmail} onChange={e => setLoginEmail(e.target.value)} />

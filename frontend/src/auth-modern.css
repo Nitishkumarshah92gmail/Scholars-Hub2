@@ -133,7 +133,7 @@
     margin: 20px 0;
 }
 
-.auth-modern-wrapper .social-icons a {
+.auth-modern-wrapper .social-icons button {
     border: 1px solid #ccc;
     border-radius: 20%;
     display: inline-flex;
@@ -142,6 +142,9 @@
     margin: 0 3px;
     width: 40px;
     height: 40px;
+    background: transparent;
+    cursor: pointer;
+    color: #333;
 }
 
 .auth-modern-wrapper .modern-toggle-container {

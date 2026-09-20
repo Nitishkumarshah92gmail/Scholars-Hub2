@@ -347,47 +347,49 @@ export default function Layout() {
       </aside>
 
       {/* Mobile Top Header — Liquid Glass */}
-      <header className="md:hidden fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-4 py-2.5 transition-all duration-300"
-        style={{
-          background: 'var(--glass-bg-strong)',
-          backdropFilter: `blur(24px) saturate(200%)`,
-          WebkitBackdropFilter: `blur(24px) saturate(200%)`,
-          borderBottom: '1px solid var(--glass-border)',
-          boxShadow: 'inset 0 1px 0 var(--glass-highlight), 0 4px 16px rgba(0,0,0,0.08)',
-        }}
-      >
-        <h1
-          className="text-xl font-heading font-bold text-ig-text dark:text-ig-text-light flex items-center gap-2 cursor-pointer"
-          onClick={() => navigate('/dashboard')}
+      {!location.pathname.includes('/dashboard/messages') && (
+        <header className="md:hidden fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-4 py-2.5 transition-all duration-300"
+          style={{
+            background: 'var(--glass-bg-strong)',
+            backdropFilter: `blur(24px) saturate(200%)`,
+            WebkitBackdropFilter: `blur(24px) saturate(200%)`,
+            borderBottom: '1px solid var(--glass-border)',
+            boxShadow: 'inset 0 1px 0 var(--glass-highlight), 0 4px 16px rgba(0,0,0,0.08)',
+          }}
         >
-          <img src={logoImg} alt="Scholars Hub" className="w-7 h-7 rounded-full object-cover" />
-          <span>
-            Scholars<span className="gradient-text">Hub</span>
-          </span>
-        </h1>
-        <div className="flex items-center gap-1">
-          <button onClick={toggleTheme} className="p-2 rounded-full text-ig-text dark:text-ig-text-light opacity-70 hover:opacity-100 transition-colors"
-            style={{ boxShadow: 'none' }}
-            onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '2px 2px 5px var(--neu-shadow-dark), -2px -2px 5px var(--neu-shadow-light)'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.boxShadow = 'none'; }}
+          <h1
+            className="text-xl font-heading font-bold text-ig-text dark:text-ig-text-light flex items-center gap-2 cursor-pointer"
+            onClick={() => navigate('/dashboard')}
           >
-            {darkMode ? <HiSun className="w-6 h-6" /> : <HiMoon className="w-6 h-6" />}
-          </button>
-          <NavLink
-            to="/dashboard/notifications"
-            className={({ isActive }) =>
-              `p-2 rounded-full transition-all relative ${isActive ? 'text-ig-text dark:text-ig-text-light' : 'text-ig-text dark:text-ig-text-light opacity-70 hover:opacity-100'}`
-            }
-          >
-            <HiOutlineBell className="w-6 h-6" />
-            {unreadCount > 0 && (
-              <span className="absolute top-1 right-1 bg-ag-badge text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                {unreadCount > 9 ? '9+' : unreadCount}
-              </span>
-            )}
-          </NavLink>
-        </div>
-      </header>
+            <img src={logoImg} alt="Scholars Hub" className="w-7 h-7 rounded-full object-cover" />
+            <span>
+              Scholars<span className="gradient-text">Hub</span>
+            </span>
+          </h1>
+          <div className="flex items-center gap-1">
+            <button onClick={toggleTheme} className="p-2 rounded-full text-ig-text dark:text-ig-text-light opacity-70 hover:opacity-100 transition-colors"
+              style={{ boxShadow: 'none' }}
+              onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '2px 2px 5px var(--neu-shadow-dark), -2px -2px 5px var(--neu-shadow-light)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.boxShadow = 'none'; }}
+            >
+              {darkMode ? <HiSun className="w-6 h-6" /> : <HiMoon className="w-6 h-6" />}
+            </button>
+            <NavLink
+              to="/dashboard/notifications"
+              className={({ isActive }) =>
+                `p-2 rounded-full transition-all relative ${isActive ? 'text-ig-text dark:text-ig-text-light' : 'text-ig-text dark:text-ig-text-light opacity-70 hover:opacity-100'}`
+              }
+            >
+              <HiOutlineBell className="w-6 h-6" />
+              {unreadCount > 0 && (
+                <span className="absolute top-1 right-1 bg-ag-badge text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </span>
+              )}
+            </NavLink>
+          </div>
+        </header>
+      )}
 
       {/* Mobile More Menu — Glass Overlay */}
       {mobileMenuOpen && (
@@ -500,7 +502,7 @@ export default function Layout() {
       )}
 
       {/* Main Content - Liquid Glass Window */}
-      <main className="flex-1 md:ml-[260px] xl:ml-[340px] md:h-[calc(100vh-32px)] overflow-y-auto overflow-x-hidden pb-16 md:pb-0 pt-14 md:pt-0 relative md:rounded-[32px]"
+      <main className={`flex-1 md:ml-[260px] xl:ml-[340px] md:h-[calc(100vh-32px)] overflow-y-auto overflow-x-hidden md:pb-0 md:pt-0 relative md:rounded-[32px] ${location.pathname.includes('/dashboard/messages') ? 'pb-0 pt-0' : 'pb-16 pt-14'}`}
         style={{
           background: 'var(--glass-bg)',
           backdropFilter: `blur(16px) saturate(160%)`,
@@ -567,15 +569,16 @@ export default function Layout() {
 
 
       {/* Mobile Bottom Nav — Liquid Glass */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-30 flex justify-around py-2 px-1 safe-area-pb transition-all duration-300"
-        style={{
-          background: 'var(--glass-bg-strong)',
-          backdropFilter: `blur(24px) saturate(200%)`,
-          WebkitBackdropFilter: `blur(24px) saturate(200%)`,
-          borderTop: '1px solid var(--glass-border)',
-          boxShadow: 'inset 0 1px 0 var(--glass-highlight), 0 -4px 16px rgba(0,0,0,0.06)',
-        }}
-      >
+      {!location.pathname.includes('/dashboard/messages') && (
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-30 flex justify-around py-2 px-1 safe-area-pb transition-all duration-300"
+          style={{
+            background: 'var(--glass-bg-strong)',
+            backdropFilter: `blur(24px) saturate(200%)`,
+            WebkitBackdropFilter: `blur(24px) saturate(200%)`,
+            borderTop: '1px solid var(--glass-border)',
+            boxShadow: 'inset 0 1px 0 var(--glass-highlight), 0 -4px 16px rgba(0,0,0,0.06)',
+          }}
+        >
         {mobileBottomItems.map((item) => (
           <NavLink
             key={item.to}
@@ -615,7 +618,8 @@ export default function Layout() {
         >
           <HiDotsHorizontal className="w-7 h-7" />
         </button>
-      </nav>
+        </nav>
+      )}
     </div>
   );
 }

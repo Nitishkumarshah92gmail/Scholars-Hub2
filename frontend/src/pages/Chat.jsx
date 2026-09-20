@@ -459,7 +459,7 @@ export default function Chat() {
   };
 
   return (
-    <div className="w-full h-[calc(100vh-140px)] md:h-[calc(100vh-50px)] flex bg-ig-bg dark:bg-black rounded-ag-sm border border-ig-separator dark:border-ig-separator-dark overflow-hidden shadow-sm">
+    <div className="w-full h-[100vh] md:h-[calc(100vh-50px)] flex bg-ig-bg dark:bg-black rounded-none md:rounded-ag-sm border-none md:border md:border-ig-separator dark:md:border-ig-separator-dark overflow-hidden md:shadow-sm">
       
       {/* Sidebar - Conversation List */}
       <div className={`w-full md:w-80 border-r border-ig-separator dark:border-ig-separator-dark flex flex-col ${activeConversation ? 'hidden md:flex' : 'flex'}`}>

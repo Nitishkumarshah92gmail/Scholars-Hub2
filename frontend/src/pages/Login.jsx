@@ -33,8 +33,17 @@ export default function Login() {
     };
   }, []);
 
-  const { loginUser, registerUser, loginWithGoogle } = useAuth();
+  const { loginUser, registerUser, loginWithGoogle, authError, clearAuthError } = useAuth();
   const navigate = useNavigate();
+
+  // Surface OAuth failures (e.g. "Google sign-in was cancelled") that Supabase
+  // appended to the URL and AuthContext extracted.
+  useEffect(() => {
+    if (authError) {
+      toast.error(authError);
+      clearAuthError();
+    }
+  }, [authError, clearAuthError]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -57,7 +66,7 @@ export default function Login() {
     if (!registerName || !registerEmail || !registerPassword) return toast.error('Please fill in all fields.');
     setIsRegistering(true);
     try {
-      await registerUser(registerEmail, registerPassword, registerName);
+      await registerUser({ name: registerName, email: registerEmail, password: registerPassword });
       toast.success('Account created successfully!');
       navigate('/dashboard');
     } catch (err) {

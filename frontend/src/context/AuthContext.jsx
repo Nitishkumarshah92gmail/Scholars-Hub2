@@ -1,98 +1,202 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { supabase, isSupabaseConfigured, warmSupabaseConnection } from '../lib/supabase';
+import { resolveApiBase, warmApiConnection } from '../lib/apiBase';
 
 const AuthContext = createContext(null);
 
-export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [session, setSession] = useState(null);
-  const [loading, setLoading] = useState(true);
+// The last profile we successfully loaded, kept so a reload/refresh can render
+// the signed-in UI instantly instead of waiting on the network.
+const PROFILE_CACHE_KEY = 'sh_profile_cache_v1';
+const PROFILE_TIMEOUT_MS = 10000;
 
-  // Build a minimal user object from a Supabase session as fallback
-  const buildUserFromSession = (supabaseUser) => {
-    if (!supabaseUser) return null;
-    const meta = supabaseUser.user_metadata || {};
-    return {
-      _id: supabaseUser.id,
-      name: meta.name || meta.full_name || 'User',
-      email: supabaseUser.email || '',
-      avatar:
-        meta.avatar ||
-        meta.avatar_url ||
-        `https://ui-avatars.com/api/?name=${encodeURIComponent(meta.name || 'User')}&background=1e3a5f&color=fbbf24&size=200`,
-      bio: meta.bio || '',
-      school: meta.school || '',
-      subjects: meta.subjects || [],
-      followers: [],
-      following: [],
-      bookmarks: [],
-      createdAt: supabaseUser.created_at,
-    };
+function readCachedProfile() {
+  try {
+    const raw = localStorage.getItem(PROFILE_CACHE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeCachedProfile(profile) {
+  try {
+    if (profile) localStorage.setItem(PROFILE_CACHE_KEY, JSON.stringify(profile));
+  } catch {
+    /* storage full/disabled — not fatal */
+  }
+}
+
+function clearCachedProfile() {
+  try {
+    localStorage.removeItem(PROFILE_CACHE_KEY);
+  } catch {
+    /* ignore */
+  }
+}
+
+// Build a minimal user object from a Supabase session (used for instant render
+// and as a fallback when the backend is unreachable).
+function buildUserFromSession(supabaseUser) {
+  if (!supabaseUser) return null;
+  const meta = supabaseUser.user_metadata || {};
+  return {
+    _id: supabaseUser.id,
+    name: meta.name || meta.full_name || 'User',
+    email: supabaseUser.email || '',
+    avatar:
+      meta.avatar ||
+      meta.avatar_url ||
+      `https://ui-avatars.com/api/?name=${encodeURIComponent(meta.name || 'User')}&background=1e3a5f&color=fbbf24&size=200`,
+    bio: meta.bio || '',
+    school: meta.school || '',
+    subjects: meta.subjects || [],
+    followers: [],
+    following: [],
+    bookmarks: [],
+    createdAt: supabaseUser.created_at,
   };
+}
 
-  // Fetch profile from backend API with a 10-second timeout.
-  // Falls back to session-based user object if the backend is unavailable.
+// Pulls a human-readable OAuth failure out of the URL (Supabase appends
+// #error_description=... when a provider sign-in fails) and cleans the URL.
+function consumeAuthErrorFromUrl() {
+  if (typeof window === 'undefined') return null;
+  try {
+    const hash = (window.location.hash || '').replace(/^#/, '');
+    const search = (window.location.search || '').replace(/^\?/, '');
+    const params = new URLSearchParams(hash.includes('error') ? hash : search);
+    const description = params.get('error_description') || params.get('error');
+    if (!description) return null;
+    window.history.replaceState(null, '', window.location.pathname);
+    return description.replace(/\+/g, ' ');
+  } catch {
+    return null;
+  }
+}
+
+export function AuthProvider({ children }) {
+  // Instant paint: if we cached a profile from a previous visit, use it right away.
+  // The session check below confirms it (and clears it if it is no longer valid).
+  const [user, setUser] = useState(() => readCachedProfile());
+  const [session, setSession] = useState(null);
+  const [loading, setLoading] = useState(() => !readCachedProfile());
+  const [authError, setAuthError] = useState(null);
+
+  // Fetch the full profile from the backend with a REAL timeout (the previous
+  // version only claimed to have one), falling back to the session user.
   const fetchProfile = async (accessToken, supabaseUser = null) => {
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'https://scholars-hub2.onrender.com/api';
+      const apiUrl = await resolveApiBase();
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), PROFILE_TIMEOUT_MS);
       try {
         const res = await fetch(`${apiUrl}/auth/me`, {
           headers: { Authorization: `Bearer ${accessToken}` },
+          signal: controller.signal,
         });
         if (res.ok) {
           const profile = await res.json();
           setUser(profile);
+          writeCachedProfile(profile);
           return profile;
         }
         // Non-ok response (e.g. 503 when backend Supabase isn't configured)
         console.warn(`Backend /auth/me returned ${res.status}, using session fallback`);
       } catch (fetchErr) {
         console.warn('Backend /auth/me unavailable, using session fallback:', fetchErr.message);
+      } finally {
+        clearTimeout(timer);
       }
     } catch (err) {
       console.error('Failed to fetch profile:', err);
     }
 
-    // Fallback: construct user from Supabase session if backend is unreachable
+    // Fallback: construct user from Supabase session if backend is unreachable.
+    // Never overwrite richer cached data for the same user with this minimal object.
     if (supabaseUser) {
       const fallback = buildUserFromSession(supabaseUser);
-      setUser(fallback);
+      setUser((prev) => (prev && prev._id === fallback._id ? prev : fallback));
       return fallback;
     }
     return null;
   };
 
-  useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session: s } }) => {
-      setSession(s);
-      if (s?.access_token) {
-        fetchProfile(s.access_token, s.user).finally(() => setLoading(false));
-      } else {
-        setLoading(false);
-      }
-    });
 
-    // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, s) => {
+  useEffect(() => {
+    // Warm DNS/TLS for Supabase + Google so sign-in feels instant, and for the
+    // API host so the first data request doesn't pay the connection cost.
+    warmSupabaseConnection();
+    warmApiConnection();
+
+    // Surface any OAuth error Supabase appended to the URL instead of silently
+    // dumping the user on the login page.
+    const urlError = consumeAuthErrorFromUrl();
+    if (urlError) setAuthError(urlError);
+
+    let cancelled = false;
+
+    // 1) Resolve the stored session — a LOCAL read, so it is fast. This tells us
+    //    whether the user is signed in; the UI is never blocked on the network.
+    supabase.auth
+      .getSession()
+      .then(({ data: { session: s } }) => {
+        if (cancelled) return;
         setSession(s);
-        if (event === 'PASSWORD_RECOVERY') {
-          // User clicked the password reset link — don't fetch profile,
-          // let the ResetPassword page handle it
-          return;
-        } else if (event === 'SIGNED_IN' && s?.access_token) {
-          // Small delay to ensure the profile trigger has completed
-          await new Promise((r) => setTimeout(r, 500));
-          await fetchProfile(s.access_token, s.user);
-        } else if (event === 'SIGNED_OUT') {
+        if (s?.access_token) {
+          if (!readCachedProfile()) setUser(buildUserFromSession(s.user)); // instant shell
+          setLoading(false);                                              // render immediately
+          fetchProfile(s.access_token, s.user);                           // hydrate in background
+        } else {
+          clearCachedProfile();
           setUser(null);
+          setLoading(false);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    // 2) React to later auth events (OAuth redirect, sign-out, token refresh).
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, s) => {
+        if (cancelled) return;
+        setSession(s);
+
+        if (event === 'PASSWORD_RECOVERY') {
+          // User clicked the password reset link — let ResetPassword handle it
+          return;
+        }
+
+        if (event === 'SIGNED_OUT') {
+          clearCachedProfile();
+          setUser(null);
+          setLoading(false);
+          return;
+        }
+
+        if (event === 'SIGNED_IN' && s?.access_token) {
+          // Show the user immediately, then fetch the full profile after a short
+          // delay (the backend creates the profile row right after sign-up).
+          setUser((prev) => (prev && prev._id === s.user?.id ? prev : buildUserFromSession(s.user)));
+          setLoading(false);
+          setTimeout(() => { if (!cancelled) fetchProfile(s.access_token, s.user); }, 400);
+          return;
+        }
+
+        // Session appeared without a SIGNED_IN event (e.g. OAuth hash parsed late)
+        if (s?.access_token) {
+          setUser((prev) => (prev && prev._id === s.user?.id ? prev : buildUserFromSession(s.user)));
+          setLoading(false);
         }
       }
     );
 
-    return () => subscription.unsubscribe();
+    return () => {
+      cancelled = true;
+      subscription.unsubscribe();
+    };
   }, []);
+
 
   const loginUser = async (email, password) => {
     if (!isSupabaseConfigured) {
@@ -118,16 +222,12 @@ export function AuthProvider({ children }) {
     if (error) throw error;
     setSession(data.session);
 
-    // Fetch profile from backend — but don't let this break login
-    try {
-      const profile = await fetchProfile(data.session.access_token, data.user);
-      return profile;
-    } catch (profileErr) {
-      console.warn('Profile fetch failed after login, using session fallback:', profileErr.message);
-      const fallback = buildUserFromSession(data.user);
-      setUser(fallback);
-      return fallback;
-    }
+    // Show the user immediately, then load the full profile in the background so
+    // the login button never waits on the backend.
+    setUser(buildUserFromSession(data.user));
+    setLoading(false);
+    fetchProfile(data.session.access_token, data.user);
+    return data.user;
   };
 
   const registerUser = async ({ name, email, password, school, subjects }) => {
@@ -148,10 +248,11 @@ export function AuthProvider({ children }) {
     // If email confirmation is disabled, we get a session immediately
     if (data.session) {
       setSession(data.session);
-      // Wait for trigger to create profile
-      await new Promise((r) => setTimeout(r, 800));
-      const profile = await fetchProfile(data.session.access_token, data.user);
-      return profile;
+      setUser(buildUserFromSession(data.user));
+      setLoading(false);
+      // Give the backend profile trigger a moment, then hydrate (non-blocking).
+      setTimeout(() => { fetchProfile(data.session.access_token, data.user); }, 800);
+      return data.user;
     }
 
     // If email confirmation is enabled, return null (user needs to verify email)
@@ -160,8 +261,10 @@ export function AuthProvider({ children }) {
 
   const logoutUser = async () => {
     await supabase.auth.signOut();
+    clearCachedProfile();
     setUser(null);
     setSession(null);
+    setAuthError(null);
   };
 
   const loginWithGoogle = async () => {
@@ -195,6 +298,8 @@ export function AuthProvider({ children }) {
         user,
         session,
         loading,
+        authError,
+        clearAuthError: () => setAuthError(null),
         loginUser,
         registerUser,
         loginWithGoogle,

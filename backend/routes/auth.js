@@ -111,7 +111,7 @@ router.post('/forgot-password', async (req, res) => {
 
     // Use Supabase's built-in email-based reset flow (never leak the link to the client)
     const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-      redirectTo: 'https://scholars-hub2.onrender.com/reset-password',
+      redirectTo: `${(process.env.FRONTEND_URL || 'https://scholars-hub2-1.onrender.com').replace(/\/+$/, '')}/reset-password`,
     });
 
     if (error) {

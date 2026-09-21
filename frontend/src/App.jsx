@@ -4,6 +4,48 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { lazy, Suspense, useEffect } from 'react';
 
+// The canonical origin is the single origin that owns the auth session.
+// Supabase keeps the session in localStorage, which is scoped PER-ORIGIN, so a
+// session created here is invisible on any other origin the app is served from
+// (e.g. the scholarshub.qd.je custom domain). To avoid "logged in on one URL,
+// logged out on the other", every non-canonical origin is hard-forwarded to the
+// canonical one (preserving path, query and hash), which then decides:
+//   signed in  ->  /dashboard
+//   signed out ->  /login
+const CANONICAL_ORIGIN = (import.meta.env.VITE_CANONICAL_ORIGIN || 'https://scholars-hub2-1.onrender.com').replace(/\/+$/, '');
+
+function isDevOrigin(origin) {
+  try {
+    const url = new URL(origin);
+    return url.hostname === 'localhost' || url.hostname === '127.0.0.1' || url.hostname.endsWith('.localhost');
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Wraps the route tree. If the app is running on an origin other than the
+ * canonical one (and not in local development), bounces the browser to the
+ * exact same URL on the canonical origin and shows a spinner while navigating.
+ */
+function CanonicalGate({ children }) {
+  const foreignOrigin =
+    typeof window !== 'undefined' &&
+    window.location.origin !== CANONICAL_ORIGIN &&
+    !isDevOrigin(window.location.origin);
+
+  useEffect(() => {
+    if (foreignOrigin) {
+      window.location.replace(
+        `${CANONICAL_ORIGIN}${window.location.pathname}${window.location.search}${window.location.hash}`
+      );
+    }
+  }, [foreignOrigin]);
+
+  if (foreignOrigin) return <PageSpinner />;
+  return children;
+}
+
 // Named importers so the same functions can be reused for idle prefetching.
 // NOTE: PdfTools is deliberately NOT prefetched — it pulls the 400KB+ pdf chunk.
 const importLayout = () => import('./components/Layout');
@@ -175,7 +217,9 @@ export default function App() {
               },
             }}
           />
-          <AppRoutes />
+          <CanonicalGate>
+            <AppRoutes />
+          </CanonicalGate>
         </Router>
       </AuthProvider>
     </ThemeProvider>

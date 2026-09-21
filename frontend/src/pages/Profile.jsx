@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getUser, updateUser, getTotalUsers, getPresignedUrl, uploadDirect, followUser } from '../api';
@@ -242,8 +243,8 @@ export default function Profile() {
                   onClick={handleFollow}
                   disabled={followLoading}
                   className={`w-36 py-2.5 rounded-full text-sm font-semibold transition ${isFollowing
-                      ? 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600'
-                      : 'text-white bg-blue-500 shadow-[0_4px_14px_rgba(59,130,246,0.4)] hover:bg-blue-600'
+                    ? 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600'
+                    : 'text-white bg-blue-500 shadow-[0_4px_14px_rgba(59,130,246,0.4)] hover:bg-blue-600'
                     }`}
                 >
                   {followLoading ? '...' : isFollowing ? 'Following' : 'Follow'}
@@ -336,11 +337,25 @@ export default function Profile() {
         </div>
       </div>
 
-      {/* Followers Modal */}
-      {showFollowers && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setShowFollowers(false)}>
-          <div className="bg-white dark:bg-[#1a1b1e] rounded-2xl w-full max-w-sm max-h-[80vh] overflow-hidden flex flex-col shadow-2xl border border-gray-100 dark:border-white/10" onClick={e => e.stopPropagation()}>
-            <div className="p-4 border-b border-gray-100 dark:border-white/10 flex items-center justify-between">
+      {/* Followers Modal — portaled to document.body so position:fixed is viewport-relative
+          (the <main> wrapper uses backdrop-filter, which would otherwise become the
+          containing block and push the popup to the bottom of the scrollable page) */}
+      {showFollowers && createPortal(
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+          style={{ animation: 'fadeIn .2s ease-out' }}
+          onClick={() => setShowFollowers(false)}
+        >
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+
+          {/* Popup — centered in the viewport */}
+          <div
+            className="relative bg-white dark:bg-[#1a1b1e] rounded-2xl w-full max-w-sm max-h-[70vh] overflow-hidden flex flex-col shadow-2xl border border-gray-100 dark:border-white/10"
+            style={{ animation: 'popIn .25s cubic-bezier(0.34,1.56,0.64,1)' }}
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="p-4 border-b border-gray-100 dark:border-white/10 flex items-center justify-between shrink-0">
               <h3 className="font-bold text-lg text-ig-text dark:text-ig-text-light">Followers</h3>
               <button onClick={() => setShowFollowers(false)} className="p-1.5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors">
                 <HiX className="w-5 h-5 text-gray-500" />
@@ -348,7 +363,7 @@ export default function Profile() {
             </div>
             <div className="overflow-y-auto p-4 flex-1 space-y-2">
               {profile?.followers?.length > 0 ? profile.followers.map(f => (
-                <Link key={f._id} to={`/profile/${f._id}`} onClick={() => setShowFollowers(false)} className="flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-white/5 p-2 rounded-xl transition-colors">
+                <Link key={f._id} to={`/dashboard/profile/${f._id}`} onClick={() => setShowFollowers(false)} className="flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-white/5 p-2 rounded-xl transition-colors">
                   <img src={f.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(f.name || 'User')}&background=random`} alt={f.name} className="w-10 h-10 rounded-full object-cover shadow-sm" />
                   <span className="font-semibold text-sm text-ig-text dark:text-ig-text-light">{f.name}</span>
                 </Link>
@@ -357,14 +372,27 @@ export default function Profile() {
               )}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
-      {/* Following Modal */}
-      {showFollowing && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setShowFollowing(false)}>
-          <div className="bg-white dark:bg-[#1a1b1e] rounded-2xl w-full max-w-sm max-h-[80vh] overflow-hidden flex flex-col shadow-2xl border border-gray-100 dark:border-white/10" onClick={e => e.stopPropagation()}>
-            <div className="p-4 border-b border-gray-100 dark:border-white/10 flex items-center justify-between">
+      {/* Following Modal — portaled to document.body (see Followers modal note) */}
+      {showFollowing && createPortal(
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+          style={{ animation: 'fadeIn .2s ease-out' }}
+          onClick={() => setShowFollowing(false)}
+        >
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+
+          {/* Popup — centered in the viewport */}
+          <div
+            className="relative bg-white dark:bg-[#1a1b1e] rounded-2xl w-full max-w-sm max-h-[70vh] overflow-hidden flex flex-col shadow-2xl border border-gray-100 dark:border-white/10"
+            style={{ animation: 'popIn .25s cubic-bezier(0.34,1.56,0.64,1)' }}
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="p-4 border-b border-gray-100 dark:border-white/10 flex items-center justify-between shrink-0">
               <h3 className="font-bold text-lg text-ig-text dark:text-ig-text-light">Following</h3>
               <button onClick={() => setShowFollowing(false)} className="p-1.5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors">
                 <HiX className="w-5 h-5 text-gray-500" />
@@ -372,7 +400,7 @@ export default function Profile() {
             </div>
             <div className="overflow-y-auto p-4 flex-1 space-y-2">
               {profile?.following?.length > 0 ? profile.following.map(f => (
-                <Link key={f._id} to={`/profile/${f._id}`} onClick={() => setShowFollowing(false)} className="flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-white/5 p-2 rounded-xl transition-colors">
+                <Link key={f._id} to={`/dashboard/profile/${f._id}`} onClick={() => setShowFollowing(false)} className="flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-white/5 p-2 rounded-xl transition-colors">
                   <img src={f.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(f.name || 'User')}&background=random`} alt={f.name} className="w-10 h-10 rounded-full object-cover shadow-sm" />
                   <span className="font-semibold text-sm text-ig-text dark:text-ig-text-light">{f.name}</span>
                 </Link>
@@ -381,8 +409,15 @@ export default function Profile() {
               )}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
+
+      {/* Modal animations (same keyframes used by ScholarsBar) */}
+      <style>{`
+        @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+        @keyframes popIn { from { opacity: 0; transform: scale(0.9) } to { opacity: 1; transform: scale(1) } }
+      `}</style>
     </div>
   );
 }

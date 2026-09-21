@@ -2,11 +2,10 @@ import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
-import { motion, AnimatePresence } from 'framer-motion';
 import { format, isToday, isYesterday } from 'date-fns';
 import toast from 'react-hot-toast';
-import { HiPaperAirplane, HiOutlineChat, HiOutlineSearch, HiArrowLeft, HiDocumentText, HiTrash, HiPencil, HiCheck, HiX, HiOutlineBell, HiCamera, HiMicrophone, HiPhotograph, HiEmojiHappy, HiInformationCircle, HiOutlineClock, HiExclamationCircle, HiCheckCircle, HiPhone, HiVideoCamera } from 'react-icons/hi';
-import { deleteFile, getPresignedUrl, uploadDirect, getNotifications } from '../api';
+import { HiOutlineChat, HiOutlineSearch, HiArrowLeft, HiDocumentText, HiX, HiPhotograph } from 'react-icons/hi';
+import { deleteFile, getPresignedUrl, uploadDirect } from '../api';
 import imageCompression from 'browser-image-compression';
 
 
@@ -38,7 +37,6 @@ export default function Chat() {
   const [isUploading, setIsUploading] = useState(false);
   const [editingMessageId, setEditingMessageId] = useState(null);
   const [editContent, setEditContent] = useState('');
-  const [unreadCount, setUnreadCount] = useState(0);
   const [viewportStyle, setViewportStyle] = useState({});
 
   useEffect(() => {
@@ -118,27 +116,28 @@ export default function Chat() {
         return;
       }
 
-      // Fetch details of the *other* participant for each conversation
-      const { data: othersData, error: othersError } = await supabase
-        .from('conversation_participants')
-        .select(`
-          conversation_id,
-          user_id,
-          profiles:user_id (id, name, avatar, school)
-        `)
-        .in('conversation_id', convoIds)
-        .neq('user_id', user._id);
+      // These two queries are independent — run them in parallel (halves list load time)
+      const [othersRes, messagesRes] = await Promise.all([
+        supabase
+          .from('conversation_participants')
+          .select(`
+            conversation_id,
+            user_id,
+            profiles:user_id (id, name, avatar, school)
+          `)
+          .in('conversation_id', convoIds)
+          .neq('user_id', user._id),
+        supabase
+          .from('messages')
+          .select('conversation_id, content, created_at')
+          .in('conversation_id', convoIds)
+          .order('created_at', { ascending: false }),
+      ]);
 
-      if (othersError) throw othersError;
-
-      // Fetch the latest message for each conversation
-      const { data: latestMessages, error: msgError } = await supabase
-        .from('messages')
-        .select('conversation_id, content, created_at')
-        .in('conversation_id', convoIds)
-        .order('created_at', { ascending: false });
-
-      if (msgError) throw msgError;
+      const othersData = othersRes.data;
+      const latestMessages = messagesRes.data;
+      if (othersRes.error) throw othersRes.error;
+      if (messagesRes.error) throw messagesRes.error;
 
       // Map everything together
       const formattedConvos = othersData.map(other => {
@@ -196,10 +195,6 @@ export default function Chat() {
 
   useEffect(() => {
     fetchConversations();
-
-    getNotifications()
-      .then((res) => setUnreadCount(res.data.unreadCount))
-      .catch(() => { });
   }, []);
 
   useEffect(() => {
@@ -703,10 +698,9 @@ export default function Chat() {
                             {dateText}
                           </div>
                         )}
-                        <motion.div
-                          initial={{ opacity: 0, y: 5 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          className={`flex items-end gap-2 max-w-[85%] md:max-w-[75%] min-w-0 ${isMine ? 'flex-row-reverse' : ''} mb-[2px]`}
+                        {/* CSS animation replaces framer-motion — same fade/slide, no 50KB dependency */}
+                        <div
+                          className={`msg-enter flex items-end gap-2 max-w-[85%] md:max-w-[75%] min-w-0 ${isMine ? 'flex-row-reverse' : ''} mb-[2px]`}
                         >
                           {!isMine ? (
                             <div className="w-7 h-7 shrink-0 mr-1 flex items-end">
@@ -722,9 +716,9 @@ export default function Chat() {
 
                           <div
                             className={`text-[15px] min-w-0 break-words ${isMedia ? 'bg-transparent overflow-hidden rounded-[22px] max-w-full' :
-                                isMine
-                                  ? 'bg-[#3797F0] text-white px-4 py-3 rounded-t-[22px] rounded-bl-[22px] rounded-br-[4px] md:shadow-[4px_4px_10px_rgba(59,130,246,0.3)]'
-                                  : 'bg-[#EFEFEF] dark:bg-[#262626] text-black dark:text-white px-4 py-3 rounded-t-[22px] rounded-br-[22px] rounded-bl-[4px] md:shadow-[4px_4px_10px_var(--neu-shadow-dark),-4px_-4px_10px_var(--neu-shadow-light)]'
+                              isMine
+                                ? 'bg-[#3797F0] text-white px-4 py-3 rounded-t-[22px] rounded-bl-[22px] rounded-br-[4px] md:shadow-[4px_4px_10px_rgba(59,130,246,0.3)]'
+                                : 'bg-[#EFEFEF] dark:bg-[#262626] text-black dark:text-white px-4 py-3 rounded-t-[22px] rounded-br-[22px] rounded-bl-[4px] md:shadow-[4px_4px_10px_var(--neu-shadow-dark),-4px_-4px_10px_var(--neu-shadow-light)]'
                               }`}
                           >
                             <div className="min-w-0 overflow-hidden w-full leading-snug">
@@ -738,7 +732,7 @@ export default function Chat() {
                               )}
                             </div>
                           </div>
-                        </motion.div>
+                        </div>
                       </div>
                     );
                   })

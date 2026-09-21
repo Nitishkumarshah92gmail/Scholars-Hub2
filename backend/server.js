@@ -60,8 +60,8 @@ app.get('/api/health', (req, res) => {
   const path = require('path');
   const fs = require('fs');
   const frontendDist = path.join(__dirname, '..', 'frontend', 'dist');
-  res.json({ 
-    status: 'ok', 
+  res.json({
+    status: 'ok',
     message: 'Scholars Hub API is running',
     debug: {
       dirname: __dirname,
@@ -76,10 +76,28 @@ const path = require('path');
 const frontendDist = path.join(__dirname, '..', 'frontend', 'dist');
 const fs = require('fs');
 if (fs.existsSync(frontendDist)) {
-  app.use(express.static(frontendDist));
+  // Vite emits content-hashed filenames (e.g. index-a1b2c3d4.js), so these can be
+  // cached aggressively. Serving these without Cache-Control made every page
+  // navigation re-download all JS/CSS from Render — the main cause of slow loads.
+  app.use('/assets', express.static(path.join(frontendDist, 'assets'), {
+    maxAge: '365d',
+    immutable: true,
+  }));
+
+  // Everything else in dist (index.html, logo.png, apk, etc.) — allow ETag
+  // revalidation but tell browsers/CDN to always revalidate the HTML shell.
+  app.use(express.static(frontendDist, {
+    maxAge: '1h',
+    setHeaders: (res, filePath) => {
+      if (filePath.endsWith('index.html')) {
+        res.setHeader('Cache-Control', 'no-cache');
+      }
+    },
+  }));
 
   // SPA fallback – serve index.html for any non-API route
   app.get('*', (req, res) => {
+    res.setHeader('Cache-Control', 'no-cache');
     res.sendFile(path.join(frontendDist, 'index.html'));
   });
 }

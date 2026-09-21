@@ -2,22 +2,72 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 
-// Lazy load all pages — only Layout is kept eager for shell rendering
-const Layout = lazy(() => import('./components/Layout'));
-const Login = lazy(() => import('./pages/Login'));
-const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
-const ResetPassword = lazy(() => import('./pages/ResetPassword'));
-const Feed = lazy(() => import('./pages/Feed'));
-const Explore = lazy(() => import('./pages/Explore'));
-const Upload = lazy(() => import('./pages/Upload'));
-const Profile = lazy(() => import('./pages/Profile'));
-const Notifications = lazy(() => import('./pages/Notifications'));
-const PostDetail = lazy(() => import('./pages/PostDetail'));
-const Bookmarks = lazy(() => import('./pages/Bookmarks'));
-const PdfTools = lazy(() => import('./pages/PdfTools'));
-const Chat = lazy(() => import('./pages/Chat'));
+// Named importers so the same functions can be reused for idle prefetching.
+// NOTE: PdfTools is deliberately NOT prefetched — it pulls the 400KB+ pdf chunk.
+const importLayout = () => import('./components/Layout');
+const importLogin = () => import('./pages/Login');
+const importForgotPassword = () => import('./pages/ForgotPassword');
+const importResetPassword = () => import('./pages/ResetPassword');
+const importFeed = () => import('./pages/Feed');
+const importExplore = () => import('./pages/Explore');
+const importUpload = () => import('./pages/Upload');
+const importProfile = () => import('./pages/Profile');
+const importNotifications = () => import('./pages/Notifications');
+const importPostDetail = () => import('./pages/PostDetail');
+const importBookmarks = () => import('./pages/Bookmarks');
+const importPdfTools = () => import('./pages/PdfTools');
+const importChat = () => import('./pages/Chat');
+
+const Layout = lazy(importLayout);
+const Login = lazy(importLogin);
+const ForgotPassword = lazy(importForgotPassword);
+const ResetPassword = lazy(importResetPassword);
+const Feed = lazy(importFeed);
+const Explore = lazy(importExplore);
+const Upload = lazy(importUpload);
+const Profile = lazy(importProfile);
+const Notifications = lazy(importNotifications);
+const PostDetail = lazy(importPostDetail);
+const Bookmarks = lazy(importBookmarks);
+const PdfTools = lazy(importPdfTools);
+const Chat = lazy(importChat);
+
+// Warm the route chunks during browser idle time so tab switches (Home -> Messages
+// -> Search ...) render instantly instead of showing the Suspense spinner while
+// the chunk downloads. Runs once, ~after first paint, in priority order.
+const IDLE_PREFETCH = [
+  importLayout,
+  importFeed,
+  importExplore,
+  importChat,
+  importNotifications,
+  importProfile,
+  importBookmarks,
+  importUpload,
+  importPostDetail,
+  importLogin,
+];
+
+function useIdlePrefetch() {
+  useEffect(() => {
+    let cancelled = false;
+    const warm = () => {
+      if (cancelled) return;
+      for (const load of IDLE_PREFETCH) {
+        // Fire sequentially-ish; each import() is cached by the browser after first call
+        try { load(); } catch { /* non-fatal */ }
+      }
+    };
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      const id = window.requestIdleCallback(warm, { timeout: 2500 });
+      return () => { cancelled = true; window.cancelIdleCallback(id); };
+    }
+    const t = setTimeout(warm, 1200);
+    return () => { cancelled = true; clearTimeout(t); };
+  }, []);
+}
 
 function PageSpinner() {
   return (
@@ -44,27 +94,29 @@ function PublicRoute({ children }) {
 function RootRoute() {
   const { user, loading } = useAuth();
   if (loading) return <PageSpinner />;
-  
+
   // If user is authenticated, go to dashboard
   if (user) {
     return <Navigate to="/dashboard" replace />;
   }
-  
+
   // If not authenticated, go to login but PRESERVE the hash and search params.
   // This is critical for OAuth redirects (like Google Login) which put the access_token in the hash.
   return (
-    <Navigate 
-      to={{ 
-        pathname: '/login', 
-        search: window.location.search, 
-        hash: window.location.hash 
-      }} 
-      replace 
+    <Navigate
+      to={{
+        pathname: '/login',
+        search: window.location.search,
+        hash: window.location.hash
+      }}
+      replace
     />
   );
 }
 
 function AppRoutes() {
+  useIdlePrefetch();
+
   return (
     <Suspense fallback={<PageSpinner />}>
       <Routes>

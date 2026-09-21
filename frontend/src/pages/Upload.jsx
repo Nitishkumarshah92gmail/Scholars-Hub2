@@ -79,10 +79,10 @@ export default function Upload() {
   const uploadFilesToR2 = async () => {
     setUploadProgress('Compressing and uploading...');
     const uploadedUrls = [];
-    
+
     for (const file of files) {
       let fileToUpload = file;
-      
+
       // Compress images before upload
       if (type === 'image' && file.type.startsWith('image/')) {
         const options = {
@@ -92,20 +92,20 @@ export default function Upload() {
         };
         try {
           fileToUpload = await imageCompression(file, options);
-          console.log(`Compressed ${file.name} from ${(file.size/1024/1024).toFixed(2)}MB to ${(fileToUpload.size/1024/1024).toFixed(2)}MB`);
+          console.log(`Compressed ${file.name} from ${(file.size / 1024 / 1024).toFixed(2)}MB to ${(fileToUpload.size / 1024 / 1024).toFixed(2)}MB`);
         } catch (error) {
           console.error("Image compression failed", error);
           // Fall back to original file if compression fails
         }
       }
-      
+
       const subfolder = type === 'pdf' ? 'pdfs' : 'images';
       // 1. Get Presigned URL
       const { data: { uploadUrl, publicUrl } } = await getPresignedUrl(file.name, fileToUpload.type, subfolder);
-      
+
       // 2. Upload directly to Supabase Storage
       await uploadDirect(uploadUrl, fileToUpload);
-      
+
       uploadedUrls.push(publicUrl);
     }
 
@@ -235,7 +235,7 @@ export default function Upload() {
                 />
               </div>
               <p className="text-[11px] text-ig-text-2 mt-2">
-                💡 Make sure the file sharing is set to "Anyone with the link" in Google Drive
+                💡 Make sure the file sharing is set to &ldquo;Anyone with the link&rdquo; in Google Drive
               </p>
             </div>
           ) : type === 'video_link' ? (

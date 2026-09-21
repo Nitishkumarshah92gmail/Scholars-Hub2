@@ -64,7 +64,7 @@ export default function Profile() {
         const options = { maxSizeMB: 0.1, maxWidthOrHeight: 400, useWebWorker: true };
         let fileToUpload = editForm.avatarFile;
         try { fileToUpload = await imageCompression(editForm.avatarFile, options); } catch (e) { console.error(e); }
-        
+
         const { data: { uploadUrl, publicUrl } } = await getPresignedUrl(editForm.avatarFile.name, fileToUpload.type, 'avatars');
         await uploadDirect(uploadUrl, fileToUpload);
         avatarUrl = publicUrl;
@@ -124,7 +124,7 @@ export default function Profile() {
       <div className="text-center py-16">
         <span className="text-5xl block mb-4">😕</span>
         <h3 className="text-base font-semibold text-ig-text dark:text-ig-text-light">
-          This page isn't available
+          This page is not available
         </h3>
         <p className="text-sm text-ig-text-2 mt-2">
           The link you followed may be broken, or the user may have been removed.
@@ -136,7 +136,7 @@ export default function Profile() {
   return (
     <div className="relative min-h-screen pb-24 bg-[var(--neu-bg)] font-body">
       {/* Top Image Banner */}
-      <div 
+      <div
         className="absolute top-0 left-0 w-full h-56 overflow-hidden"
         style={{
           backgroundImage: 'url(/campus-bg.jpg)',
@@ -160,15 +160,15 @@ export default function Profile() {
       <div className="relative z-10 px-0 sm:px-4 max-w-4xl mx-auto mt-20 w-full">
         {/* Profile Content */}
         <div className="relative px-0 py-6 pt-0 sm:p-10 sm:pt-0 text-center w-full">
-          
+
           {/* Avatar (centered and protruding) */}
           <div className="relative z-20 flex justify-center -mt-16 sm:-mt-20 mb-4">
             <div className="relative">
               <div className="p-1.5 rounded-full bg-white shadow-md inline-block">
                 <img
                   src={
-                    editForm?.avatarFile 
-                      ? URL.createObjectURL(editForm.avatarFile) 
+                    editForm?.avatarFile
+                      ? URL.createObjectURL(editForm.avatarFile)
                       : (profile.avatar || `https://ui-avatars.com/api/?name=${profile.name}`)
                   }
                   onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${profile.name}&background=1e3a5f&color=fbbf24&size=200`; }}
@@ -177,7 +177,7 @@ export default function Profile() {
                 />
               </div>
               {isOwnProfile && (
-                <button 
+                <button
                   onClick={() => setEditing(!editing)}
                   className="absolute bottom-1 right-1 p-2 rounded-full bg-blue-500 text-white shadow-lg z-30 hover:bg-blue-600 transition"
                 >
@@ -205,14 +205,14 @@ export default function Profile() {
               <span className="text-xl font-bold text-ig-text dark:text-ig-text-light">{posts.length}</span>
               <span className="text-[11px] font-medium text-ig-text-2 tracking-wide uppercase">Posts</span>
             </div>
-            <button 
+            <button
               onClick={() => profile?.followers?.length > 0 && setShowFollowers(true)}
               className={`flex flex-col items-center transition-opacity ${profile?.followers?.length > 0 ? 'hover:opacity-70 cursor-pointer' : 'opacity-80 cursor-default'}`}
             >
               <span className="text-xl font-bold text-ig-text dark:text-ig-text-light">{followersCount}</span>
               <span className="text-[11px] font-medium text-ig-text-2 tracking-wide uppercase">Followers</span>
             </button>
-            <button 
+            <button
               onClick={() => profile?.following?.length > 0 && setShowFollowing(true)}
               className={`flex flex-col items-center transition-opacity ${profile?.following?.length > 0 ? 'hover:opacity-70 cursor-pointer' : 'opacity-80 cursor-default'}`}
             >
@@ -238,14 +238,13 @@ export default function Profile() {
               </button>
             ) : (
               <>
-                <button 
+                <button
                   onClick={handleFollow}
                   disabled={followLoading}
-                  className={`w-36 py-2.5 rounded-full text-sm font-semibold transition ${
-                    isFollowing 
+                  className={`w-36 py-2.5 rounded-full text-sm font-semibold transition ${isFollowing
                       ? 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600'
                       : 'text-white bg-blue-500 shadow-[0_4px_14px_rgba(59,130,246,0.4)] hover:bg-blue-600'
-                  }`}
+                    }`}
                 >
                   {followLoading ? '...' : isFollowing ? 'Following' : 'Follow'}
                 </button>
@@ -262,7 +261,7 @@ export default function Profile() {
               <form onSubmit={handleSaveProfile} className="space-y-3">
                 <div className="flex flex-col items-center mb-4">
                   <div className="relative">
-                    <img 
+                    <img
                       src={editForm.avatarFile ? URL.createObjectURL(editForm.avatarFile) : (profile.avatar || `https://ui-avatars.com/api/?name=${profile.name}`)}
                       alt="Avatar Preview"
                       className="w-20 h-20 rounded-full object-cover shadow-[2px_2px_5px_var(--neu-shadow-dark)]"
@@ -324,15 +323,15 @@ export default function Profile() {
 
           {/* Grid / Posts list */}
           <div className="text-left space-y-6 max-w-3xl mx-auto w-full">
-             {posts.length === 0 ? (
-               <div className="text-center py-8">
-                 <p className="text-ig-text-2 text-sm">No posts yet.</p>
-               </div>
-             ) : (
-               posts.map((post) => (
-                 <PostCard key={post._id} post={post} />
-               ))
-             )}
+            {posts.length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-ig-text-2 text-sm">No posts yet.</p>
+              </div>
+            ) : (
+              posts.map((post) => (
+                <PostCard key={post._id} post={post} />
+              ))
+            )}
           </div>
         </div>
       </div>

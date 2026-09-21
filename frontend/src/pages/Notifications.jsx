@@ -31,8 +31,8 @@ export default function Notifications() {
 
   const getMessage = (notif) => {
     switch (notif.type) {
-      case 'like': return <><strong>{notif.sender?.name}</strong> liked your post <span className="text-ig-text-2">"{notif.post?.title}"</span></>;
-      case 'comment': return <><strong>{notif.sender?.name}</strong> commented on your post <span className="text-ig-text-2">"{notif.post?.title}"</span></>;
+      case 'like': return <><strong>{notif.sender?.name}</strong> liked your post <span className="text-ig-text-2">&ldquo;{notif.post?.title}&rdquo;</span></>;
+      case 'comment': return <><strong>{notif.sender?.name}</strong> commented on your post <span className="text-ig-text-2">&ldquo;{notif.post?.title}&rdquo;</span></>;
       case 'follow': return <><strong>{notif.sender?.name}</strong> started following you</>;
       default: return '';
     }
@@ -72,7 +72,7 @@ export default function Notifications() {
             Activity On Your Posts
           </h3>
           <p className="text-sm text-ig-text-2">
-            When someone likes or comments on your posts, you'll see it here.
+            When someone likes or comments on your posts, you will see it here.
           </p>
         </div>
       ) : (

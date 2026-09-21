@@ -120,7 +120,7 @@ export default function PostDetail() {
       <div className="text-center py-16">
         <span className="text-5xl block mb-4">😕</span>
         <h3 className="text-base font-semibold text-ig-text dark:text-ig-text-light">
-          Sorry, this page isn't available
+          Sorry, this page is not available
         </h3>
         <Link to="/dashboard" className="text-ig-primary hover:text-ag-primary-hover mt-2 inline-block text-sm font-semibold">
           Go back to feed
@@ -161,7 +161,7 @@ export default function PostDetail() {
           const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/live\/)([a-zA-Z0-9_-]{11})/);
           if (m) videoId = m[1];
         }
-        
+
         // Handle TikTok/Instagram directly via iframe or a link if they are saved as youtube_video type but with non-youtube URLs
         const urlToParse = post.youtubeUrl || post.fileUrl || '';
         if (urlToParse.includes('tiktok.com') || urlToParse.includes('instagram.com')) {
@@ -330,11 +330,11 @@ export default function PostDetail() {
             {comments.map((comment, idx) => (
               <div key={comment._id || idx} className="flex gap-2">
                 <Link to={`/dashboard/profile/${comment.author?._id}`}>
-                  <img 
-                    src={comment.author?.avatar || `https://ui-avatars.com/api/?name=${comment.author?.name}`} 
+                  <img
+                    src={comment.author?.avatar || `https://ui-avatars.com/api/?name=${comment.author?.name}`}
                     onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${comment.author?.name}&background=1e3a5f&color=fbbf24`; }}
-                    alt="" 
-                    className="w-8 h-8 rounded-full object-cover flex-shrink-0 shadow-sm" 
+                    alt=""
+                    className="w-8 h-8 rounded-full object-cover flex-shrink-0 shadow-sm"
                   />
                 </Link>
                 <div className="flex-1">
@@ -353,11 +353,11 @@ export default function PostDetail() {
 
           {/* Comment Input */}
           <form onSubmit={handleComment} className="flex items-center gap-2 mt-3 pt-3" style={{ borderTop: '1px solid var(--glass-border)' }}>
-            <img 
-              src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.name}`} 
+            <img
+              src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.name}`}
               onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${user?.name}&background=1e3a5f&color=fbbf24`; }}
-              alt="" 
-              className="w-8 h-8 rounded-full object-cover flex-shrink-0 shadow-sm" 
+              alt=""
+              className="w-8 h-8 rounded-full object-cover flex-shrink-0 shadow-sm"
             />
             <input
               type="text"

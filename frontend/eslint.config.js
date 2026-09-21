@@ -30,6 +30,10 @@ export default [
       ...reactHooks.configs.recommended.rules,
       "react/prop-types": "off",
       "react/jsx-no-target-blank": "off",
+      // New strict rule from eslint-plugin-react-hooks v7: flags standard
+      // data-fetching effects (setState after async calls). Kept as a warning
+      // to avoid risky refactors of working code.
+      "react-hooks/set-state-in-effect": "warn",
       "react-refresh/only-export-components": [
         "warn",
         { allowConstantExport: true },

@@ -217,10 +217,10 @@ export default memo(function PostCard({ post, onUpdate }) {
         if (ytMatch) {
           const videoId = ytMatch[1];
           const plMatch = url.match(/[?&]list=([a-zA-Z0-9_-]+)/);
-          const embedSrc = plMatch 
+          const embedSrc = plMatch
             ? `https://www.youtube-nocookie.com/embed/${videoId}?list=${plMatch[1]}&rel=0`
             : `https://www.youtube-nocookie.com/embed/${videoId}?rel=0`;
-          
+
           return (
             <div className="w-full">
               <div className="aspect-video w-full">
@@ -236,10 +236,10 @@ export default memo(function PostCard({ post, onUpdate }) {
           return (
             <div className="w-full">
               <div className="flex justify-center bg-black w-full">
-                <iframe 
-                  src={`https://www.tiktok.com/embed/v2/${tiktokId}`} 
-                  className="w-full h-[700px] border-none" 
-                  title={post.title} allowFullScreen allow="encrypted-media;" 
+                <iframe
+                  src={`https://www.tiktok.com/embed/v2/${tiktokId}`}
+                  className="w-full h-[700px] border-none"
+                  title={post.title} allowFullScreen allow="encrypted-media;"
                 />
               </div>
             </div>
@@ -251,10 +251,10 @@ export default memo(function PostCard({ post, onUpdate }) {
           return (
             <div className="w-full">
               <div className="flex justify-center bg-white dark:bg-black p-4 w-full">
-                <iframe 
-                  src={`${url.replace(/\/?$/, '')}/embed`} 
-                  className="w-full h-[480px] border border-ig-separator rounded-lg" 
-                  frameBorder="0" scrolling="no" allowTransparency allowFullScreen 
+                <iframe
+                  src={`${url.replace(/\/?$/, '')}/embed`}
+                  className="w-full h-[480px] border border-ig-separator rounded-lg"
+                  frameBorder="0" scrolling="no" allowFullScreen
                 />
               </div>
             </div>
@@ -271,7 +271,7 @@ export default memo(function PostCard({ post, onUpdate }) {
 
   return (
     <div className="relative overflow-hidden mb-2 xl:mb-6 rounded-none xl:rounded-[32px] xl:shadow-[6px_6px_14px_var(--neu-shadow-dark),-6px_-6px_14px_var(--neu-shadow-light)] bg-[var(--neu-bg)] border-none transition-all">
-      
+
       {/* Header */}
       <div className="px-5 py-3 flex items-center justify-between">
         <Link to={`/dashboard/profile/${post.author?._id}`} className="flex items-center gap-3 group">
@@ -301,8 +301,8 @@ export default memo(function PostCard({ post, onUpdate }) {
             </button>
             {showMenu && (
               <div className="absolute right-0 top-full mt-1 w-40 rounded-[16px] bg-[var(--glass-bg)] backdrop-blur-md shadow-[4px_4px_10px_var(--neu-shadow-dark),-4px_-4px_10px_var(--neu-shadow-light)] border border-[rgba(255,255,255,0.1)] z-50 overflow-hidden">
-                <button 
-                  onClick={() => { setShowMenu(false); setConfirmDelete(true); }} 
+                <button
+                  onClick={() => { setShowMenu(false); setConfirmDelete(true); }}
                   className="w-full text-left px-4 py-3 text-red-500 hover:bg-red-500/10 text-sm font-bold flex items-center gap-2 transition-colors"
                 >
                   <HiTrash className="w-4 h-4" /> Delete Post
@@ -316,49 +316,49 @@ export default memo(function PostCard({ post, onUpdate }) {
       {/* Delete Confirmation Modal */}
       {confirmDelete && (
         <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm rounded-[40px]">
-           <div className="bg-[var(--glass-bg)] border border-[rgba(255,255,255,0.1)] p-6 rounded-3xl max-w-[280px] w-full text-center shadow-2xl mx-4">
-             <h3 className="text-lg font-bold text-ig-text dark:text-ig-text-light mb-2">Delete Post?</h3>
-             <p className="text-sm text-ig-text-2 mb-6">This action cannot be undone.</p>
-             <div className="flex gap-3 justify-center">
-                <button onClick={() => setConfirmDelete(false)} className="flex-1 py-2.5 rounded-full font-bold text-sm bg-gray-200 dark:bg-gray-700 text-ig-text dark:text-white hover:opacity-80 transition">Cancel</button>
-                <button onClick={handleDelete} className="flex-1 py-2.5 rounded-full font-bold text-sm bg-red-500 text-white shadow-[0_4px_14px_rgba(239,68,68,0.4)] hover:bg-red-600 transition">Delete</button>
-             </div>
-           </div>
+          <div className="bg-[var(--glass-bg)] border border-[rgba(255,255,255,0.1)] p-6 rounded-3xl max-w-[280px] w-full text-center shadow-2xl mx-4">
+            <h3 className="text-lg font-bold text-ig-text dark:text-ig-text-light mb-2">Delete Post?</h3>
+            <p className="text-sm text-ig-text-2 mb-6">This action cannot be undone.</p>
+            <div className="flex gap-3 justify-center">
+              <button onClick={() => setConfirmDelete(false)} className="flex-1 py-2.5 rounded-full font-bold text-sm bg-gray-200 dark:bg-gray-700 text-ig-text dark:text-white hover:opacity-80 transition">Cancel</button>
+              <button onClick={handleDelete} className="flex-1 py-2.5 rounded-full font-bold text-sm bg-red-500 text-white shadow-[0_4px_14px_rgba(239,68,68,0.4)] hover:bg-red-600 transition">Delete</button>
+            </div>
+          </div>
         </div>
       )}
 
       {/* Main Image / Content */}
       <div className="w-full mb-2">
         <div className="w-full overflow-hidden border-y border-[rgba(255,255,255,0.05)] bg-[var(--neu-bg)]">
-           {post.type === 'image' ? (
-             <img src={toDriveImageUrl(post.fileUrls?.[0] || post.fileUrl)} alt="Post" className="w-full h-80 object-cover" loading="lazy" />
-           ) : (
-             <div className="flex items-center justify-center bg-[var(--neu-bg)] w-full">
-                {renderContent()}
-             </div>
-           )}
+          {post.type === 'image' ? (
+            <img src={toDriveImageUrl(post.fileUrls?.[0] || post.fileUrl)} alt="Post" className="w-full h-80 object-cover" loading="lazy" />
+          ) : (
+            <div className="flex items-center justify-center bg-[var(--neu-bg)] w-full">
+              {renderContent()}
+            </div>
+          )}
         </div>
       </div>
 
       {/* Action Bar */}
       <div className="px-5 py-3 flex justify-between items-center">
-         <div className="flex items-center gap-6">
-            <button onClick={handleLike} className={`flex items-center gap-2 font-semibold text-base transition hover:opacity-80 ${liked ? 'text-red-500' : 'text-ig-text dark:text-ig-text-light'}`}>
-               <span className="text-xl">{liked ? '❤️' : '🤍'}</span> {likeCount}
-            </button>
-            <button onClick={() => setShowComments(!showComments)} className="flex items-center gap-2 font-semibold text-base text-ig-text dark:text-ig-text-light hover:opacity-80 transition">
-               <span className="text-xl">💬</span> {comments.length}
-            </button>
-         </div>
-         <div className="flex items-center gap-5">
-            <button onClick={handleBookmark} className={`transition hover:opacity-80 ${bookmarked ? 'text-ig-text dark:text-ig-text-light' : 'text-ig-text dark:text-ig-text-light'}`}>
-              {bookmarked ? (
-                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"></path></svg>
-              ) : (
-                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>
-              )}
-            </button>
-         </div>
+        <div className="flex items-center gap-6">
+          <button onClick={handleLike} className={`flex items-center gap-2 font-semibold text-base transition hover:opacity-80 ${liked ? 'text-red-500' : 'text-ig-text dark:text-ig-text-light'}`}>
+            <span className="text-xl">{liked ? '❤️' : '🤍'}</span> {likeCount}
+          </button>
+          <button onClick={() => setShowComments(!showComments)} className="flex items-center gap-2 font-semibold text-base text-ig-text dark:text-ig-text-light hover:opacity-80 transition">
+            <span className="text-xl">💬</span> {comments.length}
+          </button>
+        </div>
+        <div className="flex items-center gap-5">
+          <button onClick={handleBookmark} className={`transition hover:opacity-80 ${bookmarked ? 'text-ig-text dark:text-ig-text-light' : 'text-ig-text dark:text-ig-text-light'}`}>
+            {bookmarked ? (
+              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"></path></svg>
+            ) : (
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Description & Timestamp */}
@@ -375,7 +375,7 @@ export default memo(function PostCard({ post, onUpdate }) {
       {(post.type === 'youtube_video' || post.type === 'youtube_playlist' || post.type === 'video_link') && (post.youtubeUrl || post.fileUrl) && (
         <div className="px-5 pb-3">
           <a href={post.youtubeUrl || post.fileUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs font-bold text-ig-primary hover:text-ig-primary-dark transition-colors bg-ig-primary/10 px-3 py-1.5 rounded-full">
-            <HiDownload className="w-4 h-4" /> 
+            <HiDownload className="w-4 h-4" />
             {(post.youtubeUrl || post.fileUrl).includes('tiktok.com') ? 'Watch on TikTok' : (post.youtubeUrl || post.fileUrl).includes('instagram.com') ? 'Watch on Instagram' : 'Watch on YouTube'}
           </a>
         </div>

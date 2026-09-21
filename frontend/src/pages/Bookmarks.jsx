@@ -25,7 +25,7 @@ export default function Bookmarks() {
         <h1 className="text-xl font-semibold text-ig-text dark:text-ig-text-light">
           Saved
         </h1>
-        <span className="text-xs text-ig-text-2">Only you can see what you've saved</span>
+        <span className="text-xs text-ig-text-2">Only you can see your saved posts</span>
       </div>
 
       <div className="space-y-4">
@@ -41,7 +41,7 @@ export default function Bookmarks() {
               Save
             </h3>
             <p className="text-sm text-ig-text-2 max-w-[300px] mx-auto">
-              Save posts that you want to see again. No one is notified, and only you can see what you've saved.
+              Save posts that you want to see again. No one is notified, and only you can see your saved posts.
             </p>
           </div>
         ) : (

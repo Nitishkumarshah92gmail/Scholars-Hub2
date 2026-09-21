@@ -59,7 +59,7 @@ export default function ForgotPassword() {
               Trouble logging in?
             </h2>
             <p className="text-xs text-ig-text-2 mt-2 leading-relaxed">
-              Enter your email address and we'll send you a link to reset your password.
+              Enter your email address and we will send you a link to reset your password.
             </p>
           </div>
 

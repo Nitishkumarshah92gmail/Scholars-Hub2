@@ -4,26 +4,26 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   build: {
-    // Use default esbuild for minification (much faster and less memory-intensive for Render free tier)
     minify: 'esbuild',
-    // Target modern browsers for smaller output
     target: 'es2020',
-    // Enable CSS code splitting
     cssCodeSplit: true,
-    // Reduce chunk size warning limit
-    chunkSizeWarningLimit: 500,
+    cssMinify: true,
+    assetsInlineLimit: 4096,
+    chunkSizeWarningLimit: 600,
     rollupOptions: {
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom', 'react-router-dom'],
           ui: ['react-icons', 'react-hot-toast'],
           supabase: ['@supabase/supabase-js'],
-          // pdf-lib and pdfjs-dist are now a separate chunk only loaded when PdfTools page is visited
+          compression: ['browser-image-compression'],
           pdf: ['pdf-lib', 'pdfjs-dist'],
         },
+        chunkFileNames: 'assets/[name]-[hash].js',
+        entryFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]',
       },
     },
-    // Generate source maps only in dev
     sourcemap: false,
   },
   server: {

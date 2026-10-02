@@ -1,11 +1,12 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { supabase, isSupabaseConfigured, warmSupabaseConnection } from '../lib/supabase';
 import { resolveApiBase, warmApiConnection } from '../lib/apiBase';
+import { Capacitor } from '@capacitor/core';
+import { Browser } from '@capacitor/browser';
+import { App as CapApp } from '@capacitor/app';
 
 const AuthContext = createContext(null);
 
-// The last profile we successfully loaded, kept so a reload/refresh can render
-// the signed-in UI instantly instead of waiting on the network.
 const PROFILE_CACHE_KEY = 'sh_profile_cache_v1';
 const PROFILE_TIMEOUT_MS = 10000;
 
@@ -22,7 +23,7 @@ function writeCachedProfile(profile) {
   try {
     if (profile) localStorage.setItem(PROFILE_CACHE_KEY, JSON.stringify(profile));
   } catch {
-    /* storage full/disabled — not fatal */
+    /* storage full/disabled */
   }
 }
 
@@ -34,56 +35,59 @@ function clearCachedProfile() {
   }
 }
 
-// Build a minimal user object from a Supabase session (used for instant render
-// and as a fallback when the backend is unreachable).
 function buildUserFromSession(supabaseUser) {
   if (!supabaseUser) return null;
   const meta = supabaseUser.user_metadata || {};
   return {
     _id: supabaseUser.id,
-    name: meta.name || meta.full_name || 'User',
-    email: supabaseUser.email || '',
-    avatar:
-      meta.avatar ||
-      meta.avatar_url ||
-      `https://ui-avatars.com/api/?name=${encodeURIComponent(meta.name || 'User')}&background=1e3a5f&color=fbbf24&size=200`,
-    bio: meta.bio || '',
+    name: meta.name || meta.full_name || supabaseUser.email?.split('@')[0] || 'User',
+    email: supabaseUser.email,
     school: meta.school || '',
     subjects: meta.subjects || [],
-    followers: [],
-    following: [],
-    bookmarks: [],
-    createdAt: supabaseUser.created_at,
+    avatar:
+      meta.avatar_url ||
+      meta.avatar ||
+      `https://ui-avatars.com/api/?name=${encodeURIComponent(
+        meta.name || supabaseUser.email || 'User'
+      )}&background=1e3a5f&color=fbbf24&size=200`,
+    bio: meta.bio || '',
+    isShell: true,
   };
 }
 
-// Pulls a human-readable OAuth failure out of the URL (Supabase appends
-// #error_description=... when a provider sign-in fails) and cleans the URL.
 function consumeAuthErrorFromUrl() {
   if (typeof window === 'undefined') return null;
+
   try {
-    const hash = (window.location.hash || '').replace(/^#/, '');
-    const search = (window.location.search || '').replace(/^\?/, '');
-    const params = new URLSearchParams(hash.includes('error') ? hash : search);
-    const description = params.get('error_description') || params.get('error');
-    if (!description) return null;
-    window.history.replaceState(null, '', window.location.pathname);
-    return description.replace(/\+/g, ' ');
+    const hash = window.location.hash ? window.location.hash.substring(1) : '';
+    const search = window.location.search ? window.location.search.substring(1) : '';
+    const params = new URLSearchParams(hash || search);
+
+    const error = params.get('error');
+    const errorDescription = params.get('error_description');
+
+    if (!error && !errorDescription) return null;
+
+    if (window.history && window.history.replaceState) {
+      const cleanUrl = window.location.pathname;
+      window.history.replaceState(null, '', cleanUrl);
+    }
+
+    if (errorDescription) {
+      return decodeURIComponent(errorDescription.replace(/\+/g, ' '));
+    }
+    return error || 'Authentication failed.';
   } catch {
     return null;
   }
 }
 
 export function AuthProvider({ children }) {
-  // Instant paint: if we cached a profile from a previous visit, use it right away.
-  // The session check below confirms it (and clears it if it is no longer valid).
   const [user, setUser] = useState(() => readCachedProfile());
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(() => !readCachedProfile());
   const [authError, setAuthError] = useState(null);
 
-  // Fetch the full profile from the backend with a REAL timeout (the previous
-  // version only claimed to have one), falling back to the session user.
   const fetchProfile = async (accessToken, supabaseUser = null) => {
     try {
       const apiUrl = await resolveApiBase();
@@ -100,7 +104,6 @@ export function AuthProvider({ children }) {
           writeCachedProfile(profile);
           return profile;
         }
-        // Non-ok response (e.g. 503 when backend Supabase isn't configured)
         console.warn(`Backend /auth/me returned ${res.status}, using session fallback`);
       } catch (fetchErr) {
         console.warn('Backend /auth/me unavailable, using session fallback:', fetchErr.message);
@@ -111,8 +114,6 @@ export function AuthProvider({ children }) {
       console.error('Failed to fetch profile:', err);
     }
 
-    // Fallback: construct user from Supabase session if backend is unreachable.
-    // Never overwrite richer cached data for the same user with this minimal object.
     if (supabaseUser) {
       const fallback = buildUserFromSession(supabaseUser);
       setUser((prev) => (prev && prev._id === fallback._id ? prev : fallback));
@@ -121,31 +122,25 @@ export function AuthProvider({ children }) {
     return null;
   };
 
-
   useEffect(() => {
-    // Warm DNS/TLS for Supabase + Google so sign-in feels instant, and for the
-    // API host so the first data request doesn't pay the connection cost.
     warmSupabaseConnection();
     warmApiConnection();
 
-    // Surface any OAuth error Supabase appended to the URL instead of silently
-    // dumping the user on the login page.
     const urlError = consumeAuthErrorFromUrl();
     if (urlError) setAuthError(urlError);
 
     let cancelled = false;
 
-    // 1) Resolve the stored session — a LOCAL read, so it is fast. This tells us
-    //    whether the user is signed in; the UI is never blocked on the network.
+    // 1) Read local session
     supabase.auth
       .getSession()
       .then(({ data: { session: s } }) => {
         if (cancelled) return;
         setSession(s);
         if (s?.access_token) {
-          if (!readCachedProfile()) setUser(buildUserFromSession(s.user)); // instant shell
-          setLoading(false);                                              // render immediately
-          fetchProfile(s.access_token, s.user);                           // hydrate in background
+          if (!readCachedProfile()) setUser(buildUserFromSession(s.user));
+          setLoading(false);
+          fetchProfile(s.access_token, s.user);
         } else {
           clearCachedProfile();
           setUser(null);
@@ -156,16 +151,13 @@ export function AuthProvider({ children }) {
         if (!cancelled) setLoading(false);
       });
 
-    // 2) React to later auth events (OAuth redirect, sign-out, token refresh).
+    // 2) Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, s) => {
         if (cancelled) return;
         setSession(s);
 
-        if (event === 'PASSWORD_RECOVERY') {
-          // User clicked the password reset link — let ResetPassword handle it
-          return;
-        }
+        if (event === 'PASSWORD_RECOVERY') return;
 
         if (event === 'SIGNED_OUT') {
           clearCachedProfile();
@@ -175,15 +167,12 @@ export function AuthProvider({ children }) {
         }
 
         if (event === 'SIGNED_IN' && s?.access_token) {
-          // Show the user immediately, then fetch the full profile after a short
-          // delay (the backend creates the profile row right after sign-up).
           setUser((prev) => (prev && prev._id === s.user?.id ? prev : buildUserFromSession(s.user)));
           setLoading(false);
           setTimeout(() => { if (!cancelled) fetchProfile(s.access_token, s.user); }, 400);
           return;
         }
 
-        // Session appeared without a SIGNED_IN event (e.g. OAuth hash parsed late)
         if (s?.access_token) {
           setUser((prev) => (prev && prev._id === s.user?.id ? prev : buildUserFromSession(s.user)));
           setLoading(false);
@@ -191,12 +180,72 @@ export function AuthProvider({ children }) {
       }
     );
 
+    // 3) Listen for native deep links (OAuth callback on Android)
+    let appUrlListener = null;
+    if (Capacitor.isNativePlatform()) {
+      CapApp.addListener('appUrlOpen', async ({ url }) => {
+        try {
+          await Browser.close();
+        } catch {
+          /* ignore */
+        }
+
+        if (!url) return;
+
+        try {
+          const hashIdx = url.indexOf('#');
+          const queryIdx = url.indexOf('?');
+          const fragment = hashIdx !== -1 ? url.substring(hashIdx + 1) : '';
+          const query = queryIdx !== -1 ? url.substring(queryIdx + 1) : '';
+          const hashParams = new URLSearchParams(fragment);
+          const queryParams = new URLSearchParams(query);
+
+          const accessToken = hashParams.get('access_token') || queryParams.get('access_token');
+          const refreshToken = hashParams.get('refresh_token') || queryParams.get('refresh_token');
+          const code = queryParams.get('code') || hashParams.get('code');
+          const errorDesc = hashParams.get('error_description') || queryParams.get('error_description');
+
+          if (errorDesc) {
+            setAuthError(decodeURIComponent(errorDesc.replace(/\+/g, ' ')));
+            return;
+          }
+
+          if (accessToken && refreshToken) {
+            const { data, error: setErr } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken,
+            });
+            if (!setErr && data?.session) {
+              setSession(data.session);
+              setUser(buildUserFromSession(data.session.user));
+              setLoading(false);
+              fetchProfile(data.session.access_token, data.session.user);
+            }
+          } else if (code) {
+            const { data, error: codeErr } = await supabase.auth.exchangeCodeForSession(code);
+            if (!codeErr && data?.session) {
+              setSession(data.session);
+              setUser(buildUserFromSession(data.session.user));
+              setLoading(false);
+              fetchProfile(data.session.access_token, data.session.user);
+            }
+          }
+        } catch (deepErr) {
+          console.error('[OAuth DeepLink Error]', deepErr);
+        }
+      }).then((l) => {
+        appUrlListener = l;
+      });
+    }
+
     return () => {
       cancelled = true;
       subscription.unsubscribe();
+      if (appUrlListener) {
+        appUrlListener.remove();
+      }
     };
   }, []);
-
 
   const loginUser = async (email, password) => {
     if (!isSupabaseConfigured) {
@@ -212,7 +261,6 @@ export function AuthProvider({ children }) {
         password,
       }));
     } catch (networkErr) {
-      // Network-level failure (e.g. wrong Supabase URL, no internet)
       console.error('Login network error:', networkErr);
       throw new Error(
         'Unable to connect to authentication server. Please check your internet connection and try again.'
@@ -221,9 +269,6 @@ export function AuthProvider({ children }) {
 
     if (error) throw error;
     setSession(data.session);
-
-    // Show the user immediately, then load the full profile in the background so
-    // the login button never waits on the backend.
     setUser(buildUserFromSession(data.user));
     setLoading(false);
     fetchProfile(data.session.access_token, data.user);
@@ -245,17 +290,14 @@ export function AuthProvider({ children }) {
     });
     if (error) throw error;
 
-    // If email confirmation is disabled, we get a session immediately
     if (data.session) {
       setSession(data.session);
       setUser(buildUserFromSession(data.user));
       setLoading(false);
-      // Give the backend profile trigger a moment, then hydrate (non-blocking).
       setTimeout(() => { fetchProfile(data.session.access_token, data.user); }, 800);
       return data.user;
     }
 
-    // If email confirmation is enabled, return null (user needs to verify email)
     return null;
   };
 
@@ -273,13 +315,26 @@ export function AuthProvider({ children }) {
         'Supabase is not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables.'
       );
     }
+
+    const isNative = Capacitor.isNativePlatform();
+    // On native app, request custom scheme redirect so Android routes back into app.
+    // On web browser, use /auth-callback.
+    const redirectTo = isNative
+      ? 'scholarshub://auth-callback'
+      : `${window.location.origin}/auth-callback`;
+
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: window.location.origin,
+        redirectTo,
+        skipBrowserRedirect: isNative,
       },
     });
     if (error) throw error;
+
+    if (isNative && data?.url) {
+      await Browser.open({ url: data.url, windowName: '_self' });
+    }
     return data;
   };
 

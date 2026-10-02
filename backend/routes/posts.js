@@ -2,6 +2,7 @@ const express = require('express');
 const supabase = require('../config/supabase');
 const auth = require('../middleware/auth');
 const { transformPost } = require('../utils/transforms');
+const { sendPushToUser } = require('../services/pushNotifications');
 
 const router = express.Router();
 
@@ -412,6 +413,19 @@ router.post('/:id/like', auth, async (req, res) => {
           type: 'like',
           post_id: postId,
         });
+
+        // Push notification — fire-and-forget (never blocks or throws)
+        const { data: liker } = await supabase
+          .from('profiles')
+          .select('name')
+          .eq('id', userId)
+          .maybeSingle();
+        sendPushToUser({
+          userId: post.author_id,
+          title: '👍 New Like',
+          body: `${liker?.name || 'Someone'} liked your post.`,
+          data: { type: 'like', postId: String(postId) },
+        }).catch((err) => console.error('[push/like]', err.message));
       }
     }
 
@@ -473,6 +487,19 @@ router.post('/:id/comment', auth, async (req, res) => {
         type: 'comment',
         post_id: postId,
       });
+
+      // Push notification — fire-and-forget (never blocks or throws)
+      const { data: commenter } = await supabase
+        .from('profiles')
+        .select('name')
+        .eq('id', req.user.id)
+        .maybeSingle();
+      sendPushToUser({
+        userId: post.author_id,
+        title: '💬 New Comment',
+        body: `${commenter?.name || 'Someone'} commented on your post.`,
+        data: { type: 'comment', postId: String(postId) },
+      }).catch((err) => console.error('[push/comment]', err.message));
     }
 
     res.status(201).json({

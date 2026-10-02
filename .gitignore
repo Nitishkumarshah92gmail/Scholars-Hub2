@@ -1,9 +1,24 @@
 node_modules/
 .env
+.env*.local
 uploads/
 service-account.json
 dist/
 .DS_Store
 *.log
 .vercel
-.env*.local
+
+# Capacitor Android build artifacts
+studyshare-app/android/.gradle/
+studyshare-app/android/app/build/
+studyshare-app/android/build/
+studyshare-app/android/capacitor-cordova-android-plugins/build/
+studyshare-app/android/capacitor-app/build/
+studyshare-app/android/capacitor-push-notifications/build/
+studyshare-app/android/capacitor-splash-screen/build/
+studyshare-app/android/capacitor-status-bar/build/
+studyshare-app/android/local.properties
+studyshare-app/www/
+*.apk
+*.jks
+*.keystore

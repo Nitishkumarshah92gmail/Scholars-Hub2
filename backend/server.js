@@ -18,11 +18,30 @@ app.use(compression());
 // Trust the reverse proxy (Render Load Balancer) so rate limiter gets the real client IP
 app.set('trust proxy', 1);
 
-// CORS: allow requests from frontend
+// CORS: explicit allowlist — covers the live site, local dev, and the Android
+// Capacitor WebView (which sends Origin: https://localhost or capacitor://localhost
+// depending on the androidScheme setting in capacitor.config.ts).
+const ALLOWED_ORIGINS = [
+  // Production website domain(s) — add your custom domain here too if you have one
+  process.env.FRONTEND_ORIGIN        || 'https://scholars-hub2-1.onrender.com',
+  process.env.FRONTEND_ORIGIN_ALT    || 'https://scholarshub.qd.je',
+  // Android Capacitor WebView origins (both schemes are used depending on config)
+  'https://localhost',
+  'capacitor://localhost',
+  // Local development
+  'http://localhost:3000',
+  'http://localhost:5173',
+];
+
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow any origin for now to fix potential domain mismatch on Render
-    callback(null, true);
+    // Allow server-to-server requests (no origin header) and any allowlisted origin
+    if (!origin || ALLOWED_ORIGINS.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.warn(`[CORS] Blocked origin: ${origin}`);
+      callback(new Error(`CORS policy: origin '${origin}' is not allowed.`));
+    }
   },
   credentials: true,
 }));

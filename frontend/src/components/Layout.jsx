@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import logoImg from '../assets/logo.png';
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { Capacitor } from '@capacitor/core';
+import usePushNotifications from '../hooks/usePushNotifications';
 
 
 import {
@@ -43,6 +44,9 @@ export default function Layout() {
   const navigate = useNavigate();
   const [unreadCount, setUnreadCount] = useState(0);
   const [unreadMessagesCount, setUnreadMessagesCount] = useState(0);
+
+  // Register device for push notifications (Android APK only — no-op in browser)
+  usePushNotifications(user?._id);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [totalUsers, setTotalUsers] = useState(0);
 
@@ -65,13 +69,16 @@ export default function Layout() {
         .catch(() => { });
     }, 300000);
 
+    let localListener = null;
     const requestPushPermissions = async () => {
       if (Capacitor.isNativePlatform()) {
         try {
-          const { display } = await LocalNotifications.requestPermissions();
-          console.log('LocalNotifications permission:', display);
+          if (typeof LocalNotifications?.requestPermissions === 'function') {
+            const { display } = await LocalNotifications.requestPermissions();
+            console.log('LocalNotifications permission:', display);
+          }
         } catch (err) {
-          console.error('Failed to request notification permissions', err);
+          console.warn('Failed to request notification permissions', err);
         }
       }
     };
@@ -79,19 +86,25 @@ export default function Layout() {
 
     // Listen for notification taps
     if (Capacitor.isNativePlatform()) {
-      LocalNotifications.addListener('localNotificationActionPerformed', (notificationAction) => {
-        const data = notificationAction.notification.extra?.data;
-        if (data) {
-          navigate(data);
+      try {
+        if (typeof LocalNotifications?.addListener === 'function') {
+          LocalNotifications.addListener('localNotificationActionPerformed', (notificationAction) => {
+            const data = notificationAction?.notification?.extra?.data;
+            if (data) {
+              navigate(data);
+            }
+          }).then((l) => { localListener = l; }).catch(() => {});
         }
-      });
+      } catch (err) {
+        console.warn('LocalNotifications listener error', err);
+      }
     }
 
     return () => { 
       clearInterval(notifInterval); 
       clearInterval(usersInterval); 
-      if (Capacitor.isNativePlatform()) {
-        LocalNotifications.removeAllListeners();
+      if (localListener && typeof localListener.remove === 'function') {
+        localListener.remove().catch(() => {});
       }
     };
   }, [navigate]);
@@ -152,22 +165,24 @@ export default function Layout() {
                   // Trigger local push notification for Android
                   if (Capacitor.isNativePlatform()) {
                     try {
-                      LocalNotifications.schedule({
-                        notifications: [
-                          {
-                            title: `${sender.name} sent a message`,
-                            body: newMsg.content,
-                            id: Math.floor(Math.random() * 2147483647),
-                            schedule: { at: new Date(Date.now() + 100) }, // Trigger immediately
-                            actionTypeId: '',
-                            extra: {
-                              data: '/dashboard/messages'
+                      if (typeof LocalNotifications?.schedule === 'function') {
+                        LocalNotifications.schedule({
+                          notifications: [
+                            {
+                              title: `${sender.name} sent a message`,
+                              body: newMsg.content,
+                              id: Math.floor(Math.random() * 2147483647),
+                              schedule: { at: new Date(Date.now() + 100) }, // Trigger immediately
+                              actionTypeId: '',
+                              extra: {
+                                data: '/dashboard/messages'
+                              }
                             }
-                          }
-                        ]
-                      });
+                          ]
+                        }).catch(() => {});
+                      }
                     } catch (err) {
-                      console.error('Failed to schedule local notification', err);
+                      console.warn('Failed to schedule local notification', err);
                     }
                   }
                }
@@ -460,13 +475,16 @@ export default function Layout() {
                 </div>
               </a>
 
-              <div style={{ borderTop: '1px solid var(--glass-border)', margin: '8px 0' }} />
-
-              {/* Get the App */}
-              <a href="/scholars-hub.apk" download className="flex items-center gap-3 px-3 py-2.5 rounded-ag-sm text-ag-primary font-bold w-full transition-colors hover:bg-white/5">
-                <HiDownload className="w-5 h-5" />
-                <span>Get the App</span>
-              </a>
+              {/* Get the App (shown on web only) */}
+              {!Capacitor.isNativePlatform() && (
+                <>
+                  <div style={{ borderTop: '1px solid var(--glass-border)', margin: '8px 0' }} />
+                  <a href="https://github.com/Nitishkumarshah92gmail/Scholars-Hub2/releases" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 px-3 py-2.5 rounded-ag-sm text-ag-primary font-bold w-full transition-colors hover:bg-white/5">
+                    <HiDownload className="w-5 h-5" />
+                    <span>Get the App</span>
+                  </a>
+                </>
+              )}
 
             </div>
 
@@ -524,15 +542,17 @@ export default function Layout() {
         {/* Desktop Top Right Actions */}
         {!location.pathname.includes('/dashboard/messages') && (
           <div className="hidden md:flex fixed top-8 right-10 z-40 items-center gap-4">
-          <a href="/scholars-hub.apk" download className="flex items-center gap-2 px-4 py-2 text-white text-sm font-bold rounded-ag-pill transition-all"
-            style={{
-              background: 'linear-gradient(135deg, #1a73e8 0%, #4285f4 100%)',
-              boxShadow: '4px 4px 10px var(--neu-shadow-dark), -4px -4px 10px var(--neu-shadow-light), inset 0 1px 0 rgba(255,255,255,0.25)',
-            }}
-          >
-            <HiDownload className="w-4 h-4" />
-            Get App
-          </a>
+          {!Capacitor.isNativePlatform() && (
+            <a href="https://github.com/Nitishkumarshah92gmail/Scholars-Hub2/releases" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 text-white text-sm font-bold rounded-ag-pill transition-all"
+              style={{
+                background: 'linear-gradient(135deg, #1a73e8 0%, #4285f4 100%)',
+                boxShadow: '4px 4px 10px var(--neu-shadow-dark), -4px -4px 10px var(--neu-shadow-light), inset 0 1px 0 rgba(255,255,255,0.25)',
+              }}
+            >
+              <HiDownload className="w-4 h-4" />
+              Get App
+            </a>
+          )}
           <button onClick={toggleTheme} className="p-2.5 rounded-full text-ig-text dark:text-ig-text-light transition-all"
             style={{ boxShadow: '3px 3px 8px var(--neu-shadow-dark), -3px -3px 8px var(--neu-shadow-light)' }}
           >

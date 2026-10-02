@@ -19,20 +19,6 @@ export default function Login() {
   const [registerPassword, setRegisterPassword] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
 
-  // Force desktop layout on mobile by changing the viewport meta tag
-  useEffect(() => {
-    const meta = document.querySelector('meta[name="viewport"]');
-    const originalContent = meta ? meta.getAttribute('content') : null;
-    if (meta) {
-      meta.setAttribute('content', 'width=768');
-    }
-    return () => {
-      if (meta && originalContent) {
-        meta.setAttribute('content', originalContent);
-      }
-    };
-  }, []);
-
   const { loginUser, registerUser, loginWithGoogle, authError, clearAuthError } = useAuth();
   const navigate = useNavigate();
 
@@ -104,6 +90,10 @@ export default function Login() {
             <button type="submit" disabled={isRegistering}>
               {isRegistering ? 'Signing Up...' : 'Sign Up'}
             </button>
+            <p className="mobile-toggle-text">
+              Already have an account?{' '}
+              <button type="button" className="mobile-toggle-link" onClick={() => setIsRightPanelActive(false)}>Sign In</button>
+            </p>
           </form>
         </div>
 
@@ -122,6 +112,10 @@ export default function Login() {
             <button type="submit" disabled={isLoggingIn}>
               {isLoggingIn ? 'Signing In...' : 'Sign In'}
             </button>
+            <p className="mobile-toggle-text">
+              Don't have an account?{' '}
+              <button type="button" className="mobile-toggle-link" onClick={() => setIsRightPanelActive(true)}>Sign Up</button>
+            </p>
           </form>
         </div>
 

@@ -2,20 +2,17 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
-import { lazy, Suspense, useEffect } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
+import { Capacitor } from '@capacitor/core';
 
 // The canonical origin is the single origin that owns the auth session.
-// Supabase keeps the session in localStorage, which is scoped PER-ORIGIN, so a
-// session created here is invisible on any other origin the app is served from
-// (e.g. the scholarshub.qd.je custom domain). To avoid "logged in on one URL,
-// logged out on the other", every non-canonical origin is hard-forwarded to the
-// canonical one (preserving path, query and hash), which then decides:
-//   signed in  ->  /dashboard
-//   signed out ->  /login
+// Supabase keeps the session in localStorage, which is scoped PER-ORIGIN.
 const CANONICAL_ORIGIN = (import.meta.env.VITE_CANONICAL_ORIGIN || 'https://scholars-hub2-1.onrender.com').replace(/\/+$/, '');
 
 function isDevOrigin(origin) {
   try {
+    if (typeof window !== 'undefined' && Capacitor.isNativePlatform()) return true;
+    if (origin.startsWith('capacitor://') || origin.startsWith('ionic://')) return true;
     const url = new URL(origin);
     return url.hostname === 'localhost' || url.hostname === '127.0.0.1' || url.hostname.endsWith('.localhost');
   } catch {
@@ -24,12 +21,65 @@ function isDevOrigin(origin) {
 }
 
 /**
+ * When OAuth redirects to the website in a mobile browser (Chrome on Android),
+ * automatically relay the authentication credentials into the native Scholars Hub app.
+ */
+function MobileOAuthRelay() {
+  const [tokens, setTokens] = useState(null);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || Capacitor.isNativePlatform()) return;
+
+    const hash = window.location.hash || '';
+    const search = window.location.search || '';
+    const hasTokens = hash.includes('access_token=') || search.includes('code=');
+
+    if (hasTokens) {
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      if (isMobile) {
+        const fullParams = hash || search;
+        const appDeepLink = `scholarshub://auth-callback${fullParams}`;
+        setTokens({ deepLink: appDeepLink });
+        try {
+          window.location.href = appDeepLink;
+        } catch {
+          /* ignore */
+        }
+      }
+    }
+  }, []);
+
+  if (!tokens) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#0F172A] text-white p-6 text-center">
+      <div className="w-20 h-20 rounded-2xl bg-white/10 p-3 mb-6 shadow-xl flex items-center justify-center backdrop-blur-md">
+        <img src="/logo.png" alt="Scholars Hub" className="w-full h-full object-contain" />
+      </div>
+      <h1 className="text-2xl font-bold mb-2">Welcome to Scholars Hub</h1>
+      <p className="text-gray-300 text-sm mb-6">Returning you to the Scholars Hub App...</p>
+      <a
+        href={tokens.deepLink}
+        className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold text-base shadow-xl hover:from-blue-500 hover:to-indigo-500 transition-all active:scale-95"
+      >
+        Open Scholars Hub App
+      </a>
+      <p className="text-xs text-gray-500 mt-6">
+        If the app did not open automatically, tap the button above.
+      </p>
+    </div>
+  );
+}
+
+/**
  * Wraps the route tree. If the app is running on an origin other than the
- * canonical one (and not in local development), bounces the browser to the
- * exact same URL on the canonical origin and shows a spinner while navigating.
+ * canonical one (and not in local development or native Capacitor app),
+ * bounces the browser to the exact same URL on the canonical origin.
  */
 function CanonicalGate({ children }) {
+  const isNative = typeof window !== 'undefined' && Capacitor.isNativePlatform();
   const foreignOrigin =
+    !isNative &&
     typeof window !== 'undefined' &&
     window.location.origin !== CANONICAL_ORIGIN &&
     !isDevOrigin(window.location.origin);
@@ -46,10 +96,9 @@ function CanonicalGate({ children }) {
   return children;
 }
 
-// Named importers so the same functions can be reused for idle prefetching.
-// NOTE: PdfTools is deliberately NOT prefetched — it pulls the 400KB+ pdf chunk.
 const importLayout = () => import('./components/Layout');
 const importLogin = () => import('./pages/Login');
+const importAuthCallback = () => import('./pages/AuthCallback');
 const importForgotPassword = () => import('./pages/ForgotPassword');
 const importResetPassword = () => import('./pages/ResetPassword');
 const importFeed = () => import('./pages/Feed');
@@ -64,6 +113,7 @@ const importChat = () => import('./pages/Chat');
 
 const Layout = lazy(importLayout);
 const Login = lazy(importLogin);
+const AuthCallback = lazy(importAuthCallback);
 const ForgotPassword = lazy(importForgotPassword);
 const ResetPassword = lazy(importResetPassword);
 const Feed = lazy(importFeed);
@@ -76,9 +126,6 @@ const Bookmarks = lazy(importBookmarks);
 const PdfTools = lazy(importPdfTools);
 const Chat = lazy(importChat);
 
-// Warm the route chunks during browser idle time so tab switches (Home -> Messages
-// -> Search ...) render instantly instead of showing the Suspense spinner while
-// the chunk downloads. Runs once, ~after first paint, in priority order.
 const IDLE_PREFETCH = [
   importLayout,
   importFeed,
@@ -98,7 +145,6 @@ function useIdlePrefetch() {
     const warm = () => {
       if (cancelled) return;
       for (const load of IDLE_PREFETCH) {
-        // Fire sequentially-ish; each import() is cached by the browser after first call
         try { load(); } catch { /* non-fatal */ }
       }
     };
@@ -137,13 +183,10 @@ function RootRoute() {
   const { user, loading } = useAuth();
   if (loading) return <PageSpinner />;
 
-  // If user is authenticated, go to dashboard
   if (user) {
     return <Navigate to="/dashboard" replace />;
   }
 
-  // If not authenticated, go to login but PRESERVE the hash and search params.
-  // This is critical for OAuth redirects (like Google Login) which put the access_token in the hash.
   return (
     <Navigate
       to={{
@@ -164,6 +207,7 @@ function AppRoutes() {
       <Routes>
         <Route path="/" element={<RootRoute />} />
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+        <Route path="/auth-callback" element={<AuthCallback />} />
         <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/dashboard" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
@@ -188,6 +232,7 @@ export default function App() {
     <ThemeProvider>
       <AuthProvider>
         <Router>
+          <MobileOAuthRelay />
           <Toaster
             position="top-right"
             toastOptions={{

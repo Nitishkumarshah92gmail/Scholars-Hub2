@@ -1,0 +1,29 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// android/app/build.gradle PATCH
+//
+// After running `npx cap add android`, open android/app/build.gradle.
+//
+// 1. The file already has `apply plugin: 'com.android.application'` near the top.
+//    Make sure it also has the Kotlin plugin (Capacitor adds this automatically):
+//       apply plugin: 'kotlin-android'
+//
+// 2. ADD these two lines near the BOTTOM of the file (after the dependencies block):
+//       apply plugin: 'com.google.gms.google-services'
+//
+// The full bottom section should look like:
+// ─────────────────────────────────────────────────────────────────────────────
+//
+// dependencies {
+//     implementation fileTree(include: ['*.jar'], dir: 'libs')
+//     implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
+//     implementation project(':capacitor-android')
+//     implementation "com.google.firebase:firebase-messaging:23.4.1"   // ← ADD (enables FCM)
+//     // ... other Capacitor plugin dependencies added by cap sync ...
+// }
+//
+// apply plugin: 'com.google.gms.google-services'   // ← ADD THIS (must be last)
+//
+// ─────────────────────────────────────────────────────────────────────────────
+// NOTE: `npx cap sync` may auto-add the Firebase Messaging dependency for
+// @capacitor/push-notifications. If it does, you don't need to add it manually.
+// Always check what cap sync produces before adding duplicates.

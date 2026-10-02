@@ -2,6 +2,7 @@ const express = require('express');
 const supabase = require('../config/supabase');
 const auth = require('../middleware/auth');
 const { transformUser, transformPost } = require('../utils/transforms');
+const { sendPushToUser } = require('../services/pushNotifications');
 
 const router = express.Router();
 
@@ -366,6 +367,19 @@ router.post('/:id/follow', auth, async (req, res) => {
         sender_id: currentId,
         type: 'follow',
       });
+
+      // Push notification — fire-and-forget (never blocks or throws)
+      const { data: follower } = await supabase
+        .from('profiles')
+        .select('name')
+        .eq('id', currentId)
+        .maybeSingle();
+      sendPushToUser({
+        userId: targetId,
+        title: '👥 New Follower',
+        body: `${follower?.name || 'Someone'} started following you.`,
+        data: { type: 'follow', userId: String(currentId) },
+      }).catch((err) => console.error('[push/follow]', err.message));
     }
 
     // Get updated counts

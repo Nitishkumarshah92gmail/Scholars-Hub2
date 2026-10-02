@@ -1,44 +1,29 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+const supabaseUrl =
+  import.meta.env.VITE_SUPABASE_URL ||
+  'https://ictsktzsyuttqqoocvny.supabase.co';
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error(
-    'Missing Supabase environment variables: VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY must be set.'
-  );
-}
-
-// Use a placeholder URL to prevent createClient from throwing on empty strings.
-// The app will show an error state but won't crash on a white screen.
-const safeUrl = supabaseUrl || 'https://placeholder.supabase.co';
-const safeKey = supabaseAnonKey || 'placeholder-key';
-
-// Explicit auth options = sessions survive reloads and OAuth redirects are parsed
-// automatically from the URL. (These values match supabase-js defaults, but being
-// explicit keeps behaviour stable across library upgrades.)
-export const supabase = createClient(safeUrl, safeKey, {
-  auth: {
-    persistSession: true,      // keep the session in localStorage across reloads
-    autoRefreshToken: true,    // refresh the access token before it expires
-    detectSessionInUrl: true,  // finish the Google OAuth redirect automatically
-  },
-});
+const supabaseAnonKey =
+  import.meta.env.VITE_SUPABASE_ANON_KEY ||
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImljdHNrdHpzeXV0dHFxb29jdm55Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc1NzMzNTMsImV4cCI6MjEwMzE0OTM1M30.6oEIfLZmfNVojAdBR8j0WxV_ZjtMgLfY4UoncgUayQI';
 
 export const isSupabaseConfigured = !!(supabaseUrl && supabaseAnonKey);
 
-/**
- * Warm up DNS/TLS for the hosts involved in sign-in so the Google redirect
- * does not pay the full connection cost when the user taps the button.
- * Call this as early as possible (app boot + Login page mount).
- */
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+  },
+});
+
 export function warmSupabaseConnection() {
   if (typeof document === 'undefined') return;
 
   const targets = [
-    // Supabase auth API + realtime gateway
     supabaseUrl ? new URL(supabaseUrl).origin : null,
-    'https://accounts.google.com', // OAuth consent screen
+    'https://accounts.google.com',
     'https://apis.google.com',
   ].filter(Boolean);
 
@@ -51,8 +36,7 @@ export function warmSupabaseConnection() {
       link.crossOrigin = 'anonymous';
       document.head.appendChild(link);
     } catch {
-      /* invalid URL — skip */
+      /* ignore */
     }
   }
 }
-

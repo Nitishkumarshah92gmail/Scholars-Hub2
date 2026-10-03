@@ -52,7 +52,7 @@
 
 /* ── Smooth scroll for entire page ── */
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
 }
 
 @layer base {
@@ -74,6 +74,8 @@ html {
     position: fixed;
     inset: 0;
     z-index: -1;
+    transform: translateZ(0);
+    will-change: transform;
     background:
       radial-gradient(ellipse at 20% 20%, rgba(26, 115, 232, 0.06) 0%, transparent 50%),
       radial-gradient(ellipse at 80% 80%, rgba(130, 100, 255, 0.04) 0%, transparent 50%),
@@ -117,8 +119,7 @@ html {
   input,
   select,
   textarea {
-    transition: all var(--ag-transition-fast);
-    will-change: transform, opacity;
+    transition: color var(--ag-transition-fast), background-color var(--ag-transition-fast), border-color var(--ag-transition-fast), opacity var(--ag-transition-fast), box-shadow var(--ag-transition-fast);
   }
 
   /* Better focus styles */
@@ -263,17 +264,16 @@ html {
      ═══════════════════════════════════════════════ */
   .card {
     background: var(--glass-bg-strong);
-    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
     border: 1px solid var(--glass-border);
     border-radius: 24px;
     box-shadow:
       6px 6px 14px var(--neu-shadow-dark),
       -6px -6px 14px var(--neu-shadow-light),
       inset 0 1px 0 var(--glass-highlight);
-    transition: all var(--ag-transition);
+    transition: transform var(--ag-transition), box-shadow var(--ag-transition);
     position: relative;
     overflow: hidden;
+    contain: paint;
   }
 
   /* Specular top-edge highlight */
@@ -625,4 +625,10 @@ button,
 a,
 [role="button"] {
   touch-action: manipulation;
+}
+
+/* High performance scroll container: skips layout/paint for offscreen posts */
+.post-card-container {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 450px;
 }

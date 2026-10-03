@@ -57,7 +57,7 @@ export default function ScholarsBar() {
             </button>
           )}
         </div>
-        <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-1 scroll-smooth">
+        <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-1">
           {scholars.map((scholar) => (
             <button
               key={scholar._id}

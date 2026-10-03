@@ -81,7 +81,7 @@ export default function Feed() {
           </div>
         ) : (
           posts.map((post, idx) => (
-            <div key={post._id} ref={idx === posts.length - 1 ? lastPostRef : null}>
+            <div key={post._id} ref={idx === posts.length - 1 ? lastPostRef : null} className="post-card-container">
               <PostCard post={post} />
             </div>
           ))

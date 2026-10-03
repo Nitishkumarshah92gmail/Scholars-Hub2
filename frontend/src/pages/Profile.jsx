@@ -330,7 +330,9 @@ export default function Profile() {
               </div>
             ) : (
               posts.map((post) => (
-                <PostCard key={post._id} post={post} />
+                <div key={post._id} className="post-card-container">
+                  <PostCard post={post} />
+                </div>
               ))
             )}
           </div>

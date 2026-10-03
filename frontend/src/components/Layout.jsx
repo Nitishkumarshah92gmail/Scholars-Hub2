@@ -522,12 +522,12 @@ export default function Layout() {
       {/* Main Content - Liquid Glass Window */}
       <main className={`flex-1 md:ml-[260px] xl:ml-[340px] md:h-[calc(100vh-32px)] overflow-x-hidden md:pb-0 md:pt-0 relative md:rounded-[32px] ${location.pathname.includes('/dashboard/messages') ? 'pb-0 pt-0 overflow-hidden' : 'pb-16 pt-14 overflow-y-auto'}`}
         style={{
-          background: 'var(--glass-bg)',
-          backdropFilter: `blur(16px) saturate(160%)`,
-          WebkitBackdropFilter: `blur(16px) saturate(160%)`,
-          border: 'none',
+          background: "var(--neu-bg)",
+          border: "none",
           borderRadius: undefined,
-          boxShadow: 'none',
+          boxShadow: "none",
+          WebkitOverflowScrolling: "touch",
+          overscrollBehaviorY: "contain",
         }}
       >
         {/* Desktop: glass border + shadow only on md+ */}

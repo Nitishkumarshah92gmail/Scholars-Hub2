@@ -132,7 +132,7 @@ export default memo(function PostCard({ post, onUpdate }) {
     switch (post.type) {
       case 'pdf':
         return (
-          <div className="p-6 flex items-center justify-between w-full" style={{ background: 'var(--glass-bg)', backdropFilter: 'blur(12px)' }}>
+          <div className="p-6 flex items-center justify-between w-full" style={{ background: 'var(--neu-bg-2)' }}>
             <div className="flex items-center gap-3">
               <span className="text-4xl">📄</span>
               <div>
@@ -187,7 +187,7 @@ export default memo(function PostCard({ post, onUpdate }) {
       }
       case 'drive_link':
         return (
-          <div className="p-6 flex items-center justify-between w-full" style={{ background: 'var(--glass-bg)', backdropFilter: 'blur(12px)' }}>
+          <div className="p-6 flex items-center justify-between w-full" style={{ background: 'var(--neu-bg-2)' }}>
             <div className="flex items-center gap-3">
               <span className="text-4xl">🔗</span>
               <div>
@@ -270,7 +270,7 @@ export default memo(function PostCard({ post, onUpdate }) {
   };
 
   return (
-    <div className="relative overflow-hidden mb-2 xl:mb-6 rounded-none xl:rounded-[32px] xl:shadow-[6px_6px_14px_var(--neu-shadow-dark),-6px_-6px_14px_var(--neu-shadow-light)] bg-[var(--neu-bg)] border-none transition-all">
+    <div className="relative overflow-hidden mb-2 xl:mb-6 rounded-none xl:rounded-[32px] xl:shadow-[6px_6px_14px_var(--neu-shadow-dark),-6px_-6px_14px_var(--neu-shadow-light)] bg-[var(--neu-bg)] border-none">
 
       {/* Header */}
       <div className="px-5 py-3 flex items-center justify-between">

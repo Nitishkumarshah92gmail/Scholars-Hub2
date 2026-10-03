@@ -45,7 +45,11 @@ export default function Bookmarks() {
             </p>
           </div>
         ) : (
-          posts.map((post) => <PostCard key={post._id} post={post} />)
+          posts.map((post) => (
+            <div key={post._id} className="post-card-container">
+              <PostCard post={post} />
+            </div>
+          ))
         )}
       </div>
     </div>

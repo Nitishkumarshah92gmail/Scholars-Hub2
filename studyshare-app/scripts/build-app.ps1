@@ -92,7 +92,8 @@ try {
 Write-Host ""
 Write-Host "======================================================" -ForegroundColor Green
 Write-Host "  SUCCESS! Android project is ready." -ForegroundColor Green
-Write-Host "  Next: Open Android Studio with `npx cap open android`" -ForegroundColor Green
+Write-Host "  Next: Open Android Studio with 'npx cap open android'" -ForegroundColor Green
 Write-Host "  Then: Build > Generate Signed Bundle / APK > APK" -ForegroundColor Green
 Write-Host "======================================================" -ForegroundColor Green
 Write-Host ""
+

@@ -31,7 +31,7 @@ function toDriveImageUrl(url) {
   ];
   for (const pattern of patterns) {
     const match = url.match(pattern);
-    if (match) return `https://lh3.googleusercontent.com/d/${match[1]}=s1600`;
+    if (match) return `https://lh3.googleusercontent.com/d/${match[1]}=s800`;
   }
   return url;
 }
@@ -418,3 +418,4 @@ export default memo(function PostCard({ post, onUpdate }) {
     </div>
   );
 })
+

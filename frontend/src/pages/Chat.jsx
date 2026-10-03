@@ -659,7 +659,7 @@ export default function Chat() {
                       className="w-24 h-24 rounded-full object-cover mb-4 shadow-sm"
                     />
                     <p className="font-bold text-xl text-black dark:text-white">{activeConversation.otherUser.name}</p>
-                    <p className="text-gray-500 mb-5 text-sm">StudyShare</p>
+                    <p className="text-gray-500 mb-5 text-sm">Scholars Hub</p>
                     <button className="bg-gray-100 dark:bg-gray-800 text-black dark:text-white px-5 py-2 rounded-lg font-semibold text-[15px] hover:bg-gray-200 dark:hover:bg-gray-700 transition">View Profile</button>
                   </div>
                 ) : (
@@ -817,3 +817,4 @@ export default function Chat() {
     </div>
   );
 }
+

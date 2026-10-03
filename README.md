@@ -1,4 +1,4 @@
-# StudyShare 📚 — Student Social Media Platform
+# Scholars Hub 📚 — Student Social Media Platform
 
 A modern social media platform for students to share study materials including PDFs, images, YouTube videos, and playlists.
 
@@ -23,7 +23,7 @@ A modern social media platform for students to share study materials including P
 
 ### 1. Clone / Navigate to project
 ```bash
-cd studyshare
+cd Scholars Hub
 ```
 
 ### 2. Install all dependencies
@@ -108,7 +108,7 @@ Vercel will:
 ## Project Structure
 
 ```
-studyshare/
+Scholars Hub/
 ├── backend/
 │   ├── config/
 │   │   └── cloudinary.js       # Cloudinary + Multer config
@@ -217,3 +217,4 @@ studyshare/
 | GET    | /api/users/:id/bookmarks   | Get bookmarked posts |
 | GET    | /api/notifications         | Get notifications    |
 | PUT    | /api/notifications/read    | Mark all read        |
+

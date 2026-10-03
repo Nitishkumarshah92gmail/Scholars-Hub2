@@ -1,7 +1,7 @@
 {
-  "name": "studyshare-backend",
+  "name": "Scholars Hub-backend",
   "version": "1.0.0",
-  "description": "StudyShare - Student Social Media Platform Backend",
+  "description": "Scholars Hub - Student Social Media Platform Backend",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -24,3 +24,4 @@
     "nodemon": "^3.0.1"
   }
 }
+

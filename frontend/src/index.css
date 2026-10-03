@@ -213,14 +213,7 @@ html {
     transition: all var(--ag-transition-fast);
   }
 
-  .btn-outline:hover {
-    background: var(--glass-bg);
-    backdrop-filter: blur(12px);
-    box-shadow:
-      4px 4px 10px var(--neu-shadow-dark),
-      -4px -4px 10px var(--neu-shadow-light);
-    transform: translateY(-1px);
-  }
+  .btn-outline:hover { background: var(--glass-bg); box-shadow: 4px 4px 10px var(--neu-shadow-dark), -4px -4px 10px var(--neu-shadow-light); }
 
   .btn-outline:active {
     box-shadow:
@@ -329,13 +322,7 @@ html {
     transition: all var(--ag-transition-fast);
   }
 
-  .nav-link:hover {
-    background: var(--glass-bg);
-    backdrop-filter: blur(8px);
-    box-shadow:
-      3px 3px 8px var(--neu-shadow-dark),
-      -3px -3px 8px var(--neu-shadow-light);
-  }
+  .nav-link:hover { background: var(--glass-bg); box-shadow: 3px 3px 8px var(--neu-shadow-dark), -3px -3px 8px var(--neu-shadow-light); transform: translateY(-1px); }
 
   .nav-link.active {
     @apply font-bold;
@@ -632,3 +619,4 @@ a,
   content-visibility: auto;
   contain-intrinsic-size: 0 450px;
 }
+

@@ -12,3 +12,6 @@ dist/
 *.jks
 *.keystore
 
+# Local Chat Backups
+chat_backup.txt
+chat_history.md

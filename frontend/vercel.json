@@ -16,7 +16,7 @@
             ]
         },
         {
-            "source": "/(logo.png|campus-bg.jpg|profile-bg.jpg|favicon.ico|scholars-hub.apk)",
+            "source": "/(logo.png|campus-bg.jpg|favicon.ico)",
             "headers": [
                 {
                     "key": "Cache-Control",

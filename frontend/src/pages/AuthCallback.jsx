@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
-import logoImg from '../assets/logo.png';
 
 export default function AuthCallback() {
   const navigate = useNavigate();
-  const [status, setStatus] = useState('Verifying credentials...');
 
   useEffect(() => {
     let cancelled = false;
@@ -29,20 +27,21 @@ export default function AuthCallback() {
 
       const fallbackTimer = setTimeout(() => {
         if (!cancelled) {
-          setStatus('Redirecting to dashboard...');
           navigate('/dashboard', { replace: true });
         }
       }, 2500);
 
-      return null;
+      return () => {
+        subscription.unsubscribe();
         clearTimeout(fallbackTimer);
       };
     };
 
     processAuth();
-    return null;
+    return () => {
+      cancelled = true;
+    };
+  }, [navigate]);
 
   return null;
 }
-
-

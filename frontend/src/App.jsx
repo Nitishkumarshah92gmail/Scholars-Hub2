@@ -181,13 +181,14 @@ export default function App() {
           <Toaster
             position="top-right"
             toastOptions={{
+                className: 'text-ig-text dark:text-ig-text-light !bg-transparent !text-inherit',
               duration: 3000,
               style: {
                 borderRadius: '999px',
                 background: 'var(--glass-bg-strong)',
                 backdropFilter: 'blur(24px) saturate(200%)',
                 WebkitBackdropFilter: 'blur(24px) saturate(200%)',
-                color: '#E8EAED',
+                
                 border: '1px solid var(--glass-border)',
                 fontSize: '14px',
                 padding: '10px 16px',
@@ -215,6 +216,9 @@ export default function App() {
     </ThemeProvider>
   );
 }
+
+
+
 
 
 

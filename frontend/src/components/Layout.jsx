@@ -60,15 +60,15 @@ export default function Layout() {
     return () => window.removeEventListener('beforeinstallprompt', handler);
   }, []);
 
-  const handleInstallClick = async () => {
-    if (!deferredPrompt) {
-      toast.error('App installation is not supported or already installed.');
-      return;
-    }
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') {
-      setDeferredPrompt(null);
+    const handleInstallClick = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        setDeferredPrompt(null);
+      }
+    } else {
+      toast.success('You can install the app from your browser menu ("Add to Home Screen" or Install icon in URL bar).', { duration: 5000 });
     }
   };
 
@@ -264,10 +264,7 @@ export default function Layout() {
               </a>
 
               {/* Desktop Install App Button */}
-              {deferredPrompt && (
-                <button 
-                  onClick={handleInstallClick} 
-                  className="group relative flex items-center gap-3 w-full p-3 my-2 rounded-[16px] overflow-hidden transition-all duration-300 hover:scale-[1.02] active:scale-95"
+              <button onClick={handleInstallClick} className="group relative flex items-center gap-3 w-full p-3 my-2 rounded-[16px] overflow-hidden transition-all duration-300 hover:scale-[1.02] active:scale-95"
                   style={{
                     background: 'linear-gradient(135deg, #0ea5e9, #3b82f6, #6366f1)',
                     boxShadow: '4px 4px 10px var(--neu-shadow-dark), -4px -4px 10px var(--neu-shadow-light), inset 0 1px 0 rgba(255,255,255,0.25)',
@@ -277,11 +274,7 @@ export default function Layout() {
                   <HiDownload className="w-6 h-6 text-white relative z-10 drop-shadow-md" />
                   <div className="hidden xl:flex flex-col relative z-10 text-left">
                     <span className="text-white font-bold text-sm tracking-wide drop-shadow-md">Get the App</span>
-                    <span className="text-white/80 text-[10px] font-medium uppercase tracking-wider">Install Shortcut</span>
-                  </div>
-                  <div className="absolute inset-0 -translate-x-full group-hover:animate-[slideInRight_1s_ease-in-out] bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12" />
-                </button>
-              )}
+                    <span className="text-white/80 text-[10px] font-medium uppercase tracking-wider">Install Shortcut</span></div><div className="absolute inset-0 -translate-x-full group-hover:animate-[slideInRight_1s_ease-in-out] bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12" /></button>
           </div>
         </div>
 
@@ -366,11 +359,8 @@ export default function Layout() {
             </span>
           </h1>
                       <div className="flex items-center gap-1">
-              {deferredPrompt && (
-                <button onClick={handleInstallClick} className="p-2 mr-1 rounded-full text-blue-500 bg-blue-500/10 hover:bg-blue-500/20 transition-colors" title="Install App">
-                  <HiDownload className="w-5 h-5" />
-                </button>
-              )}
+              <button onClick={handleInstallClick} className="p-2 mr-1 rounded-full text-blue-500 bg-blue-500/10 hover:bg-blue-500/20 transition-colors" title="Install App">
+                  <HiDownload className="w-5 h-5" /></button>}
             <button onClick={toggleTheme} className="p-2 rounded-full text-ig-text dark:text-ig-text-light opacity-70 hover:opacity-100 transition-colors"
               style={{ boxShadow: 'none' }}
               onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '2px 2px 5px var(--neu-shadow-dark), -2px -2px 5px var(--neu-shadow-light)'; }}
@@ -465,15 +455,9 @@ export default function Layout() {
               </a>
 
                             {/* Get the App (PWA Install) */}
-              {deferredPrompt && (
-                <>
-                  <div style={{ borderTop: '1px solid var(--glass-border)', margin: '8px 0' }} />
-                  <button onClick={() => { handleInstallClick(); setMobileMenuOpen(false); }} className="flex items-center gap-3 px-3 py-2.5 rounded-ag-sm text-ag-primary font-bold w-full transition-colors hover:bg-white/5">
+              <><div style={{ borderTop: "1px solid var(--glass-border)", margin: "8px 0" }} /><button onClick={() => { handleInstallClick(); setMobileMenuOpen(false); }} className="flex items-center gap-3 px-3 py-2.5 rounded-ag-sm text-ag-primary font-bold w-full transition-colors hover:bg-white/5">
                     <HiDownload className="w-5 h-5" />
-                    <span>Get the App</span>
-                  </button>
-                </>
-              )}
+                    <span>Get the App</span></button></>
 
             </div>
 
@@ -620,6 +604,10 @@ export default function Layout() {
     </div>
   );
 }
+
+
+
+
 
 
 

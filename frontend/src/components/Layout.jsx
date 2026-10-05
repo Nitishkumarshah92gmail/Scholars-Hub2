@@ -341,7 +341,12 @@ export default function Layout() {
               Scholars<span className="gradient-text">Hub</span>
             </span>
           </h1>
-          <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-1">
+              {deferredPrompt && (
+                <button onClick={handleInstallClick} className="p-2 mr-1 rounded-full text-blue-500 bg-blue-500/10 hover:bg-blue-500/20 transition-colors" title="Install App">
+                  <HiDownload className="w-5 h-5" />
+                </button>
+              )}
             <button onClick={toggleTheme} className="p-2 rounded-full text-ig-text dark:text-ig-text-light opacity-70 hover:opacity-100 transition-colors"
               style={{ boxShadow: 'none' }}
               onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '2px 2px 5px var(--neu-shadow-dark), -2px -2px 5px var(--neu-shadow-light)'; }}
@@ -591,6 +596,7 @@ export default function Layout() {
     </div>
   );
 }
+
 
 
 

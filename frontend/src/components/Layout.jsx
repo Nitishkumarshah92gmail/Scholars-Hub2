@@ -42,9 +42,49 @@ export default function Layout() {
   const location = useLocation();
   const [unreadCount, setUnreadCount] = useState(0);
   const [unreadMessagesCount, setUnreadMessagesCount] = useState(0);
-
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [totalUsers, setTotalUsers] = useState(0);
+  const [deferredPrompt, setDeferredPrompt] = useState(window.deferredPrompt || null);
+
+  useEffect(() => {
+    if (window.deferredPrompt) {
+      setDeferredPrompt(window.deferredPrompt);
+    }
+    const handler = (e) => {
+      e.preventDefault();
+      window.deferredPrompt = e;
+      setDeferredPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const handleInstallClick = async () => {
+    let prompt = deferredPrompt || window.deferredPrompt;
+    if (prompt) {
+      try {
+        prompt.prompt();
+        const { outcome } = await prompt.userChoice;
+        if (outcome === 'accepted') {
+          toast.success('App installed! Check your home screen.', { duration: 3000, icon: '?' });
+        }
+      } catch (err) {
+        toast('Refreshing to prepare install...', { duration: 1500, icon: '??' });
+        setTimeout(() => window.location.reload(), 1000);
+        return;
+      }
+      setDeferredPrompt(null);
+      window.deferredPrompt = null;
+    } else {
+      const isInstalled = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+      if (isInstalled) {
+        toast.success('Scholars Hub is already installed!', { duration: 3000, icon: '??' });
+      } else {
+        toast('Preparing install prompt...', { duration: 1500, icon: '??' });
+        setTimeout(() => window.location.reload(), 1000);
+      }
+    }
+  };
     useEffect(() => {
     getNotifications()
       .then((res) => setUnreadCount(res.data.unreadCount))
@@ -321,6 +361,9 @@ export default function Layout() {
             </span>
           </h1>
                       <div className="flex items-center gap-1">
+              <button onClick={handleInstallClick} className="p-2 mr-1 rounded-full text-blue-500 bg-blue-500/10 hover:bg-blue-500/20 transition-colors" title="Install App">
+                <HiDownload className="w-5 h-5" />
+              </button>
             <button onClick={toggleTheme} className="p-2 rounded-full text-ig-text dark:text-ig-text-light opacity-70 hover:opacity-100 transition-colors"
               style={{ boxShadow: 'none' }}
               onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '2px 2px 5px var(--neu-shadow-dark), -2px -2px 5px var(--neu-shadow-light)'; }}
@@ -413,6 +456,15 @@ export default function Layout() {
                   <span className="text-white/80 text-[10px] font-medium uppercase">Free Courses</span>
                 </div>
               </a>
+
+              {/* Get the App (PWA Install) */}
+              <>
+                <div style={{ borderTop: '1px solid var(--glass-border)', margin: '8px 0' }} />
+                <button onClick={() => { handleInstallClick(); setMobileMenuOpen(false); }} className="flex items-center gap-3 px-3 py-2.5 rounded-ag-sm text-ag-primary font-bold w-full transition-colors hover:bg-white/5">
+                  <HiDownload className="w-5 h-5" />
+                  <span>Get the App</span>
+                </button>
+              </>
 
             </div>
 
@@ -559,6 +611,7 @@ export default function Layout() {
     </div>
   );
 }
+
 
 
 

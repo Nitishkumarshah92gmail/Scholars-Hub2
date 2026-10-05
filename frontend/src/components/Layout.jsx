@@ -1,4 +1,4 @@
-import { Outlet, NavLink, useNavigate } from 'react-router-dom';
+import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useState, useEffect, lazy, Suspense } from 'react';
@@ -39,11 +39,13 @@ export default function Layout() {
   const { user, logoutUser } = useAuth();
   const { darkMode, toggleTheme } = useTheme();
   const navigate = useNavigate();
+  const location = useLocation();
   const [unreadCount, setUnreadCount] = useState(0);
   const [unreadMessagesCount, setUnreadMessagesCount] = useState(0);
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [totalUsers, setTotalUsers] = useState(0);
+  const isNativeApp = typeof window !== 'undefined' && Boolean(window.Capacitor?.isNativePlatform?.());
 
   useEffect(() => {
     getNotifications()
@@ -413,7 +415,7 @@ export default function Layout() {
               </a>
 
               {/* Get the App (shown on web only) */}
-              {!Capacitor.isNativePlatform() && (
+              {!isNativeApp && (
                 <>
                   <div style={{ borderTop: '1px solid var(--glass-border)', margin: '8px 0' }} />
                   <a href="https://github.com/Nitishkumarshah92gmail/Scholars-Hub2/releases" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 px-3 py-2.5 rounded-ag-sm text-ag-primary font-bold w-full transition-colors hover:bg-white/5">

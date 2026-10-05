@@ -283,18 +283,7 @@ export default function Layout() {
                 <div className="absolute inset-0 -translate-x-full group-hover:animate-[slideInRight_1s_ease-in-out] bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12" />
               </a>
 
-              {/* Desktop Install App Button */}
-              <button onClick={handleInstallClick} className="group relative flex items-center gap-3 w-full p-3 my-2 rounded-[16px] overflow-hidden transition-all duration-300 hover:scale-[1.02] active:scale-95"
-                  style={{
-                    background: 'linear-gradient(135deg, #0ea5e9, #3b82f6, #6366f1)',
-                    boxShadow: '4px 4px 10px var(--neu-shadow-dark), -4px -4px 10px var(--neu-shadow-light), inset 0 1px 0 rgba(255,255,255,0.25)',
-                  }}
-                >
-                  <div className="absolute inset-0 bg-black/10 backdrop-blur-[2px]" />
-                  <HiDownload className="w-6 h-6 text-white relative z-10 drop-shadow-md" />
-                  <div className="hidden xl:flex flex-col relative z-10 text-left">
-                    <span className="text-white font-bold text-sm tracking-wide drop-shadow-md">Get the App</span>
-                    <span className="text-white/80 text-[10px] font-medium uppercase tracking-wider">Install Shortcut</span></div><div className="absolute inset-0 -translate-x-full group-hover:animate-[slideInRight_1s_ease-in-out] bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12" /></button>
+              
           </div>
         </div>
 
@@ -624,6 +613,7 @@ export default function Layout() {
     </div>
   );
 }
+
 
 
 

@@ -45,11 +45,15 @@ export default function Layout() {
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [totalUsers, setTotalUsers] = useState(0);
-    const [deferredPrompt, setDeferredPrompt] = useState(null);
+      const [deferredPrompt, setDeferredPrompt] = useState(window.deferredPrompt || null);
 
   useEffect(() => {
+    if (window.deferredPrompt) {
+      setDeferredPrompt(window.deferredPrompt);
+    }
     const handler = (e) => {
       e.preventDefault();
+      window.deferredPrompt = e;
       setDeferredPrompt(e);
     };
     window.addEventListener('beforeinstallprompt', handler);
@@ -616,6 +620,7 @@ export default function Layout() {
     </div>
   );
 }
+
 
 
 

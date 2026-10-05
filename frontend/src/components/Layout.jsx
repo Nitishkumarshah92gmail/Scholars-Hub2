@@ -60,19 +60,39 @@ export default function Layout() {
     return () => window.removeEventListener('beforeinstallprompt', handler);
   }, []);
 
-    const handleInstallClick = async () => {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      if (outcome === 'accepted') {
+        const handleInstallClick = async () => {
+      // Try the React state first
+      let prompt = deferredPrompt || window.deferredPrompt;
+      if (prompt) {
+        try {
+          prompt.prompt();
+          const { outcome } = await prompt.userChoice;
+          if (outcome === 'accepted') {
+            toast.success('App installed! Check your desktop or home screen.', { duration: 3000, icon: '?' });
+          }
+        } catch (err) {
+          // prompt() was already called once - reload to get a fresh prompt
+          toast('Refreshing to prepare install...', { duration: 1500, icon: '??' });
+          setTimeout(() => window.location.reload(), 1000);
+          return;
+        }
+        // Always clear after use - prompt can only be used once
         setDeferredPrompt(null);
+        window.deferredPrompt = null;
+      } else {
+        // Check if already installed as standalone
+        const isInstalled = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+        if (isInstalled) {
+          toast.success('Scholars Hub is already installed on your device!', { duration: 3000, icon: '??' });
+        } else {
+          // Reload to get a fresh beforeinstallprompt event from Chrome
+          toast('Preparing install prompt...', { duration: 1500, icon: '??' });
+          setTimeout(() => window.location.reload(), 1000);
+        }
       }
-    } else {
-      toast.success('You can install the app from your browser menu ("Add to Home Screen" or Install icon in URL bar).', { duration: 5000 });
-    }
-  };
+    };
 
-  useEffect(() => {
+    useEffect(() => {
     getNotifications()
       .then((res) => setUnreadCount(res.data.unreadCount))
       .catch(() => { });
@@ -604,6 +624,7 @@ export default function Layout() {
     </div>
   );
 }
+
 
 
 

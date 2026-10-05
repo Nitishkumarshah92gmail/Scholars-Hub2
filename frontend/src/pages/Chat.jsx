@@ -2,11 +2,29 @@ import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
-import { format, isToday, isYesterday } from 'date-fns';
 import toast from 'react-hot-toast';
 import { HiOutlineChat, HiOutlineSearch, HiArrowLeft, HiDocumentText, HiX, HiPhotograph } from 'react-icons/hi';
 import { deleteFile, getPresignedUrl, uploadDirect } from '../api';
 import imageCompression from 'browser-image-compression';
+
+function formatShortDate(dateStr) {
+  if (!dateStr) return '';
+  return new Date(dateStr).toLocaleDateString([], { month: 'short', day: 'numeric' });
+}
+
+function formatMessageDate(date) {
+  const d = new Date(date);
+  const now = new Date();
+  const isToday = d.toDateString() === now.toDateString();
+  const yesterday = new Date(now);
+  yesterday.setDate(now.getDate() - 1);
+  const isYesterday = d.toDateString() === yesterday.toDateString();
+  const timeStr = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+
+  if (isToday) return `Today ${timeStr}`;
+  if (isYesterday) return `Yesterday ${timeStr}`;
+  return `${d.toLocaleDateString([], { month: 'short', day: 'numeric' })}, ${timeStr}`;
+}
 
 
 const UserAvatar = ({ src, name, size = 'w-10 h-10' }) => (
@@ -592,7 +610,7 @@ export default function Chat() {
                       <div className="flex justify-between items-baseline mb-0.5">
                         <p className="font-semibold text-sm text-ig-text dark:text-ig-text-light truncate">{convo.otherUser.name}</p>
                         <span className="text-[10px] text-ig-text-2 whitespace-nowrap ml-2">
-                          {format(new Date(convo.updatedAt), 'MMM d')}
+                          {formatShortDate(convo.updatedAt)}
                         </span>
                       </div>
                       <p className="text-xs text-ig-text-2 truncate">{convo.latestMessage}</p>
@@ -637,7 +655,7 @@ export default function Chat() {
                     />
                     <div className="flex flex-col min-w-0">
                       <h3 className="font-bold text-[15px] text-ig-text dark:text-ig-text-light leading-tight tracking-tight font-heading truncate">{activeConversation.otherUser.name}</h3>
-                      <p className="text-[12px] text-gray-500 font-medium truncate">Active {format(new Date(), 'h')}h ago</p>
+                      <p className="text-[12px] text-gray-500 font-medium truncate">Active recently</p>
                     </div>
                   </Link>
                 </div>
@@ -679,13 +697,7 @@ export default function Chat() {
                     }
 
                     if (showDate) {
-                      if (isToday(msgDate)) {
-                        dateText = 'Today ' + format(msgDate, 'h:mm a');
-                      } else if (isYesterday(msgDate)) {
-                        dateText = 'Yesterday ' + format(msgDate, 'h:mm a');
-                      } else {
-                        dateText = format(msgDate, 'MMM d, h:mm a');
-                      }
+                      dateText = formatMessageDate(msgDate);
                     }
 
                     const isMedia = msg.attachment_url && msg.content === ('Sent an attachment: ' + msg.attachment_name);

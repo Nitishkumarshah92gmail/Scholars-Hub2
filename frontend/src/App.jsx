@@ -2,87 +2,36 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
-import { lazy, Suspense, useEffect, useState } from 'react';
-import { Capacitor } from '@capacitor/core';
+import { lazy, Suspense, useEffect } from 'react';
 
-// The canonical origin is the single origin that owns the auth session.
-// Supabase keeps the session in localStorage, which is scoped PER-ORIGIN.
 const CANONICAL_ORIGIN = (import.meta.env.VITE_CANONICAL_ORIGIN || 'https://scholars-hub2-1.onrender.com').replace(/\/+$/, '');
 
-function isDevOrigin(origin) {
+function isAllowedOrigin(origin) {
   try {
-    if (typeof window !== 'undefined' && Capacitor.isNativePlatform()) return true;
-    if (origin.startsWith('capacitor://') || origin.startsWith('ionic://')) return true;
     const url = new URL(origin);
-    return url.hostname === 'localhost' || url.hostname === '127.0.0.1' || url.hostname.endsWith('.localhost');
+    const host = url.hostname;
+    return (
+      host === 'localhost' ||
+      host === '127.0.0.1' ||
+      host.endsWith('.localhost') ||
+      host.endsWith('.onrender.com') ||
+      host.endsWith('.qd.je') ||
+      host.endsWith('.vercel.app')
+    );
   } catch {
     return false;
   }
 }
 
 /**
- * When OAuth redirects to the website in a mobile browser (Chrome on Android),
- * automatically relay the authentication credentials into the native Scholars Hub app.
- */
-function MobileOAuthRelay() {
-  const [tokens, setTokens] = useState(null);
-
-  useEffect(() => {
-    if (typeof window === 'undefined' || Capacitor.isNativePlatform()) return;
-
-    const hash = window.location.hash || '';
-    const search = window.location.search || '';
-    const hasTokens = hash.includes('access_token=') || search.includes('code=');
-
-    if (hasTokens) {
-      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-      if (isMobile) {
-        const fullParams = hash || search;
-        const appDeepLink = `scholarshub://auth-callback${fullParams}`;
-        setTokens({ deepLink: appDeepLink });
-        try {
-          window.location.href = appDeepLink;
-        } catch {
-          /* ignore */
-        }
-      }
-    }
-  }, []);
-
-  if (!tokens) return null;
-
-  return (
-    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#0F172A] text-white p-6 text-center">
-      <div className="w-20 h-20 rounded-2xl bg-white/10 p-3 mb-6 shadow-xl flex items-center justify-center backdrop-blur-md">
-        <img src="/logo.png" alt="Scholars Hub" className="w-full h-full object-contain" />
-      </div>
-      <h1 className="text-2xl font-bold mb-2">Welcome to Scholars Hub</h1>
-      <p className="text-gray-300 text-sm mb-6">Returning you to the Scholars Hub App...</p>
-      <a
-        href={tokens.deepLink}
-        className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold text-base shadow-xl hover:from-blue-500 hover:to-indigo-500 transition-all active:scale-95"
-      >
-        Open Scholars Hub App
-      </a>
-      <p className="text-xs text-gray-500 mt-6">
-        If the app did not open automatically, tap the button above.
-      </p>
-    </div>
-  );
-}
-
-/**
- * Wraps the route tree. If the app is running on an origin other than the
- * canonical one (and not in local development or native Capacitor app),
- * bounces the browser to the exact same URL on the canonical origin.
+ * Wraps the route tree. If the app is accessed on an unverified domain,
+ * safely redirects to the canonical origin.
  */
 function CanonicalGate({ children }) {
-  const isNative = typeof window !== 'undefined' && Capacitor.isNativePlatform();
   const foreignOrigin =
-    !isNative &&
     typeof window !== 'undefined' &&
     window.location.origin !== CANONICAL_ORIGIN &&
-    !isDevOrigin(window.location.origin);
+    !isAllowedOrigin(window.location.origin);
 
   useEffect(() => {
     if (foreignOrigin) {
@@ -232,7 +181,6 @@ export default function App() {
     <ThemeProvider>
       <AuthProvider>
         <Router>
-          <MobileOAuthRelay />
           <Toaster
             position="top-right"
             toastOptions={{

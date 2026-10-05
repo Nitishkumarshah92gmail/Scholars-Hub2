@@ -1,9 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { supabase, isSupabaseConfigured, warmSupabaseConnection } from '../lib/supabase';
 import { resolveApiBase, warmApiConnection } from '../lib/apiBase';
-import { Capacitor } from '@capacitor/core';
-import { Browser } from '@capacitor/browser';
-import { App as CapApp } from '@capacitor/app';
 
 const AuthContext = createContext(null);
 
@@ -180,70 +177,9 @@ export function AuthProvider({ children }) {
       }
     );
 
-    // 3) Listen for native deep links (OAuth callback on Android)
-    let appUrlListener = null;
-    if (Capacitor.isNativePlatform()) {
-      CapApp.addListener('appUrlOpen', async ({ url }) => {
-        try {
-          await Browser.close();
-        } catch {
-          /* ignore */
-        }
-
-        if (!url) return;
-
-        try {
-          const hashIdx = url.indexOf('#');
-          const queryIdx = url.indexOf('?');
-          const fragment = hashIdx !== -1 ? url.substring(hashIdx + 1) : '';
-          const query = queryIdx !== -1 ? url.substring(queryIdx + 1) : '';
-          const hashParams = new URLSearchParams(fragment);
-          const queryParams = new URLSearchParams(query);
-
-          const accessToken = hashParams.get('access_token') || queryParams.get('access_token');
-          const refreshToken = hashParams.get('refresh_token') || queryParams.get('refresh_token');
-          const code = queryParams.get('code') || hashParams.get('code');
-          const errorDesc = hashParams.get('error_description') || queryParams.get('error_description');
-
-          if (errorDesc) {
-            setAuthError(decodeURIComponent(errorDesc.replace(/\+/g, ' ')));
-            return;
-          }
-
-          if (accessToken && refreshToken) {
-            const { data, error: setErr } = await supabase.auth.setSession({
-              access_token: accessToken,
-              refresh_token: refreshToken,
-            });
-            if (!setErr && data?.session) {
-              setSession(data.session);
-              setUser(buildUserFromSession(data.session.user));
-              setLoading(false);
-              fetchProfile(data.session.access_token, data.session.user);
-            }
-          } else if (code) {
-            const { data, error: codeErr } = await supabase.auth.exchangeCodeForSession(code);
-            if (!codeErr && data?.session) {
-              setSession(data.session);
-              setUser(buildUserFromSession(data.session.user));
-              setLoading(false);
-              fetchProfile(data.session.access_token, data.session.user);
-            }
-          }
-        } catch (deepErr) {
-          console.error('[OAuth DeepLink Error]', deepErr);
-        }
-      }).then((l) => {
-        appUrlListener = l;
-      });
-    }
-
     return () => {
       cancelled = true;
       subscription.unsubscribe();
-      if (appUrlListener) {
-        appUrlListener.remove();
-      }
     };
   }, []);
 
@@ -316,25 +252,13 @@ export function AuthProvider({ children }) {
       );
     }
 
-    const isNative = Capacitor.isNativePlatform();
-    // On native app, request custom scheme redirect so Android routes back into app.
-    // On web browser, use /auth-callback.
-    const redirectTo = isNative
-      ? 'scholarshub://auth-callback'
-      : `${window.location.origin}/auth-callback`;
-
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo,
-        skipBrowserRedirect: isNative,
+        redirectTo: `${window.location.origin}/auth-callback`,
       },
     });
     if (error) throw error;
-
-    if (isNative && data?.url) {
-      await Browser.open({ url: data.url, windowName: '_self' });
-    }
     return data;
   };
 

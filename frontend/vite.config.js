@@ -3,13 +3,18 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
+  esbuild: {
+    drop: ['console', 'debugger'],
+    legalComments: 'none',
+  },
   build: {
     minify: 'esbuild',
-    target: 'es2020',
+    target: 'es2022',
     cssCodeSplit: true,
     cssMinify: true,
     assetsInlineLimit: 4096,
     chunkSizeWarningLimit: 600,
+    reportCompressedSize: false,
     rollupOptions: {
       output: {
         manualChunks: {
@@ -17,7 +22,7 @@ export default defineConfig({
           ui: ['react-icons', 'react-hot-toast'],
           supabase: ['@supabase/supabase-js'],
           compression: ['browser-image-compression'],
-          pdf: ['pdf-lib', 'pdfjs-dist'],
+          pdf: ['pdf-lib'],
         },
         chunkFileNames: 'assets/[name]-[hash].js',
         entryFileNames: 'assets/[name]-[hash].js',

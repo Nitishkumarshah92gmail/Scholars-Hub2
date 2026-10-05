@@ -45,7 +45,28 @@ export default function Layout() {
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [totalUsers, setTotalUsers] = useState(0);
-  const isNativeApp = typeof window !== 'undefined' && Boolean(window.Capacitor?.isNativePlatform?.());
+    const [deferredPrompt, setDeferredPrompt] = useState(null);
+
+  useEffect(() => {
+    const handler = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) {
+      toast.error('App installation is not supported or already installed.');
+      return;
+    }
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setDeferredPrompt(null);
+    }
+  };
 
   useEffect(() => {
     getNotifications()
@@ -414,15 +435,16 @@ export default function Layout() {
                 </div>
               </a>
 
-              {/* Get the App (shown on web only) */}
-              {!isNativeApp && (
+                            {/* Get the App (PWA Install) */}
+              {deferredPrompt && (
                 <>
                   <div style={{ borderTop: '1px solid var(--glass-border)', margin: '8px 0' }} />
-                  <a href="https://github.com/Nitishkumarshah92gmail/Scholars-Hub2/releases" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 px-3 py-2.5 rounded-ag-sm text-ag-primary font-bold w-full transition-colors hover:bg-white/5">
+                  <button onClick={() => { handleInstallClick(); setMobileMenuOpen(false); }} className="flex items-center gap-3 px-3 py-2.5 rounded-ag-sm text-ag-primary font-bold w-full transition-colors hover:bg-white/5">
                     <HiDownload className="w-5 h-5" />
                     <span>Get the App</span>
-                  </a>
+                  </button>
                 </>
+              )}
               )}
 
             </div>
@@ -570,3 +592,6 @@ export default function Layout() {
     </div>
   );
 }
+
+
+

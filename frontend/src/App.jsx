@@ -13,10 +13,7 @@ function isAllowedOrigin(origin) {
     return (
       host === 'localhost' ||
       host === '127.0.0.1' ||
-      host.endsWith('.localhost') ||
-      host.endsWith('.onrender.com') ||
-      host.endsWith('.qd.je') ||
-      host.endsWith('.vercel.app')
+      host.endsWith('.localhost')
     );
   } catch {
     return false;
@@ -218,3 +215,6 @@ export default function App() {
     </ThemeProvider>
   );
 }
+
+
+

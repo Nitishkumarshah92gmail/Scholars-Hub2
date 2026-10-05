@@ -457,14 +457,11 @@ export default function Layout() {
       )}
 
       {/* Main Content - Liquid Glass Window */}
-      <main className={`flex-1 md:ml-[260px] xl:ml-[340px] md:h-[calc(100vh-32px)] overflow-x-hidden md:pb-0 md:pt-0 relative md:rounded-[32px] ${location.pathname.includes('/dashboard/messages') ? 'pb-0 pt-0 overflow-hidden' : 'pb-16 pt-14 overflow-y-auto'}`}
+      <main className={`flex-1 md:ml-[260px] xl:ml-[340px] relative md:rounded-[32px] ${location.pathname.includes('/dashboard/messages') ? 'h-[100dvh] pb-0 pt-0 overflow-hidden md:h-[calc(100vh-32px)]' : 'w-full min-h-screen pb-24 pt-16 md:py-0 md:h-[calc(100vh-32px)] md:overflow-y-auto md:overflow-x-hidden'}`}
         style={{
           background: "var(--neu-bg)",
           border: "none",
-          borderRadius: undefined,
           boxShadow: "none",
-          WebkitOverflowScrolling: "touch",
-          overscrollBehaviorY: "contain",
         }}
       >
         {/* Desktop: glass border + shadow only on md+ */}

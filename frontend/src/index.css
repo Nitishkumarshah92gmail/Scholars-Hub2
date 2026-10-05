@@ -601,10 +601,20 @@ html {
   }
 }
 
-/* ── Mobile Chrome Optimizations ── */
-body,
+/* ── Mobile Scrolling & Touch Optimizations ── */
 html {
+  scroll-behavior: auto;
   overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+body {
+  width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -614,9 +624,9 @@ a,
   touch-action: manipulation;
 }
 
-/* High performance scroll container: skips layout/paint for offscreen posts */
+/* Post card container */
 .post-card-container {
-  content-visibility: auto;
-  contain-intrinsic-size: 0 450px;
+  width: 100%;
 }
+
 

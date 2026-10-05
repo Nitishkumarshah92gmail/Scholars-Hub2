@@ -1,6 +1,5 @@
 import { useState, memo } from 'react';
 import { Link } from 'react-router-dom';
-import ParticleCanvas from './ParticleCanvas';
 import { useAuth } from '../context/AuthContext';
 import { likePost, commentPost, bookmarkPost, reportPost, deletePost } from '../api';
 import { useNavigate } from 'react-router-dom';

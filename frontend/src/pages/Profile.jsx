@@ -8,7 +8,6 @@ import PostSkeleton from '../components/PostSkeleton';
 import { SUBJECTS, getSubjectColor } from '../utils';
 import toast from 'react-hot-toast';
 import { HiPencil, HiX, HiCamera, HiUserGroup } from 'react-icons/hi';
-import ParticleCanvas from '../components/ParticleCanvas';
 import imageCompression from 'browser-image-compression';
 
 export default function Profile() {

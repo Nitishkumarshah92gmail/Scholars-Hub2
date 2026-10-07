@@ -56,6 +56,18 @@ export default function Chat() {
   const [editingMessageId, setEditingMessageId] = useState(null);
   const [editContent, setEditContent] = useState('');
   const [viewportStyle, setViewportStyle] = useState({});
+  const conversationsRef = useRef(conversations);
+
+  useEffect(() => {
+    conversationsRef.current = conversations;
+  }, [conversations]);
+
+  // Request Notification permission
+  useEffect(() => {
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+  }, []);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -224,6 +236,21 @@ export default function Chat() {
         { event: 'INSERT', schema: 'public', table: 'messages' },
         (payload) => {
           const newMsg = payload.new;
+
+          // Show browser notification if message is from someone else
+          if (newMsg.sender_id !== user?._id && 'Notification' in window && Notification.permission === 'granted') {
+            // Only notify if we are not actively viewing this conversation, or maybe always notify?
+            // Usually we don't notify if the user is already looking at the chat, but let's notify anyway or only if document is hidden/inactive.
+            if (document.hidden || !activeConversation || activeConversation.id !== newMsg.conversation_id) {
+              const convo = conversationsRef.current.find(c => c.id === newMsg.conversation_id);
+              const senderName = convo ? convo.otherUser.name : 'New Message';
+              new Notification(`New message from ${senderName}`, {
+                body: newMsg.content || 'Sent an attachment',
+                icon: convo?.otherUser?.avatar || '/favicon.ico'
+              });
+            }
+          }
+
           // If message belongs to active conversation, add to messages list
           if (activeConversation && newMsg.conversation_id === activeConversation.id) {
             setMessages((prev) => {

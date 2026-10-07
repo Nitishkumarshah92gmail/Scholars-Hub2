@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { FcGoogle } from 'react-icons/fc';
+import { FaFacebookF, FaGithub, FaLinkedinIn, FaUser, FaLock, FaEnvelope } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import '../auth-modern.css';
@@ -22,8 +23,6 @@ export default function Login() {
   const { loginUser, registerUser, loginWithGoogle, authError, clearAuthError } = useAuth();
   const navigate = useNavigate();
 
-  // Surface OAuth failures (e.g. "Google sign-in was cancelled") that Supabase
-  // appended to the URL and AuthContext extracted.
   useEffect(() => {
     if (authError) {
       toast.error(authError);
@@ -77,45 +76,66 @@ export default function Login() {
         
         {/* Sign Up Form */}
         <div className="modern-form-container sign-up">
+          <div className="mobile-top-header">
+            <h1>Hello, Friend!</h1>
+            <p>Already have an account?</p>
+            <button type="button" className="ghost-btn" onClick={() => setIsRightPanelActive(false)}>Login</button>
+          </div>
           <form onSubmit={handleRegister}>
-            <h1>Create Account</h1>
-            <button type="button" className="google-btn" onClick={handleGoogleAuth}>
-              <FcGoogle size={22} />
-              <span>Continue with Google</span>
+            <h1>Register</h1>
+            <div className="input-container">
+              <input type="text" placeholder="Name" value={registerName} onChange={e => setRegisterName(e.target.value)} />
+              <FaUser className="input-icon" />
+            </div>
+            <div className="input-container">
+              <input type="email" placeholder="Email" value={registerEmail} onChange={e => setRegisterEmail(e.target.value)} />
+              <FaEnvelope className="input-icon" />
+            </div>
+            <div className="input-container">
+              <input type="password" placeholder="Password" value={registerPassword} onChange={e => setRegisterPassword(e.target.value)} />
+              <FaLock className="input-icon" />
+            </div>
+            <button type="submit" disabled={isRegistering} className="submit-btn">
+              {isRegistering ? 'Signing Up...' : 'Register'}
             </button>
-            <span>or use your email for registration</span>
-            <input type="text" placeholder="Name" value={registerName} onChange={e => setRegisterName(e.target.value)} />
-            <input type="email" placeholder="Email" value={registerEmail} onChange={e => setRegisterEmail(e.target.value)} />
-            <input type="password" placeholder="Password" value={registerPassword} onChange={e => setRegisterPassword(e.target.value)} />
-            <button type="submit" disabled={isRegistering}>
-              {isRegistering ? 'Signing Up...' : 'Sign Up'}
-            </button>
-            <p className="mobile-toggle-text">
-              Already have an account?{' '}
-              <button type="button" className="mobile-toggle-link" onClick={() => setIsRightPanelActive(false)}>Sign In</button>
-            </p>
+            <span className="social-text">or register with social platforms</span>
+            <div className="social-container">
+              <button type="button" className="social-btn" onClick={handleGoogleAuth}><FcGoogle size={20} /></button>
+              <button type="button" className="social-btn"><FaFacebookF color="#000" size={18} /></button>
+              <button type="button" className="social-btn"><FaGithub color="#000" size={20} /></button>
+              <button type="button" className="social-btn"><FaLinkedinIn color="#000" size={18} /></button>
+            </div>
           </form>
         </div>
 
         {/* Sign In Form */}
         <div className="modern-form-container sign-in">
+          <div className="mobile-top-header">
+            <h1>Hello, Welcome!</h1>
+            <p>Don't have an account?</p>
+            <button type="button" className="ghost-btn" onClick={() => setIsRightPanelActive(true)}>Register</button>
+          </div>
           <form onSubmit={handleLogin}>
-            <h1>Sign In</h1>
-            <button type="button" className="google-btn" onClick={handleGoogleAuth}>
-              <FcGoogle size={22} />
-              <span>Continue with Google</span>
+            <h1>Login</h1>
+            <div className="input-container">
+              <input type="email" placeholder="Username" value={loginEmail} onChange={e => setLoginEmail(e.target.value)} />
+              <FaUser className="input-icon" />
+            </div>
+            <div className="input-container">
+              <input type="password" placeholder="Password" value={loginPassword} onChange={e => setLoginPassword(e.target.value)} />
+              <FaLock className="input-icon" />
+            </div>
+            <Link to="/forgot-password" className="forgot-password">Forgot Password?</Link>
+            <button type="submit" disabled={isLoggingIn} className="submit-btn">
+              {isLoggingIn ? 'Logging In...' : 'Login'}
             </button>
-            <span>or use your email password</span>
-            <input type="email" placeholder="Email" value={loginEmail} onChange={e => setLoginEmail(e.target.value)} />
-            <input type="password" placeholder="Password" value={loginPassword} onChange={e => setLoginPassword(e.target.value)} />
-            <Link to="/forgot-password">Forget Your Password?</Link>
-            <button type="submit" disabled={isLoggingIn}>
-              {isLoggingIn ? 'Signing In...' : 'Sign In'}
-            </button>
-            <p className="mobile-toggle-text">
-              Don't have an account?{' '}
-              <button type="button" className="mobile-toggle-link" onClick={() => setIsRightPanelActive(true)}>Sign Up</button>
-            </p>
+            <span className="social-text">or login with social platforms</span>
+            <div className="social-container">
+              <button type="button" className="social-btn" onClick={handleGoogleAuth}><FcGoogle size={20} /></button>
+              <button type="button" className="social-btn"><FaFacebookF color="#000" size={18} /></button>
+              <button type="button" className="social-btn"><FaGithub color="#000" size={20} /></button>
+              <button type="button" className="social-btn"><FaLinkedinIn color="#000" size={18} /></button>
+            </div>
           </form>
         </div>
 

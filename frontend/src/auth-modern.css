@@ -345,3 +345,132 @@
         display: block !important;
     }
 }
+
+/* ── Modern Auth New Styles ─────────── */
+.mobile-top-header {
+    display: none;
+}
+
+.input-container {
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+    margin: 8px 0;
+}
+
+.input-container input {
+    margin: 0 !important;
+    padding-right: 40px !important;
+}
+
+.input-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #333;
+    font-size: 14px;
+}
+
+.social-text {
+    font-size: 11px;
+    color: #555 !important;
+    margin: 15px 0 10px;
+}
+
+.social-container {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    align-items: center;
+    justify-content: center;
+}
+
+.social-btn {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 40px !important;
+    height: 40px !important;
+    border: 1px solid #ccc !important;
+    border-radius: 8px !important;
+    background: #fff !important;
+    cursor: pointer !important;
+    transition: all 0.2s;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.social-btn:hover {
+    background: #f5f5f5 !important;
+}
+
+.submit-btn {
+    background-color: #6a8bdf !important;
+    width: 100%;
+    max-width: 300px;
+    border-radius: 8px !important;
+    padding: 12px !important;
+    font-size: 14px !important;
+    text-transform: none !important;
+}
+
+.forgot-password {
+    font-size: 11px !important;
+    margin-bottom: 15px !important;
+    color: #555 !important;
+}
+
+/* ── Mobile Layout Overrides ─────────── */
+@media (max-width: 768px) {
+    .auth-modern-wrapper {
+        background: #e2eafc;
+    }
+
+    .auth-modern-wrapper .modern-container form {
+        padding: 20px 28px;
+        min-height: auto;
+        justify-content: flex-start;
+        padding-top: 40px;
+        border-radius: 0;
+    }
+
+    .auth-modern-wrapper .modern-form-container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .mobile-top-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: #7499f1;
+        color: white;
+        padding: 50px 20px 40px;
+        border-bottom-left-radius: 40px;
+        border-bottom-right-radius: 40px;
+        text-align: center;
+    }
+
+    .mobile-top-header h1 {
+        color: white !important;
+        font-size: 24px !important;
+        margin-bottom: 10px !important;
+    }
+
+    .mobile-top-header p {
+        color: white;
+        margin-bottom: 15px;
+    }
+
+    .mobile-top-header .ghost-btn {
+        border: 1px solid white !important;
+        color: white !important;
+        background: transparent !important;
+        padding: 8px 30px !important;
+        text-transform: none !important;
+        font-size: 14px !important;
+        border-radius: 6px !important;
+    }
+}

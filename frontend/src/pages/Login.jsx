@@ -99,12 +99,10 @@ export default function Login() {
               {isRegistering ? 'Signing Up...' : 'Register'}
             </button>
             <span className="social-text">or register with social platforms</span>
-            <div className="social-container">
-              <button type="button" className="social-btn" onClick={handleGoogleAuth}><FcGoogle size={20} /></button>
-              <button type="button" className="social-btn"><FaFacebookF color="#000" size={18} /></button>
-              <button type="button" className="social-btn"><FaGithub color="#000" size={20} /></button>
-              <button type="button" className="social-btn"><FaLinkedinIn color="#000" size={18} /></button>
-            </div>
+            <button type="button" className="google-btn" onClick={handleGoogleAuth}>
+              <FcGoogle size={22} />
+              <span>Continue with Google</span>
+            </button>
           </form>
         </div>
 
@@ -130,12 +128,10 @@ export default function Login() {
               {isLoggingIn ? 'Logging In...' : 'Login'}
             </button>
             <span className="social-text">or login with social platforms</span>
-            <div className="social-container">
-              <button type="button" className="social-btn" onClick={handleGoogleAuth}><FcGoogle size={20} /></button>
-              <button type="button" className="social-btn"><FaFacebookF color="#000" size={18} /></button>
-              <button type="button" className="social-btn"><FaGithub color="#000" size={20} /></button>
-              <button type="button" className="social-btn"><FaLinkedinIn color="#000" size={18} /></button>
-            </div>
+            <button type="button" className="google-btn" onClick={handleGoogleAuth}>
+              <FcGoogle size={22} />
+              <span>Continue with Google</span>
+            </button>
           </form>
         </div>
 

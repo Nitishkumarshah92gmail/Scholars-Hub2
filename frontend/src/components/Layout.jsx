@@ -5,7 +5,7 @@ import { useState, useEffect, lazy, Suspense } from 'react';
 import { getNotifications, getTotalUsers } from '../api';
 import { supabase } from '../lib/supabase';
 import toast from 'react-hot-toast';
-import logoImg from '../assets/logo.png';
+import logoImg from '../assets/scholars-logo.png';
 
 
 import {

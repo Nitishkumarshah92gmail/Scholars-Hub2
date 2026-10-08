@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import logoImg from '../assets/scholars-logo.png';
+import logoImg from '../assets/scholars-circle-logo.png';
 import { HiLockClosed, HiMail, HiArrowLeft } from 'react-icons/hi';
 
 export default function ForgotPassword() {

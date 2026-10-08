@@ -5,6 +5,7 @@ import { FaFacebookF, FaGithub, FaLinkedinIn, FaUser, FaLock, FaEnvelope } from 
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import '../auth-modern.css';
+import logoImg from '../assets/logo.png';
 
 export default function Login() {
   const [isRightPanelActive, setIsRightPanelActive] = useState(false);
@@ -77,6 +78,7 @@ export default function Login() {
         {/* Sign Up Form */}
         <div className="modern-form-container sign-up">
           <div className="mobile-top-header">
+            <img src={logoImg} alt="Scholars Hub Logo" className="auth-logo" />
             <h1>Hello, Friend!</h1>
             <p>Already have an account?</p>
             <button type="button" className="ghost-btn" onClick={() => setIsRightPanelActive(false)}>Login</button>
@@ -109,6 +111,7 @@ export default function Login() {
         {/* Sign In Form */}
         <div className="modern-form-container sign-in">
           <div className="mobile-top-header">
+            <img src={logoImg} alt="Scholars Hub Logo" className="auth-logo" />
             <h1>Hello, Welcome!</h1>
             <p>Don't have an account?</p>
             <button type="button" className="ghost-btn" onClick={() => setIsRightPanelActive(true)}>Register</button>
@@ -139,6 +142,7 @@ export default function Login() {
         <div className="modern-toggle-container">
           <div className="toggle">
             <div className="toggle-panel toggle-left">
+              <img src={logoImg} alt="Scholars Hub Logo" className="auth-logo" />
               <h1>Welcome Back!</h1>
               <p>Enter your personal details to use all of site features</p>
               <button type="button" className="ghost-btn" onClick={() => setIsRightPanelActive(false)}>
@@ -146,6 +150,7 @@ export default function Login() {
               </button>
             </div>
             <div className="toggle-panel toggle-right">
+              <img src={logoImg} alt="Scholars Hub Logo" className="auth-logo" />
               <h1>Hello, Friend!</h1>
               <p>Register with your personal details to use all of site features</p>
               <button type="button" className="ghost-btn" onClick={() => setIsRightPanelActive(true)}>

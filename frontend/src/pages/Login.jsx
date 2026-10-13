@@ -5,7 +5,7 @@ import { FaFacebookF, FaGithub, FaLinkedinIn, FaUser, FaLock, FaEnvelope } from 
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import '../auth-modern.css';
-import logoImg from '../assets/sh-logo-new.png';
+import logoImg from '../assets/scholars-logo-transparent.png';
 
 export default function Login() {
   const [isRightPanelActive, setIsRightPanelActive] = useState(false);

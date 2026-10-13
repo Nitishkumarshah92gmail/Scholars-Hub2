@@ -5,7 +5,7 @@ import { useState, useEffect, lazy, Suspense } from 'react';
 import { getNotifications, getTotalUsers } from '../api';
 import { supabase } from '../lib/supabase';
 import toast from 'react-hot-toast';
-import logoImg from '../assets/scholars-circle-logo.png';
+import logoImg from '../assets/sh-logo-new.png';
 
 
 import {
@@ -218,7 +218,7 @@ export default function Layout() {
             className="text-2xl font-heading font-bold text-ig-text dark:text-ig-text-light flex items-center gap-2.5 cursor-pointer"
             onClick={() => navigate('/dashboard')}
           >
-            <img src={logoImg} alt="Scholars Hub" className="w-9 h-9 rounded-full object-cover" style={{ boxShadow: '3px 3px 6px var(--neu-shadow-dark), -3px -3px 6px var(--neu-shadow-light)' }} />
+            <img src={logoImg} alt="Scholars Hub" className="w-9 h-9 rounded-full object-cover" style={{ boxShadow: '3px 3px 6px var(--neu-shadow-dark), -3px -3px 6px var(--neu-shadow-light)', background: 'linear-gradient(135deg, #ffffff, #f0f4ff)', padding: '2px', border: '2px solid rgba(99, 102, 241, 0.3)' }} />
             <span>
               Scholars<span className="gradient-text">Hub</span>
             </span>
@@ -355,7 +355,7 @@ export default function Layout() {
             className="text-xl font-heading font-bold text-ig-text dark:text-ig-text-light flex items-center gap-2 cursor-pointer"
             onClick={() => navigate('/dashboard')}
           >
-            <img src={logoImg} alt="Scholars Hub" className="w-7 h-7 rounded-full object-cover" />
+            <img src={logoImg} alt="Scholars Hub" className="w-7 h-7 rounded-full object-cover" style={{ background: 'linear-gradient(135deg, #ffffff, #f0f4ff)', padding: '2px', border: '2px solid rgba(99, 102, 241, 0.3)' }} />
             <span>
               Scholars<span className="gradient-text">Hub</span>
             </span>

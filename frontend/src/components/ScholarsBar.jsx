@@ -6,15 +6,33 @@ import { getScholars } from '../api';
 const avatarFallback = (name) =>
   `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=1e3a5f&color=fbbf24&size=200`;
 
+const SCHOLARS_CACHE_KEY = 'sh_cached_scholars_v1';
+
+function getInitialScholars() {
+  try {
+    const raw = sessionStorage.getItem(SCHOLARS_CACHE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
 export default function ScholarsBar() {
-  const [scholars, setScholars] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const initialScholars = getInitialScholars();
+  const [scholars, setScholars] = useState(initialScholars);
+  const [loading, setLoading] = useState(initialScholars.length === 0);
   const [showAll, setShowAll] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     getScholars()
-      .then((res) => setScholars(res.data || []))
+      .then((res) => {
+        const list = res.data || [];
+        setScholars(list);
+        try {
+          sessionStorage.setItem(SCHOLARS_CACHE_KEY, JSON.stringify(list));
+        } catch {}
+      })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);

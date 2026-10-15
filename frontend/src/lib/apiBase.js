@@ -1,90 +1,74 @@
-// Resolves the API base URL for the current deployment.
-//
-// Why this exists: the app is served from several places (custom domain, *.onrender.com,
-// Vercel). When the frontend and API are served from the SAME origin we want to use
-// "/api" — it avoids a CORS preflight round-trip and a separate DNS/TLS connection,
-// which makes every request noticeably faster. Otherwise we fall back to the
-// absolute backend URL.
-const ABSOLUTE_FALLBACK = (import.meta.env.VITE_API_URL || 'https://scholars-hub2.onrender.com/api').replace(/\/+$/, '');
-const CACHE_KEY = 'sh_api_base_v1';
-const PROBE_TIMEOUT_MS = 2500;
+// Resolves the API base URL for the current deployment with zero-latency resolution.
+
+const BACKEND_URL = (import.meta.env.VITE_API_URL || 'https://scholars-hub2.onrender.com/api').replace(/\/+$/, '');
+const CACHE_KEY = 'sh_api_base_v2';
 
 let _resolved = null;
-let _probing = null;
 
-function readCache() {
-  try {
-    return sessionStorage.getItem(CACHE_KEY) || null;
-  } catch {
-    return null;
-  }
+function isStaticFrontendHost() {
+  if (typeof window === 'undefined') return true;
+  const host = window.location.hostname.toLowerCase();
+  // Static Render frontend, custom domain, Vercel, or local development
+  return (
+    host === 'scholarshub.qd.je' ||
+    host.includes('scholars-hub2-1') ||
+    host === 'localhost' ||
+    host === '127.0.0.1' ||
+    window.location.protocol === 'capacitor:' ||
+    window.location.protocol === 'ionic:'
+  );
 }
 
-function writeCache(value) {
+function initApiBase() {
+  if (_resolved) return _resolved;
+
   try {
-    sessionStorage.setItem(CACHE_KEY, value);
-  } catch {
-    /* private mode / storage disabled — in-memory value still applies */
+    const cached = sessionStorage.getItem(CACHE_KEY);
+    if (cached) {
+      _resolved = cached;
+      return _resolved;
+    }
+  } catch {}
+
+  // Instant zero-probe check: if we are on a known static host, use dedicated backend
+  if (isStaticFrontendHost()) {
+    _resolved = BACKEND_URL;
+    try { sessionStorage.setItem(CACHE_KEY, _resolved); } catch {}
+    return _resolved;
   }
+
+  // If running directly on the backend server itself
+  if (typeof window !== 'undefined' && window.location.hostname.includes('scholars-hub2.onrender.com')) {
+    _resolved = '/api';
+    try { sessionStorage.setItem(CACHE_KEY, _resolved); } catch {}
+    return _resolved;
+  }
+
+  _resolved = BACKEND_URL;
+  return _resolved;
 }
 
-/** API base that can be used synchronously right now. */
+/** API base that can be used synchronously right now without any delay. */
 export function getApiBaseSync() {
-  return _resolved || ABSOLUTE_FALLBACK;
+  return _resolved || initApiBase();
 }
 
-/** Same-origin /api turned out to be wrong (static host SPA fallback) — use the absolute URL. */
+/** Same-origin /api turned out to be wrong (static host SPA fallback) — lock to absolute URL. */
 export function markSameOriginApiUnavailable() {
-  _resolved = ABSOLUTE_FALLBACK;
-  writeCache(ABSOLUTE_FALLBACK);
+  _resolved = BACKEND_URL;
+  try {
+    sessionStorage.setItem(CACHE_KEY, BACKEND_URL);
+  } catch {}
 }
 
 /**
- * Resolves once per session whether the API lives on this origin.
- * Positive results are cached in sessionStorage so a reload skips the probe.
+ * Resolves API base URL. Guaranteed to return in 0ms on static frontend.
  */
 export async function resolveApiBase() {
-  if (_resolved) return _resolved;
-  if (_probing) return _probing;
-
-  const cached = readCache();
-  if (cached) {
-    _resolved = cached;
-    return _resolved;
-  }
-
-  _probing = (async () => {
-    try {
-      if (typeof window !== 'undefined' && window.location.protocol.startsWith('http')) {
-        const controller = new AbortController();
-        const timer = setTimeout(() => controller.abort(), PROBE_TIMEOUT_MS);
-        try {
-          const res = await fetch('/api/health', { signal: controller.signal, cache: 'no-store' });
-          const type = res.headers.get('content-type') || '';
-          if (res.ok && type.includes('application/json')) {
-            const data = await res.json();
-            if (data && data.status === 'ok') {
-              _resolved = '/api';
-              writeCache('/api');
-              return _resolved;
-            }
-          }
-        } finally {
-          clearTimeout(timer);
-        }
-      }
-    } catch {
-      /* not same-origin (or offline) — use the absolute backend */
-    }
-    // Do NOT cache negative results: the next visit can probe again.
-    _resolved = ABSOLUTE_FALLBACK;
-    return _resolved;
-  })();
-
-  return _probing;
+  return getApiBaseSync();
 }
 
-/** Warm up the connection to the API host so the first real request is faster. */
+/** Warm up the connection to the API host with DNS-prefetch and preconnect. */
 export function warmApiConnection() {
   if (typeof document === 'undefined') return;
   const base = getApiBaseSync();
@@ -97,6 +81,11 @@ export function warmApiConnection() {
     link.href = origin;
     link.crossOrigin = 'anonymous';
     document.head.appendChild(link);
+
+    const dnsLink = document.createElement('link');
+    dnsLink.rel = 'dns-prefetch';
+    dnsLink.href = origin;
+    document.head.appendChild(dnsLink);
   } catch {
     /* invalid URL — ignore */
   }

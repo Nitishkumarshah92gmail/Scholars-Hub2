@@ -303,6 +303,12 @@ router.get('/explore', auth, async (req, res) => {
     const offset = (page - 1) * limit;
     const { subject, search, type } = req.query;
 
+    const cacheKey = !search ? `explore:${subject || 'all'}:${type || 'all'}:p:${page}` : null;
+    if (cacheKey) {
+      const cached = memoryCache.get(cacheKey);
+      if (cached) return res.json(cached);
+    }
+
     let query = supabase
       .from('posts')
       .select(POST_SELECT, { count: 'exact' });
@@ -327,13 +333,15 @@ router.get('/explore', auth, async (req, res) => {
       return res.json({ posts: [], page: 1, totalPages: 1, hasMore: false, total: 0 });
     }
 
-    res.json({
+    const payload = {
       posts: (posts || []).map(transformPost),
       page,
       totalPages: Math.ceil((count || 0) / limit),
       hasMore: offset + limit < (count || 0),
       total: count || 0,
-    });
+    };
+    if (cacheKey) memoryCache.set(cacheKey, payload, 30);
+    res.json(payload);
   } catch (error) {
     console.error('Explore error:', error);
     if (error?.code === 'PGRST205') {

@@ -197,6 +197,10 @@ router.get('/:id/bookmarks', auth, async (req, res) => {
 router.get('/:id', auth, async (req, res) => {
   try {
     const userId = req.params.id;
+    const cacheKey = `user:profile:${userId}`;
+
+    const cached = memoryCache.get(cacheKey);
+    if (cached) return res.json(cached);
 
     let { data: profile, error: profileErr } = await supabase
       .from('profiles')
@@ -253,10 +257,13 @@ router.get('/:id', auth, async (req, res) => {
     const bookmarkIds = (bookmarksResult.data || []).map((b) => b.post_id);
     const posts = postsResult.data || [];
 
-    res.json({
+    const responsePayload = {
       user: transformUser(profile, followers || [], following || [], bookmarkIds),
       posts: (posts || []).map(transformPost),
-    });
+    };
+
+    memoryCache.set(cacheKey, responsePayload, 30);
+    res.json(responsePayload);
   } catch (error) {
     console.error('Profile error:', error);
     res.status(500).json({ error: 'Failed to load profile.' });
@@ -395,6 +402,11 @@ router.post('/:id/follow', auth, async (req, res) => {
       .from('follows')
       .select('*', { count: 'exact', head: true })
       .eq('follower_id', currentId);
+
+    // Invalidate cached profile and feed
+    memoryCache.del(`user:profile:${targetId}`);
+    memoryCache.del(`user:profile:${currentId}`);
+    memoryCache.invalidatePrefix(`feed:user:${currentId}:`);
 
     res.json({
       isFollowing,

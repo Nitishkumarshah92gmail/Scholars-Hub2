@@ -150,21 +150,17 @@ if (require.main === module) {
     }
 
     // --- Keep-alive self-ping (prevents Render free-tier cold starts) ---
-    const KEEP_ALIVE_INTERVAL_MS = 14 * 60 * 1000; // 14 minutes
-    const RENDER_URL = process.env.RENDER_EXTERNAL_URL;
-    if (RENDER_URL) {
-      setInterval(() => {
-        const https = require('https');
-        https.get(`${RENDER_URL}/api/health`, (res) => {
-          console.log(`🏓 Keep-alive ping: ${res.statusCode}`);
-        }).on('error', (err) => {
-          console.error('🏓 Keep-alive ping failed:', err.message);
-        });
-      }, KEEP_ALIVE_INTERVAL_MS);
-      console.log('🏓 Keep-alive self-ping enabled (every 14 min)');
-    } else {
-      console.log('🏓 Keep-alive skipped (no RENDER_EXTERNAL_URL – running locally?)');
-    }
+    const KEEP_ALIVE_INTERVAL_MS = 8 * 60 * 1000; // 8 minutes (Render sleeps after 15m)
+    const RENDER_URL = process.env.RENDER_EXTERNAL_URL || 'https://scholars-hub2.onrender.com';
+    setInterval(() => {
+      const https = require('https');
+      https.get(`${RENDER_URL}/api/health`, (res) => {
+        console.log(`🏓 Keep-alive ping: ${res.statusCode}`);
+      }).on('error', (err) => {
+        console.error('🏓 Keep-alive ping failed:', err.message);
+      });
+    }, KEEP_ALIVE_INTERVAL_MS);
+    console.log(`🏓 Keep-alive self-ping enabled for ${RENDER_URL} (every 8 min)`);
   });
 }
 

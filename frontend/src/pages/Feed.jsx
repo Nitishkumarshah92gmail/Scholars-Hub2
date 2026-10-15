@@ -5,12 +5,24 @@ import PostSkeleton from '../components/PostSkeleton';
 import ScholarsBar from '../components/ScholarsBar';
 import { useAuth } from '../context/AuthContext';
 
+const FEED_CACHE_KEY = 'sh_cached_feed_v1';
+
+function getInitialFeed() {
+  try {
+    const raw = sessionStorage.getItem(FEED_CACHE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
 export default function Feed() {
   const { user } = useAuth();
-  const [posts, setPosts] = useState([]);
+  const initialPosts = getInitialFeed();
+  const [posts, setPosts] = useState(initialPosts);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(initialPosts.length === 0);
   const [loadingMore, setLoadingMore] = useState(false);
   const observer = useRef();
 
@@ -19,6 +31,9 @@ export default function Feed() {
       const res = await getFeed(pageNum);
       if (pageNum === 1) {
         setPosts(res.data.posts);
+        try {
+          sessionStorage.setItem(FEED_CACHE_KEY, JSON.stringify(res.data.posts));
+        } catch {}
       } else {
         setPosts((prev) => {
           const existingIds = new Set(prev.map((p) => p._id));

@@ -83,29 +83,71 @@ async function fetchYoutubePlaylistInfo(playlistId) {
   }
 }
 
-// Helper: fetch up to 50 videos from YouTube playlist via Data API v3
+// Helper: fetch up to 50 videos from YouTube playlist via Data API v3 or HTML scraping fallback
 async function fetchYoutubePlaylistVideos(playlistId) {
-  if (!YOUTUBE_API_KEY || !playlistId) return [];
-  try {
-    const itemsUrl = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlistId}&maxResults=50&key=${YOUTUBE_API_KEY}`;
-    const itemsRes = await fetch(itemsUrl);
-    const itemsData = await itemsRes.json();
-    if (!itemsData.items || !Array.isArray(itemsData.items)) return [];
-    return itemsData.items
-      .filter((item) => {
-        const title = item.snippet?.title || '';
-        return title !== 'Private video' && title !== 'Deleted video';
-      })
-      .map((item, idx) => ({
-        index: idx,
-        videoId: item.snippet?.resourceId?.videoId || '',
-        title: item.snippet?.title || `Video ${idx + 1}`,
-        thumbnail: item.snippet?.thumbnails?.medium?.url || item.snippet?.thumbnails?.default?.url || '',
-      }));
-  } catch (err) {
-    console.error('YouTube playlist videos API error:', err.message);
-    return [];
+  if (!playlistId) return [];
+
+  // 1. Try YouTube Data API v3 if API key is configured
+  if (YOUTUBE_API_KEY) {
+    try {
+      const itemsUrl = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlistId}&maxResults=50&key=${YOUTUBE_API_KEY}`;
+      const itemsRes = await fetch(itemsUrl);
+      const itemsData = await itemsRes.json();
+      if (itemsData.items && Array.isArray(itemsData.items) && itemsData.items.length > 0) {
+        return itemsData.items
+          .filter((item) => {
+            const title = item.snippet?.title || '';
+            return title !== 'Private video' && title !== 'Deleted video';
+          })
+          .map((item, idx) => ({
+            index: idx,
+            videoId: item.snippet?.resourceId?.videoId || '',
+            title: item.snippet?.title || `Video ${idx + 1}`,
+            thumbnail: item.snippet?.thumbnails?.medium?.url || item.snippet?.thumbnails?.default?.url || `https://i.ytimg.com/vi/${item.snippet?.resourceId?.videoId}/mqdefault.jpg`,
+          }));
+      }
+    } catch (err) {
+      console.error('YouTube playlist videos API error:', err.message);
+    }
   }
+
+  // 2. Fallback: Extract video IDs directly from public YouTube playlist page
+  try {
+    const plUrl = `https://www.youtube.com/playlist?list=${playlistId}`;
+    const plRes = await fetch(plUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept-Language': 'en-US,en;q=0.9',
+      },
+    });
+    const html = await plRes.text();
+
+    const idRegex = /"videoId":"([a-zA-Z0-9_-]{11})"/g;
+    const vids = [];
+    const seen = new Set();
+    let match;
+    while ((match = idRegex.exec(html)) !== null) {
+      const vid = match[1];
+      if (!seen.has(vid)) {
+        seen.add(vid);
+        vids.push(vid);
+        if (vids.length >= 50) break;
+      }
+    }
+
+    if (vids.length > 0) {
+      return vids.map((videoId, idx) => ({
+        index: idx,
+        videoId,
+        title: `Video ${idx + 1}`,
+        thumbnail: `https://i.ytimg.com/vi/${videoId}/mqdefault.jpg`,
+      }));
+    }
+  } catch (err) {
+    console.error('YouTube playlist HTML scraping fallback error:', err.message);
+  }
+
+  return [];
 }
 
 // Helpers: extract YouTube ID from URL
@@ -577,10 +619,6 @@ router.get('/youtube/playlist-items', auth, async (req, res) => {
   try {
     const playlistId = req.query.playlistId;
     if (!playlistId) return res.status(400).json({ error: 'Playlist ID is required.' });
-
-    if (!YOUTUBE_API_KEY) {
-      return res.json({ items: [] });
-    }
 
     const items = await fetchYoutubePlaylistVideos(playlistId);
     return res.json({ items });

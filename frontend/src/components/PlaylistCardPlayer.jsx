@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { HiCollection, HiExternalLink, HiChevronLeft, HiChevronRight, HiPlay } from 'react-icons/hi';
 import { FaYoutube } from 'react-icons/fa';
 import { getYoutubePlaylistItems } from '../api';
@@ -10,8 +10,10 @@ export default function PlaylistCardPlayer({ post, playlistId, videoId, playlist
   const [virtualCount, setVirtualCount] = useState(12);
   const [loadingItems, setLoadingItems] = useState(false);
   const sliderRef = useRef(null);
+  const iframeRef = useRef(null);
+  const playerIframeId = useRef(`yt-iframe-${post.id || Math.random().toString(36).substring(2, 9)}`);
 
-  // Fetch playlist items from YouTube Data API (if backend is configured)
+  // 1. Fetch playlist items from backend (Data API or HTML extraction fallback)
   useEffect(() => {
     if (!playlistId) return;
     let isMounted = true;
@@ -25,9 +27,7 @@ export default function PlaylistCardPlayer({ post, playlistId, videoId, playlist
           setVirtualCount(apiItems.length);
         }
       })
-      .catch(() => {
-        // Silently fallback to interactive indexed items
-      })
+      .catch(() => {})
       .finally(() => {
         if (isMounted) setLoadingItems(false);
       });
@@ -37,6 +37,55 @@ export default function PlaylistCardPlayer({ post, playlistId, videoId, playlist
     };
   }, [playlistId]);
 
+  // 2. Listen for postMessage from the YouTube iframe player (enablejsapi=1)
+  useEffect(() => {
+    const handleWindowMessage = (event) => {
+      try {
+        const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+        if (!data) return;
+
+        // When YouTube delivers player state or playlist data
+        if (data.event === 'infoDelivery' && data.info) {
+          // Sync playlist video array if provided by player
+          if (Array.isArray(data.info.playlist) && data.info.playlist.length > 0) {
+            setItems((prev) => {
+              if (prev.length >= data.info.playlist.length && prev[0]?.videoId) return prev;
+              return data.info.playlist.map((vid, idx) => ({
+                index: idx,
+                videoId: vid,
+                title: prev[idx]?.title && !prev[idx].title.startsWith('Video ') ? prev[idx].title : `Video ${idx + 1}`,
+                thumbnail: `https://i.ytimg.com/vi/${vid}/mqdefault.jpg`,
+              }));
+            });
+            setVirtualCount(data.info.playlist.length);
+          }
+
+          // Sync currently playing video index
+          if (typeof data.info.playlistIndex === 'number' && data.info.playlistIndex >= 0) {
+            setCurrentIndex(data.info.playlistIndex);
+          }
+        }
+      } catch {
+        // Ignore non-JSON postMessages from other extensions or scripts
+      }
+    };
+
+    window.addEventListener('message', handleWindowMessage);
+    return () => {
+      window.removeEventListener('message', handleWindowMessage);
+    };
+  }, []);
+
+  // Tell iframe we are listening once it loads
+  const handleIframeLoad = () => {
+    try {
+      iframeRef.current?.contentWindow?.postMessage(
+        JSON.stringify({ event: 'listening' }),
+        '*'
+      );
+    } catch {}
+  };
+
   // If real items exist use them, otherwise create virtual numbered parts
   const displayItems = items.length > 0
     ? items
@@ -44,19 +93,19 @@ export default function PlaylistCardPlayer({ post, playlistId, videoId, playlist
         index: i,
         videoId: i === 0 && videoId ? videoId : '',
         title: `Video ${i + 1}`,
-        thumbnail: '',
+        thumbnail: i === 0 && videoId ? `https://i.ytimg.com/vi/${videoId}/mqdefault.jpg` : '',
       }));
 
   const activeItem = displayItems[currentIndex] || displayItems[0];
+  const targetVideoId = activeItem?.videoId || (currentIndex === 0 ? videoId : '');
 
   // Determine embed URL:
-  // If active item has a known video ID: embed that video within the playlist
-  // Otherwise use official YouTube videoseries playlist embed with index parameter
-  const embedSrc = activeItem?.videoId
-    ? `https://www.youtube-nocookie.com/embed/${activeItem.videoId}?list=${playlistId}&index=${currentIndex}&autoplay=${autoplay ? 1 : 0}&rel=0`
+  // Using specific video ID + list ensures YouTube always loads the exact selected video!
+  const embedSrc = targetVideoId
+    ? `https://www.youtube-nocookie.com/embed/${targetVideoId}?list=${playlistId}&index=${currentIndex}&autoplay=${autoplay ? 1 : 0}&enablejsapi=1&rel=0`
     : playlistId
-    ? `https://www.youtube-nocookie.com/embed/videoseries?list=${playlistId}&index=${currentIndex}&autoplay=${autoplay ? 1 : 0}&rel=0`
-    : `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=${autoplay ? 1 : 0}&rel=0`;
+    ? `https://www.youtube-nocookie.com/embed/videoseries?list=${playlistId}&index=${currentIndex}&autoplay=${autoplay ? 1 : 0}&enablejsapi=1&rel=0`
+    : `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=${autoplay ? 1 : 0}&enablejsapi=1&rel=0`;
 
   // Scroll active item into view
   const scrollToActive = (index) => {
@@ -67,10 +116,25 @@ export default function PlaylistCardPlayer({ post, playlistId, videoId, playlist
     }
   };
 
+  // PostMessage helper to control YouTube iframe
+  const sendPlayerCommand = useCallback((func, args = []) => {
+    try {
+      iframeRef.current?.contentWindow?.postMessage(
+        JSON.stringify({
+          event: 'command',
+          func,
+          args,
+        }),
+        '*'
+      );
+    } catch {}
+  }, []);
+
   const handleSelectVideo = (index) => {
     setCurrentIndex(index);
     setAutoplay(true);
     scrollToActive(index);
+    sendPlayerCommand('playVideoAt', [index]);
   };
 
   const handlePrev = (e) => {
@@ -80,6 +144,8 @@ export default function PlaylistCardPlayer({ post, playlistId, videoId, playlist
       setCurrentIndex(newIdx);
       setAutoplay(true);
       scrollToActive(newIdx);
+      sendPlayerCommand('playVideoAt', [newIdx]);
+      sendPlayerCommand('previousVideo');
     }
   };
 
@@ -90,6 +156,8 @@ export default function PlaylistCardPlayer({ post, playlistId, videoId, playlist
       setCurrentIndex(newIdx);
       setAutoplay(true);
       scrollToActive(newIdx);
+      sendPlayerCommand('playVideoAt', [newIdx]);
+      sendPlayerCommand('nextVideo');
     }
   };
 
@@ -131,9 +199,12 @@ export default function PlaylistCardPlayer({ post, playlistId, videoId, playlist
       {/* 2. 16:9 Interactive Player */}
       <div className="aspect-video w-full bg-black relative">
         <iframe
-          key={`${currentIndex}-${autoplay}`}
+          ref={iframeRef}
+          id={playerIframeId.current}
+          key={`${targetVideoId || playlistId}-${currentIndex}`}
           src={embedSrc}
           title={activeItem?.title || post.title || 'YouTube Playlist Video'}
+          onLoad={handleIframeLoad}
           className="w-full h-full"
           frameBorder="0"
           allowFullScreen
@@ -217,6 +288,8 @@ export default function PlaylistCardPlayer({ post, playlistId, videoId, playlist
         >
           {displayItems.map((item, idx) => {
             const isActive = idx === currentIndex;
+            const thumbUrl = item.thumbnail || (item.videoId ? `https://i.ytimg.com/vi/${item.videoId}/mqdefault.jpg` : '');
+
             return (
               <button
                 key={idx}
@@ -231,9 +304,9 @@ export default function PlaylistCardPlayer({ post, playlistId, videoId, playlist
               >
                 {/* Thumbnail / Placeholder */}
                 <div className="relative aspect-video w-full rounded-lg overflow-hidden bg-black/40 mb-1.5 flex items-center justify-center">
-                  {item.thumbnail ? (
+                  {thumbUrl ? (
                     <img
-                      src={item.thumbnail}
+                      src={thumbUrl}
                       alt={item.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       loading="lazy"

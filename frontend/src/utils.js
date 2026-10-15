@@ -60,18 +60,24 @@ export function timeAgo(dateString) {
 }
 
 export function extractYoutubeInfo(url) {
-  // Video patterns
+  if (!url) return null;
+  let videoId = '';
   const videoPatterns = [
-    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/live\/)([a-zA-Z0-9_-]{11})/,
-    /youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/,
+    /(?:youtube\.com\/(?:watch\?v=|embed\/|live\/)|youtu\.be\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/,
   ];
   for (const pattern of videoPatterns) {
     const match = url.match(pattern);
-    if (match) return { id: match[1], type: 'youtube_video' };
+    if (match) { videoId = match[1]; break; }
   }
-  // Playlist
   const playlistPattern = /[?&]list=([a-zA-Z0-9_-]+)/;
   const playlistMatch = url.match(playlistPattern);
-  if (playlistMatch) return { id: playlistMatch[1], type: 'youtube_playlist' };
+  const playlistId = playlistMatch ? playlistMatch[1] : '';
+
+  if (playlistId) {
+    return { id: videoId, playlistId, type: 'youtube_playlist' };
+  }
+  if (videoId) {
+    return { id: videoId, playlistId: '', type: 'youtube_video' };
+  }
   return null;
 }

@@ -17,7 +17,7 @@ import {
 const TYPES = [
   { value: 'pdf', label: 'PDF', icon: HiDocumentText },
   { value: 'image', label: 'Images', icon: HiPhotograph },
-  { value: 'video_link', label: 'Video Link', icon: HiPlay },
+  { value: 'video_link', label: 'Video / Playlist', icon: HiPlay },
   { value: 'drive_link', label: 'Drive Link', icon: HiCloudUpload },
 ];
 
@@ -240,7 +240,7 @@ export default function Upload() {
             </div>
           ) : type === 'video_link' ? (
             <div>
-              <p className="text-sm font-semibold text-ig-text dark:text-ig-text-light mb-2">Video Link</p>
+              <p className="text-sm font-semibold text-ig-text dark:text-ig-text-light mb-2">Video or YouTube Playlist</p>
               <div className="relative">
                 <HiLink className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ig-text-2" />
                 <input
@@ -248,14 +248,14 @@ export default function Upload() {
                   value={youtubeUrl}
                   onChange={(e) => setYoutubeUrl(e.target.value)}
                   className="input-field pl-10 text-sm"
-                  placeholder="Paste YouTube, TikTok, or Instagram link..."
+                  placeholder="Paste YouTube video or playlist link (e.g. youtube.com/playlist?list=...)"
                 />
               </div>
               {/* Validation status */}
               {ytValidating && (
                 <p className="text-xs text-ig-text-2 mt-2 flex items-center gap-1">
                   <span className="w-3 h-3 border-2 border-ig-primary border-t-transparent rounded-full animate-spin inline-block" />
-                  Checking YouTube URL...
+                  Checking link...
                 </p>
               )}
               {ytValidation && !ytValidating && (
@@ -263,18 +263,27 @@ export default function Upload() {
                   <div className="mt-3 rounded-lg border border-green-500/30 bg-green-500/5 p-3">
                     <div className="flex items-center gap-3">
                       {ytValidation.thumbnail && (
-                        <img src={ytValidation.thumbnail} alt="" className="w-24 h-14 object-cover rounded" />
+                        <img src={ytValidation.thumbnail} alt="" className="w-24 h-14 object-cover rounded shadow-sm" />
                       )}
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs font-medium text-green-500">✓ Valid &amp; embeddable</p>
-                        {ytValidation.title && <p className="text-xs text-ig-text dark:text-ig-text-light truncate mt-0.5">{ytValidation.title}</p>}
+                        <div className="flex items-center gap-2">
+                          <span className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full ${
+                            ytValidation.type === 'youtube_playlist' || youtubeUrl.includes('list=')
+                              ? 'bg-red-500/20 text-red-500 border border-red-500/30'
+                              : 'bg-green-500/20 text-green-500 border border-green-500/30'
+                          }`}>
+                            {ytValidation.type === 'youtube_playlist' || youtubeUrl.includes('list=') ? '🎬 YouTube Playlist' : '✓ Video Ready'}
+                          </span>
+                          <span className="text-xs text-green-500">Embeddable</span>
+                        </div>
+                        {ytValidation.title && <p className="text-xs text-ig-text dark:text-ig-text-light truncate mt-1 font-medium">{ytValidation.title}</p>}
                       </div>
                     </div>
                   </div>
                 ) : (
                   <div className="mt-2 rounded-lg border border-red-500/30 bg-red-500/5 p-2.5">
                     <p className="text-xs text-red-500 font-medium">⚠ {ytValidation.error}</p>
-                    <p className="text-[11px] text-ig-text-2 mt-1">Make sure the video/playlist is set to Public or Unlisted on YouTube.</p>
+                    <p className="text-[11px] text-ig-text-2 mt-1">Make sure the video or playlist is set to Public or Unlisted on YouTube.</p>
                   </div>
                 )
               )}

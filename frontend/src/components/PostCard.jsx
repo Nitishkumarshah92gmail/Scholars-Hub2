@@ -16,7 +16,11 @@ import {
   HiDotsHorizontal,
   HiOutlineShare,
   HiTrash,
+  HiPlay,
+  HiCollection,
+  HiExternalLink,
 } from 'react-icons/hi';
+import { FaYoutube } from 'react-icons/fa';
 
 /**
  * Convert Google Drive URLs to lh3 format for reliable <img> embedding.
@@ -209,27 +213,113 @@ export default memo(function PostCard({ post, onUpdate }) {
       case 'youtube_playlist':
       case 'video_link': {
         const url = post.youtubeUrl || post.fileUrl || '';
-        if (!url) return <div className="p-6 text-center text-ig-text-2">Invalid Video URL</div>;
+        if (!url && !post.playlistId && !post.youtubeId) {
+          return <div className="p-6 text-center text-ig-text-2">Invalid Video URL</div>;
+        }
 
-        // 1. YouTube
-        let ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/live\/)([a-zA-Z0-9_-]{11})/);
-        if (ytMatch) {
-          const videoId = ytMatch[1];
-          const plMatch = url.match(/[?&]list=([a-zA-Z0-9_-]+)/);
-          const embedSrc = plMatch
-            ? `https://www.youtube-nocookie.com/embed/${videoId}?list=${plMatch[1]}&rel=0`
+        // 1. Check for playlist
+        const plMatch = url.match(/[?&]list=([a-zA-Z0-9_-]+)/);
+        const playlistId = post.playlistId || (plMatch ? plMatch[1] : '');
+
+        // 2. Check for YouTube video ID
+        const ytMatch = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|live\/)|youtu\.be\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/);
+        const videoId = post.youtubeId || (ytMatch ? ytMatch[1] : '');
+
+        const isPlaylist = post.type === 'youtube_playlist' || Boolean(playlistId);
+
+        // A. Dedicated YouTube Playlist Style
+        if (isPlaylist && (playlistId || videoId)) {
+          const embedSrc = videoId && playlistId
+            ? `https://www.youtube-nocookie.com/embed/${videoId}?list=${playlistId}&rel=0`
+            : playlistId
+            ? `https://www.youtube-nocookie.com/embed/videoseries?list=${playlistId}&rel=0`
             : `https://www.youtube-nocookie.com/embed/${videoId}?rel=0`;
 
+          const playlistLink = playlistId
+            ? `https://www.youtube.com/playlist?list=${playlistId}`
+            : url;
+
           return (
-            <div className="w-full">
-              <div className="aspect-video w-full">
-                <iframe src={embedSrc} title={post.title} className="w-full h-full" frameBorder="0" allowFullScreen loading="lazy" sandbox="allow-scripts allow-same-origin allow-presentation allow-popups" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" />
+            <div className="w-full overflow-hidden bg-black/5 dark:bg-black/30">
+              {/* Playlist Card Top Ribbon */}
+              <div className="px-4 py-2.5 bg-gradient-to-r from-red-600 via-rose-600 to-red-700 text-white flex items-center justify-between shadow-sm">
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="p-1.5 rounded-lg bg-white/20 backdrop-blur-md flex items-center justify-center shrink-0">
+                    <HiCollection className="w-4 h-4 text-white" />
+                  </span>
+                  <div className="min-w-0 flex items-center gap-2">
+                    <span className="text-[10px] uppercase tracking-wider font-extrabold bg-black/30 px-2.5 py-0.5 rounded-full text-white shrink-0 border border-white/20">
+                      YouTube Playlist
+                    </span>
+                    <span className="text-xs font-semibold text-white/95 truncate hidden sm:inline">
+                      {post.title || 'Course Series'}
+                    </span>
+                  </div>
+                </div>
+                <a
+                  href={playlistLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 text-xs font-bold bg-white text-red-600 hover:bg-white/95 px-3 py-1 rounded-full shadow transition-all active:scale-95 shrink-0 ml-2"
+                >
+                  <FaYoutube className="w-3.5 h-3.5 text-red-600" />
+                  <span>Open</span>
+                  <HiExternalLink className="w-3.5 h-3.5" />
+                </a>
+              </div>
+
+              {/* 16:9 Player */}
+              <div className="aspect-video w-full bg-black relative">
+                <iframe
+                  src={embedSrc}
+                  title={post.title || 'YouTube Playlist'}
+                  className="w-full h-full"
+                  frameBorder="0"
+                  allowFullScreen
+                  loading="lazy"
+                  sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                />
+              </div>
+
+              {/* Playlist Bottom Sub-bar */}
+              <div className="px-4 py-2 bg-[var(--neu-bg-2)] border-t border-[rgba(255,255,255,0.08)] flex items-center justify-between text-xs">
+                <div className="flex items-center gap-2 text-ig-text-2">
+                  <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                  <span className="font-semibold text-ig-text dark:text-ig-text-light text-[11px] sm:text-xs">
+                    Multi-Video Series
+                  </span>
+                  <span className="text-[10px] sm:text-[11px] text-ig-text-2 hidden xs:inline">• Click top-right ☰ in player to view all lectures</span>
+                </div>
+                <span className="text-[10px] font-bold text-red-500 bg-red-500/10 dark:bg-red-500/20 px-2 py-0.5 rounded">
+                  Playlist
+                </span>
               </div>
             </div>
           );
         }
 
-        // 2. TikTok
+        // B. Standard YouTube Video
+        if (videoId) {
+          return (
+            <div className="w-full">
+              <div className="aspect-video w-full">
+                <iframe
+                  src={`https://www.youtube-nocookie.com/embed/${videoId}?rel=0`}
+                  title={post.title}
+                  className="w-full h-full"
+                  frameBorder="0"
+                  allowFullScreen
+                  loading="lazy"
+                  sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                />
+              </div>
+            </div>
+          );
+        }
+
+        // C. TikTok
         if (url.includes('tiktok.com')) {
           let tiktokId = url.split('/').pop()?.split('?')[0];
           return (
@@ -238,14 +328,16 @@ export default memo(function PostCard({ post, onUpdate }) {
                 <iframe
                   src={`https://www.tiktok.com/embed/v2/${tiktokId}`}
                   className="w-full h-[700px] border-none"
-                  title={post.title} allowFullScreen allow="encrypted-media;"
+                  title={post.title}
+                  allowFullScreen
+                  allow="encrypted-media;"
                 />
               </div>
             </div>
           );
         }
 
-        // 3. Instagram Reels/Posts
+        // D. Instagram Reels/Posts
         if (url.includes('instagram.com')) {
           return (
             <div className="w-full">
@@ -253,7 +345,9 @@ export default memo(function PostCard({ post, onUpdate }) {
                 <iframe
                   src={`${url.replace(/\/?$/, '')}/embed`}
                   className="w-full h-[480px] border border-ig-separator rounded-lg"
-                  frameBorder="0" scrolling="no" allowFullScreen
+                  frameBorder="0"
+                  scrolling="no"
+                  allowFullScreen
                 />
               </div>
             </div>
@@ -370,15 +464,46 @@ export default memo(function PostCard({ post, onUpdate }) {
         </div>
       )}
 
-      {/* External Video Link */}
-      {(post.type === 'youtube_video' || post.type === 'youtube_playlist' || post.type === 'video_link') && (post.youtubeUrl || post.fileUrl) && (
-        <div className="px-5 pb-3">
-          <a href={post.youtubeUrl || post.fileUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs font-bold text-ig-primary hover:text-ig-primary-dark transition-colors bg-ig-primary/10 px-3 py-1.5 rounded-full">
-            <HiDownload className="w-4 h-4" />
-            {(post.youtubeUrl || post.fileUrl).includes('tiktok.com') ? 'Watch on TikTok' : (post.youtubeUrl || post.fileUrl).includes('instagram.com') ? 'Watch on Instagram' : 'Watch on YouTube'}
-          </a>
-        </div>
-      )}
+      {/* External Video / Playlist Link */}
+      {(post.type === 'youtube_video' || post.type === 'youtube_playlist' || post.type === 'video_link') && (post.youtubeUrl || post.fileUrl) && (() => {
+        const url = post.youtubeUrl || post.fileUrl || '';
+        const plMatch = url.match(/[?&]list=([a-zA-Z0-9_-]+)/);
+        const playlistId = post.playlistId || (plMatch ? plMatch[1] : '');
+        const isPlaylist = post.type === 'youtube_playlist' || Boolean(playlistId);
+        const playlistLink = playlistId ? `https://www.youtube.com/playlist?list=${playlistId}` : url;
+
+        if (isPlaylist) {
+          return (
+            <div className="px-5 pb-3">
+              <a
+                href={playlistLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-xs font-bold text-white bg-gradient-to-r from-red-600 via-rose-600 to-red-600 hover:from-red-700 hover:to-rose-700 active:scale-95 transition-all px-4 py-2 rounded-xl shadow-[0_4px_12px_rgba(220,38,38,0.3)]"
+              >
+                <FaYoutube className="w-4 h-4 text-white" />
+                <span>Watch Full Playlist on YouTube</span>
+                <HiExternalLink className="w-3.5 h-3.5" />
+              </a>
+            </div>
+          );
+        }
+
+        return (
+          <div className="px-5 pb-3">
+            <a
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-red-600 dark:text-red-400 bg-red-500/10 hover:bg-red-500/20 active:scale-95 transition-colors px-3.5 py-1.5 rounded-full"
+            >
+              <FaYoutube className="w-4 h-4" />
+              <span>{url.includes('tiktok.com') ? 'Watch on TikTok' : url.includes('instagram.com') ? 'Watch on Instagram' : 'Watch on YouTube'}</span>
+              <HiExternalLink className="w-3.5 h-3.5" />
+            </a>
+          </div>
+        );
+      })()}
 
       {/* Comments Section */}
       {showComments && (

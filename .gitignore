@@ -15,3 +15,7 @@ dist/
 # Local Chat Backups
 chat_backup.txt
 chat_history.md
+
+# Compiled C++ binaries
+backend/cpp_services/feed_server
+backend/cpp_services/*.o

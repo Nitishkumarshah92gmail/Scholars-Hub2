@@ -3,27 +3,30 @@ const supabase = require('../config/supabase');
 const auth = require('../middleware/auth');
 const { transformPost } = require('../utils/transforms');
 const { sendPushToUser } = require('../services/pushNotifications');
+const memoryCache = require('../services/lookAsideCache');
+const { rankPostsWithCpp } = require('../services/cppFeedBridge');
 
 const router = express.Router();
 
 // GET /api/posts/stats/count — get total posts count (PUBLIC)
 router.get('/stats/count', async (req, res) => {
-  // Cache the response for 60 seconds (client side and CDN)
   res.set('Cache-Control', 'public, max-age=60');
   
-  try {
-    const { count, error } = await supabase
-      .from('posts')
-      .select('*', { count: 'exact', head: true });
+  const totalPosts = await memoryCache.remember('stats:posts:count', 60, async () => {
+    try {
+      const { count, error } = await supabase
+        .from('posts')
+        .select('*', { count: 'exact', head: true });
 
-    if (error && error.code === 'PGRST205') {
-      return res.json({ totalPosts: 0 });
+      if (error && error.code === 'PGRST205') return 0;
+      return count || 0;
+    } catch (error) {
+      console.error('Post count error:', error);
+      return 0;
     }
-    res.json({ totalPosts: count || 0 });
-  } catch (error) {
-    console.error('Post count error:', error);
-    res.json({ totalPosts: 0 });
-  }
+  });
+
+  res.json({ totalPosts });
 });
 
 const YOUTUBE_API_KEY = (process.env.YOUTUBE_API_KEY || '').trim();
@@ -195,6 +198,14 @@ router.get('/', auth, async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const offset = (page - 1) * limit;
     const userId = req.user.id;
+    const cacheKey = `feed:user:${userId}:page:${page}:limit:${limit}`;
+
+    // 1. Check Facebook-style Look-Aside Cache (Returns in < 2ms)
+    const cachedResponse = memoryCache.get(cacheKey);
+    if (cachedResponse) {
+      res.setHeader('X-Cache-Engine', 'TAO-LookAside-MemoryCache');
+      return res.json(cachedResponse);
+    }
 
     // Get following IDs
     const { data: followData, error: followErr } = await supabase
@@ -252,6 +263,9 @@ router.get('/', auth, async (req, res) => {
       return true;
     });
 
+    // 2. High-Performance C++ Feed Ranking Microservice Pass
+    posts = await rankPostsWithCpp(userId, posts);
+
     // Limit comments to 3 per post
     const transformedPosts = posts.map((p) => {
       const tp = transformPost(p);
@@ -259,12 +273,18 @@ router.get('/', auth, async (req, res) => {
       return tp;
     });
 
-    res.json({
+    const responsePayload = {
       posts: transformedPosts,
       page,
       totalPages: Math.ceil((count || 0) / limit) || 1,
       hasMore: offset + posts.length < (count || 0),
-    });
+    };
+
+    // Store in Look-Aside Cache for 20 seconds
+    memoryCache.set(cacheKey, responsePayload, 20);
+
+    res.setHeader('X-Cache-Engine', 'Postgres-Supabase + C++ Microservice');
+    res.json(responsePayload);
   } catch (error) {
     console.error('Feed error:', error);
     // If tables don't exist, return empty
@@ -414,6 +434,10 @@ router.post('/', auth, async (req, res) => {
       return res.status(500).json({ error: 'Failed to create post.' });
     }
 
+    // Invalidate cached feeds and count
+    memoryCache.invalidatePrefix('feed:');
+    memoryCache.del('stats:posts:count');
+
     res.status(201).json(transformPost(post));
   } catch (error) {
     console.error('Create post error:', error);
@@ -501,6 +525,9 @@ router.post('/:id/like', auth, async (req, res) => {
       .from('likes')
       .select('user_id')
       .eq('post_id', postId);
+
+    // Invalidate user feeds
+    memoryCache.invalidatePrefix('feed:');
 
     res.json({
       likes: (allLikes || []).map((l) => l.user_id),

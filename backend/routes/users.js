@@ -3,6 +3,7 @@ const supabase = require('../config/supabase');
 const auth = require('../middleware/auth');
 const { transformUser, transformPost } = require('../utils/transforms');
 const { sendPushToUser } = require('../services/pushNotifications');
+const memoryCache = require('../services/lookAsideCache');
 
 const router = express.Router();
 
@@ -20,22 +21,24 @@ const POST_SELECT = `
 // GET /api/users/scholars — get recent scholars on the platform
 router.get('/scholars', auth, async (req, res) => {
   try {
-    const { data: users, error } = await supabase
-      .from('profiles')
-      .select('id, name, avatar, school')
-      .order('created_at', { ascending: false })
-      .limit(50);
+    const scholars = await memoryCache.remember('users:scholars:list', 30, async () => {
+      const { data: users, error } = await supabase
+        .from('profiles')
+        .select('id, name, avatar, school')
+        .order('created_at', { ascending: false })
+        .limit(50);
 
-    if (error && error.code === 'PGRST205') return res.json([]);
+      if (error && error.code === 'PGRST205') return [];
 
-    res.json(
-      (users || []).map((u) => ({
+      return (users || []).map((u) => ({
         _id: u.id,
         name: u.name,
         avatar: u.avatar,
         school: u.school,
-      }))
-    );
+      }));
+    });
+
+    res.json(scholars || []);
   } catch (error) {
     console.error('Scholars error:', error);
     res.json([]);
@@ -44,23 +47,23 @@ router.get('/scholars', auth, async (req, res) => {
 
 // GET /api/users/stats/count — get total registered users count
 router.get('/stats/count', async (req, res) => {
-  // Cache the response for 60 seconds
   res.set('Cache-Control', 'public, max-age=60');
   
-  try {
-    const { count, error } = await supabase
-      .from('profiles')
-      .select('*', { count: 'exact', head: true });
+  const totalUsers = await memoryCache.remember('stats:users:count', 60, async () => {
+    try {
+      const { count, error } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true });
 
-    if (error && error.code === 'PGRST205') {
-      return res.json({ totalUsers: 0 });
+      if (error && error.code === 'PGRST205') return 0;
+      return count || 0;
+    } catch (error) {
+      console.error('User count error:', error);
+      return 0;
     }
+  });
 
-    res.json({ totalUsers: count || 0 });
-  } catch (error) {
-    console.error('User count error:', error);
-    res.json({ totalUsers: 0 });
-  }
+  res.json({ totalUsers });
 });
 
 // GET /api/users/debug/db — deep diagnostic endpoint

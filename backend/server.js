@@ -136,6 +136,19 @@ if (require.main === module) {
   app.listen(PORT, () => {
     console.log(`Scholars Hub server running on port ${PORT}`);
 
+    // --- Facebook High-Performance C++ Tier Check ---
+    const { spawn } = require('child_process');
+    const cppBinary = path.join(__dirname, 'cpp_services', 'feed_server');
+    if (fs.existsSync(cppBinary)) {
+      try {
+        const cppProc = spawn(cppBinary, ['9090'], { stdio: 'inherit', detached: true });
+        cppProc.unref();
+        console.log('⚡ [Facebook Tier] C++ Feed Ranking Microservice running on port 9090');
+      } catch (err) {
+        console.log('ℹ️ C++ Microservice auto-spawn skipped:', err.message);
+      }
+    }
+
     // --- Keep-alive self-ping (prevents Render free-tier cold starts) ---
     const KEEP_ALIVE_INTERVAL_MS = 14 * 60 * 1000; // 14 minutes
     const RENDER_URL = process.env.RENDER_EXTERNAL_URL;

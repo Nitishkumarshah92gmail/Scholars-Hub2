@@ -192,6 +192,7 @@ export const commentPost = (id, text) => request(`/posts/${id}/comment`, { metho
 export const reportPost = (id, reason) => request(`/posts/${id}/report`, { method: 'POST', data: { reason } });
 export const deletePost = (id) => request(`/posts/${id}`, { method: 'DELETE' });
 export const validateYoutubeUrl = (url) => request('/posts/youtube/validate', { params: { url } });
+export const getYoutubePlaylistItems = (playlistId) => request('/posts/youtube/playlist-items', { params: { playlistId } });
 
 // ── Users ───────────────────────────────────────────────────────────────────
 export const getUser = (id) => request(`/users/${id}`);

@@ -83,6 +83,31 @@ async function fetchYoutubePlaylistInfo(playlistId) {
   }
 }
 
+// Helper: fetch up to 50 videos from YouTube playlist via Data API v3
+async function fetchYoutubePlaylistVideos(playlistId) {
+  if (!YOUTUBE_API_KEY || !playlistId) return [];
+  try {
+    const itemsUrl = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlistId}&maxResults=50&key=${YOUTUBE_API_KEY}`;
+    const itemsRes = await fetch(itemsUrl);
+    const itemsData = await itemsRes.json();
+    if (!itemsData.items || !Array.isArray(itemsData.items)) return [];
+    return itemsData.items
+      .filter((item) => {
+        const title = item.snippet?.title || '';
+        return title !== 'Private video' && title !== 'Deleted video';
+      })
+      .map((item, idx) => ({
+        index: idx,
+        videoId: item.snippet?.resourceId?.videoId || '',
+        title: item.snippet?.title || `Video ${idx + 1}`,
+        thumbnail: item.snippet?.thumbnails?.medium?.url || item.snippet?.thumbnails?.default?.url || '',
+      }));
+  } catch (err) {
+    console.error('YouTube playlist videos API error:', err.message);
+    return [];
+  }
+}
+
 // Helpers: extract YouTube ID from URL
 function extractYoutubeId(url) {
   // Extract video ID
@@ -546,6 +571,25 @@ router.get('/youtube/validate', auth, async (req, res) => {
     res.status(500).json({ error: 'Validation failed.' });
   }
 });
+
+// GET /api/posts/youtube/playlist-items?playlistId=... — fetch playlist video items
+router.get('/youtube/playlist-items', auth, async (req, res) => {
+  try {
+    const playlistId = req.query.playlistId;
+    if (!playlistId) return res.status(400).json({ error: 'Playlist ID is required.' });
+
+    if (!YOUTUBE_API_KEY) {
+      return res.json({ items: [] });
+    }
+
+    const items = await fetchYoutubePlaylistVideos(playlistId);
+    return res.json({ items });
+  } catch (error) {
+    console.error('Playlist items error:', error);
+    res.json({ items: [] });
+  }
+});
+
 // POST /api/posts/:id/report — report a post
 router.post('/:id/report', auth, async (req, res) => {
   try {

@@ -21,6 +21,7 @@ import {
   HiExternalLink,
 } from 'react-icons/hi';
 import { FaYoutube } from 'react-icons/fa';
+import PlaylistCardPlayer from './PlaylistCardPlayer';
 
 /**
  * Convert Google Drive URLs to lh3 format for reliable <img> embedding.
@@ -227,75 +228,19 @@ export default memo(function PostCard({ post, onUpdate }) {
 
         const isPlaylist = post.type === 'youtube_playlist' || Boolean(playlistId);
 
-        // A. Dedicated YouTube Playlist Style
+        // A. Dedicated YouTube Playlist Style with Sliding Option
         if (isPlaylist && (playlistId || videoId)) {
-          const embedSrc = videoId && playlistId
-            ? `https://www.youtube-nocookie.com/embed/${videoId}?list=${playlistId}&rel=0`
-            : playlistId
-            ? `https://www.youtube-nocookie.com/embed/videoseries?list=${playlistId}&rel=0`
-            : `https://www.youtube-nocookie.com/embed/${videoId}?rel=0`;
-
           const playlistLink = playlistId
             ? `https://www.youtube.com/playlist?list=${playlistId}`
             : url;
 
           return (
-            <div className="w-full overflow-hidden bg-black/5 dark:bg-black/30">
-              {/* Playlist Card Top Ribbon */}
-              <div className="px-4 py-2.5 bg-gradient-to-r from-red-600 via-rose-600 to-red-700 text-white flex items-center justify-between shadow-sm">
-                <div className="flex items-center gap-2 min-w-0">
-                  <span className="p-1.5 rounded-lg bg-white/20 backdrop-blur-md flex items-center justify-center shrink-0">
-                    <HiCollection className="w-4 h-4 text-white" />
-                  </span>
-                  <div className="min-w-0 flex items-center gap-2">
-                    <span className="text-[10px] uppercase tracking-wider font-extrabold bg-black/30 px-2.5 py-0.5 rounded-full text-white shrink-0 border border-white/20">
-                      YouTube Playlist
-                    </span>
-                    <span className="text-xs font-semibold text-white/95 truncate hidden sm:inline">
-                      {post.title || 'Course Series'}
-                    </span>
-                  </div>
-                </div>
-                <a
-                  href={playlistLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 text-xs font-bold bg-white text-red-600 hover:bg-white/95 px-3 py-1 rounded-full shadow transition-all active:scale-95 shrink-0 ml-2"
-                >
-                  <FaYoutube className="w-3.5 h-3.5 text-red-600" />
-                  <span>Open</span>
-                  <HiExternalLink className="w-3.5 h-3.5" />
-                </a>
-              </div>
-
-              {/* 16:9 Player */}
-              <div className="aspect-video w-full bg-black relative">
-                <iframe
-                  src={embedSrc}
-                  title={post.title || 'YouTube Playlist'}
-                  className="w-full h-full"
-                  frameBorder="0"
-                  allowFullScreen
-                  loading="lazy"
-                  sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                />
-              </div>
-
-              {/* Playlist Bottom Sub-bar */}
-              <div className="px-4 py-2 bg-[var(--neu-bg-2)] border-t border-[rgba(255,255,255,0.08)] flex items-center justify-between text-xs">
-                <div className="flex items-center gap-2 text-ig-text-2">
-                  <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                  <span className="font-semibold text-ig-text dark:text-ig-text-light text-[11px] sm:text-xs">
-                    Multi-Video Series
-                  </span>
-                  <span className="text-[10px] sm:text-[11px] text-ig-text-2 hidden xs:inline">• Click top-right ☰ in player to view all lectures</span>
-                </div>
-                <span className="text-[10px] font-bold text-red-500 bg-red-500/10 dark:bg-red-500/20 px-2 py-0.5 rounded">
-                  Playlist
-                </span>
-              </div>
-            </div>
+            <PlaylistCardPlayer
+              post={post}
+              playlistId={playlistId}
+              videoId={videoId}
+              playlistLink={playlistLink}
+            />
           );
         }
 

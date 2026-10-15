@@ -21,6 +21,7 @@ import {
   HiExternalLink,
 } from 'react-icons/hi';
 import { FaYoutube } from 'react-icons/fa';
+import PlaylistCardPlayer from '../components/PlaylistCardPlayer';
 
 export default function PostDetail() {
   const { id } = useParams();
@@ -182,79 +183,18 @@ export default function PostDetail() {
           );
         }
 
-        // Dedicated Playlist Style
+        // Dedicated Playlist Style with Sliding Option
         if (isPlaylist && (playlistId || videoId)) {
-          const embedSrc = videoId && playlistId
-            ? `https://www.youtube-nocookie.com/embed/${videoId}?list=${playlistId}&rel=0`
-            : playlistId
-            ? `https://www.youtube-nocookie.com/embed/videoseries?list=${playlistId}&rel=0`
-            : `https://www.youtube-nocookie.com/embed/${videoId}?rel=0`;
           const playlistLink = playlistId ? `https://www.youtube.com/playlist?list=${playlistId}` : url;
 
           return (
             <div className="w-full overflow-hidden rounded-2xl border border-red-500/20 shadow-xl bg-black/40 mb-2">
-              {/* Playlist Header Banner */}
-              <div className="px-5 py-3 bg-gradient-to-r from-red-600 via-rose-600 to-red-700 text-white flex items-center justify-between shadow-sm">
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <span className="p-1.5 rounded-lg bg-white/20 backdrop-blur-md flex items-center justify-center shrink-0">
-                    <HiCollection className="w-5 h-5 text-white" />
-                  </span>
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] uppercase tracking-wider font-extrabold bg-black/30 px-2.5 py-0.5 rounded-full text-white shrink-0 border border-white/20">
-                        YouTube Playlist
-                      </span>
-                      <span className="text-sm font-bold text-white truncate hidden sm:inline">
-                        {post.title || 'Curated Video Series'}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <a
-                  href={playlistLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 text-xs font-bold bg-white text-red-600 hover:bg-white/95 px-3.5 py-1.5 rounded-full shadow transition-all active:scale-95 shrink-0 ml-2"
-                >
-                  <FaYoutube className="w-4 h-4 text-red-600" />
-                  <span>Open on YouTube</span>
-                  <HiExternalLink className="w-3.5 h-3.5" />
-                </a>
-              </div>
-
-              {/* 16:9 Video Player */}
-              <div className="aspect-video w-full bg-black relative">
-                <iframe
-                  src={embedSrc}
-                  title={post.title}
-                  className="w-full h-full"
-                  frameBorder="0"
-                  allowFullScreen
-                  loading="lazy"
-                  sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                />
-              </div>
-
-              {/* Playlist Bottom Sub-bar */}
-              <div className="px-5 py-2.5 bg-[var(--neu-bg-2)] border-t border-[rgba(255,255,255,0.08)] flex items-center justify-between text-xs">
-                <div className="flex items-center gap-2 text-ig-text-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
-                  <span className="font-semibold text-ig-text dark:text-ig-text-light">
-                    Full Interactive Playlist
-                  </span>
-                  <span className="text-ig-text-2 hidden sm:inline">• Use top-right ☰ inside player to pick any video in this series</span>
-                </div>
-                <a
-                  href={playlistLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-bold text-red-600 dark:text-red-400 hover:underline flex items-center gap-1"
-                >
-                  <span>All Videos</span>
-                  <HiExternalLink className="w-3 h-3" />
-                </a>
-              </div>
+              <PlaylistCardPlayer
+                post={post}
+                playlistId={playlistId}
+                videoId={videoId}
+                playlistLink={playlistLink}
+              />
             </div>
           );
         }
